@@ -254,6 +254,7 @@
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-border-card, currentColor);
+    box-sizing: border-box;
   }
 
   *,
