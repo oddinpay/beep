@@ -129,7 +129,8 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 
 	probes := []probeDef{
-		{name: req.Protocol, fn: probeHTTP, intravel: 1 * time.Second},	
+		{name: req.Protocol, fn: probeHTTP, intravel: 1 * time.Second},
+		// add more probes here as needed	
 	}
 
 	for _, p := range probes {
