@@ -266,6 +266,17 @@
     scrollbar-color: #ababab transparent;
   }
 
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-variation-settings: normal;
+  }
+
   ::selection {
     background: #fdffa4;
     color: black;
