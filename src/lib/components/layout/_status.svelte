@@ -563,7 +563,7 @@
   </header>
   <div id="navBackdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
   <div
-    class="mx-auto max-w-screen-2xl grid grid-cols-1 xl:grid-cols-[280px_minmax(0,1fr)_300px] items-start"
+    class="mx-auto max-w-screen-2xl grid grid-cols-1 xl:grid-cols-[180px_minmax(0,1fr)_200px] items-start"
   >
     <!-- LEFT NAV (sections -> H2 -> optional H3 subpanel) -->
     <aside
@@ -623,8 +623,15 @@
                           </span>
                         </span>
                         </div>
+
                     </div>
                   </div>
+                <div class="legend mt-2">
+                  <strong>Legend:</strong>
+                  <span><span class="dot operational"></span>Operational</span>
+                  <span><span class="dot partial"></span>Partial degradation</span>
+                  <span><span class="dot severe"></span>Severe degradation</span>
+               </div>
                 </div>
 
                 <!-- Full-width gradient divider -->
@@ -759,6 +766,7 @@
                   </div>
                 </div>
               </div>
+
             </article>
             <!-- Pagination -->
             <Pagination.Content
@@ -809,6 +817,7 @@
             </Pagination.Content>
           {/snippet}
         </Pagination.Root>
+
         <div aria-hidden="true" class="h-[150px]"></div>
       </div>
     </main>
@@ -909,5 +918,52 @@
     text-overflow: ellipsis;
     word-break: break-word;
     line-height: 1.4;
+  }
+
+
+  .legend {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      color: #d9d9d9;
+      padding: 10px;
+    }
+
+  .legend span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+  .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+  .operational {
+      background-color: #21ba45; /* Green */
+    }
+
+  .partial {
+      background-color: #fbbd08; /* Yellow */
+    }
+
+  .severe {
+      background-color: #db2828; /* Red/Orange */
+    }
+
+  @media (max-width: 600px) {
+    .legend {
+      flex-direction: column;     /* stack vertically */
+      align-items: flex-start;    /* align to left */
+      gap: 8px;
+    }
+
+    .legend strong {
+      margin-bottom: 4px;
+    }
   }
 </style>
