@@ -5,13 +5,13 @@
 
   export let label = "Get started";
 
-  export let color = "bg-green-600"
+  export let color = "green"
 
 </script>
 
 <Button
   onclick={() => goto("/signup")}
-  class="group transition-transform  hover:{color} focus:{color}  {color} text-white px-[14px] py-[20px] rounded-full flex items-center gap-2 active:scale-99 font-medium cursor-pointer hover:opacity-90 focus:opacity-90"
+  class="group transition-transform  hover:bg-{color}-600 focus:bg-{color}-600  bg-{color}-600 text-white px-[14px] py-[20px] rounded-full flex items-center gap-2 active:scale-99 font-medium cursor-pointer hover:opacity-90 focus:opacity-90"
 >
   <span>{label}</span>
   <ArrowRightIcon

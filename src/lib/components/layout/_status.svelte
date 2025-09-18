@@ -11,8 +11,7 @@
 
   const isDesktop = new MediaQuery("(min-width: 768px)");
 
-  let color = "green-600";
-  let theme = "green";
+  let theme = "green"; 
 
   type AccordionItem = {
     value: string;
@@ -561,7 +560,7 @@
         Sign in
       </Button>
 
-      <Buttong />
+      <Buttong  />
     </div>
   </header>
   <div id="navBackdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
