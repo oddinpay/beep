@@ -1,20 +1,29 @@
 import { mdsvex } from "mdsvex";
-import adapter from "@sveltejs/adapter-auto";
+import adapter from "@sveltejs/adapter-node";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const dirname = path.resolve(fileURLToPath(import.meta.url), "../");
 
 /** @type {import('@sveltejs/kit').Config} */
+
+const adapterOptions = { precompress: true };
+
 const config = {
   // Consult https://svelte.dev/docs/kit/integrations
   // for more information about preprocessors
+
+  extensions: [".svelte", ".svx", ".md"],
   preprocess: [
     vitePreprocess(),
     mdsvex({
       extensions: [".svx", ".md"],
-      status: {
-        faq: path.join(dirname, "./src/lib/componets/layout/_status.svelte"),
+      layout: {
+        status: path.join(
+          dirname,
+          "./src/lib/components/layout/_status.svelte"
+        ),
       },
     }),
   ],
@@ -22,9 +31,14 @@ const config = {
     // adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
     // If your environment is not supported, or you settled on a specific environment, switch out the adapter.
     // See https://svelte.dev/docs/kit/adapters for more information about adapters.
-    adapter: adapter(),
+    adapter: adapter(adapterOptions),
+    alias: {
+      $assets: "./src/lib/assets",
+      $data: "./src/lib/data",
+      $helpers: "./src/lib/helpers",
+      $lib: "./src/lib",
+    },
   },
-  extensions: [".svelte", ".svx", ".md"],
 };
 
 export default config;
