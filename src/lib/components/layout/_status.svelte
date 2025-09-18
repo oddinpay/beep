@@ -11,6 +11,9 @@
 
   const isDesktop = new MediaQuery("(min-width: 768px)");
 
+  let color = "green-600";
+  let theme = "green";
+
   type AccordionItem = {
     value: string;
     date: string;
@@ -552,7 +555,7 @@
       <Button
         id="change"
         onclick={() => goto("/signin")}
-        class="text-black  hidden  stm:block cursor-pointer hover:text-indigo-500"
+        class="text-black  hidden  stm:block cursor-pointer hover:text-{theme}-700"
         variant="ghost"
       >
         Sign in
@@ -575,7 +578,7 @@
         <!-- Indicator sits inside gray border -->
         <span
           aria-hidden="true"
-          class="absolute bottom-[17em] -translate-y-1/2 h-10 w-full bg-gradient-to-b from-indigo-400 via-indigo-600 to-indigo-500 rounded-md shadow-md"
+          class="absolute bottom-[17em] -translate-y-1/2 h-10 w-full bg-gradient-to-b from-{theme}-400 via-{theme}-600 to-{theme}-500 rounded-md shadow-md"
         ></span>
       </div>
     </aside>
@@ -609,13 +612,12 @@
                         </p>
 
                         <span class="text-base mt-5 text-center sm:text-left">
-                          <a
-                            href="/roadmap"
-                            class="inline-flex items-center px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-semibold no-underline"
+                          <span
+                            class="inline-flex pointer-events-none items-center px-2 py-0.5 rounded-full bg-{theme}-100 text-{theme}-700 text-sm font-semibold no-underline"
                             style="text-decoration: none;"
                           >
                             {badge}
-                          </a>
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -764,8 +766,8 @@
                   onclick={() => setPage(currentPage - 1)}
                   class="cursor-pointer flex items-center space-x-1"
                 >
-                  <ChevronLeftIcon class="w-5 h-5" />
-                  <span class="text-indigo-600 font-bold hidden sm:block"
+                  <ChevronLeftIcon class="text-{theme}-700 w-5 h-5" />
+                  <span class="text-{theme}-700 font-bold hidden sm:block"
                     >Previous</span
                   >
                 </Pagination.PrevButton>
@@ -781,7 +783,7 @@
                     <Pagination.Link
                       {page}
                       onclick={() => setPage(page.value)}
-                      class="cursor-pointer px-3 py-1 font-bold text-indigo-600 rounded-md hover:bg-gray-100"
+                      class="cursor-pointer px-3 py-1 font-bold text-{theme}-700 rounded-md hover:bg-gray-100"
                       isActive={currentPage === page.value}
                     >
                       {page.value}
@@ -795,10 +797,10 @@
                   onclick={() => setPage(currentPage + 1)}
                   class="cursor-pointer flex  items-center space-x-1"
                 >
-                  <span class="hidden text-indigo-600 font-bold sm:block"
+                  <span class="hidden text-{theme}-700 font-bold sm:block"
                     >Next</span
                   >
-                  <ChevronRightIcon class="text-indigo-500 w-5 h-5" />
+                  <ChevronRightIcon class="text-{theme}-700 w-5 h-5" />
                 </Pagination.NextButton>
               </Pagination.Item>
             </Pagination.Content>

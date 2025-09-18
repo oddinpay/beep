@@ -5,7 +5,7 @@
 
   export let label = "Get started";
 
-  export let color = "bg-indigo-500"
+  export let color = "bg-green-600"
 
 </script>
 

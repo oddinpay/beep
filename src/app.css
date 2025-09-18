@@ -995,13 +995,8 @@ input[type="number"] {
 .markdown-body ul ul ul {
   list-style: circle;
 }
-.markdown-body a {
-  color: #6366f1; /* Tailwind indigo-500 */
-  text-decoration: underline;
-}
-.markdown-body a:hover {
-  color: #4338ca; /* Tailwind indigo-700 */
-}
+
+
 
 .markdown-body blockquote {
   margin: 1em 0;
