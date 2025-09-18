@@ -616,7 +616,7 @@
 
                         <span class="text-base mt-5 text-center sm:text-left">
                           <span
-                          class="inline-flex pointer-events-none items-center px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-sm font-semibold no-underline"
+                          class="inline-flex pointer-events-none items-center px-4 py-0.5 rounded-full bg-green-100 text-green-700 text-sm font-semibold no-underline"
                           style="text-decoration: none;"
                           >
                           {badge}
