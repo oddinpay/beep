@@ -594,29 +594,35 @@
                   <div class="wrapper-ui">
                     <div class="child-wrapper-ui">
                       <div class="headline-container">
-                        <h1
+                        <svg 
+                            class="w-20 h-20 mx-auto"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="lightgreen" d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8s8-3.59 8-8s-3.59-8-8-8m-2 13l-4-4l1.41-1.41L10 14.17l6.59-6.59L18 9z" opacity="0.3" />
+                            <path fill="green" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4l8-8z" />
+                        </svg>
+                          <h1
                           id="content"
                           class="headline8"
                           style="font-size: clamp(2.5rem, 3vh, 5rem);"
                         >
                          All services are online  
-                      </h1>
+                        </h1>
 
                         <p
                           class="text-base text-gray-700 font-bold text-center sm:text-left"
                         >
-                          {new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                       </p>
+                          {new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                         </p>
 
                         <span class="text-base mt-5 text-center sm:text-left">
                           <span
-                            class="inline-flex pointer-events-none items-center px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-sm font-semibold no-underline"
-                            style="text-decoration: none;"
+                          class="inline-flex pointer-events-none items-center px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-sm font-semibold no-underline"
+                          style="text-decoration: none;"
                           >
-                            {badge}
+                          {badge}
                           </span>
                         </span>
-                      </div>
+                        </div>
                     </div>
                   </div>
                 </div>
