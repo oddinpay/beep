@@ -597,16 +597,16 @@
                         <h1
                           id="content"
                           class="headline8"
-                          style="font-size: clamp(2.5rem, 7vw, 8rem);"
+                          style="font-size: clamp(2.5rem, 3vh, 5rem);"
                         >
-                          {logo}
-                        </h1>
+                         All services are online  
+                      </h1>
 
                         <p
-                          class="text-base text-gray-700 text-center sm:text-left"
+                          class="text-base text-gray-700 font-bold text-center sm:text-left"
                         >
-                          {status}
-                        </p>
+                          {new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                       </p>
 
                         <span class="text-base mt-5 text-center sm:text-left">
                           <span
