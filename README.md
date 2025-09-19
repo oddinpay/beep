@@ -5,14 +5,15 @@
 
 # Why ?
 
-- Clean and simple UI
+- Clean and simple UI – easy to navigate and user-friendly.
 
-- Supports TCP, HTTPS, HTTP, SMTP, ICMP, UDP and DNS
+- Multi-protocol support – works with TCP, HTTPS, HTTP, SMTP, ICMP, UDP, and DNS.
 
-- It just works
+- Reliable – it just works without hassle.
 
-- Incident management
+- Incident management – From detection to resolution, all in one place.
 
-- Alerting supported: Email, RSS, and REST API.
+- Alerting options – supports Email, RSS, and REST API.
 
+- Lightweight – requires only 1 GB RAM to run.
 
