@@ -38,8 +38,8 @@
 
   // Example: mark specific days
 
-  markStatus("2025-09-19", "warn");
-  markStatus("2025-06-22", "down");
+  markStatus("2025-09-20", "warn");
+  markStatus("2025-06-23", "down");
 
 
 
@@ -76,27 +76,11 @@
     </div>
 
     <div class="bar">
-     {#each recent as s, i}
-    <div
-        class="chip
-        {i === dayIndex
-            ? (s.status === "warn"
-            ? "warn"
-            : s.status === "down"
-            ? "down"
-            : s.status === "default"
-            ? "default"
-            : "up") 
-            : s.status === "warn"
-            ? "warn"
-            : s.status === "down"
-            ? "down"
-            : s.status === "default"
-            ? "default"
-            : "up"}"
-    ></div>
-    {/each}
-
+      {#each recent as s, i}
+      <div
+        class="chip {s.status} {i === dayIndex ? s.status : ''}"
+      ></div>
+      {/each}
     </div>
     
     <div class="timeline">
