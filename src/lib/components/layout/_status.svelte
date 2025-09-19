@@ -588,30 +588,32 @@
             {@const start = (currentPage - 1) * perPage}
             {@const end = currentPage * perPage}
             {@const pageitems = sections.slice(start, end)}
-            <article id="content" class="markdown-body max-w-3xl">
+            <article id="content" class="markdown-body  max-w-3xl">
               <div class="flex flex-col justify-center">
                 <div class="py-25">
                   <div class="wrapper-ui">
                     <div class="child-wrapper-ui">
                       <div class="headline-container">
-                        <svg 
-                            class="w-20 h-20 mx-auto"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path fill="#b0e3bc" d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8s8-3.59 8-8s-3.59-8-8-8m-2 13l-4-4l1.41-1.41L10 14.17l6.59-6.59L18 9z" opacity="0.3" />
-                            <path fill="#56cf7f" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4l8-8z" />
-                        </svg>
-                          <h1
+                       <svg 
+                          class="w-20 h-20 mx-auto"
+                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="#21ba45" fill-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-5.97-3.03a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0" clip-rule="evenodd" />
+                      </svg>
+                      <h1
                           id="content"
                           class="headline8"
                           style="font-size: clamp(2.5rem, 3vh, 5rem);"
                         >
-                         All services are online  
+                         No problems detected.
+ 
                         </h1>
 
                         <p
-                          class="text-base text-gray-700 font-bold text-center sm:text-left"
+                          class="text-base  text-gray-500 font-bold text-center sm:text-left"
                         >
-                          {new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            <span class="text-lg">
+                            {new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            </span>
                          </p>
 
                         <span class="text-base mt-5 text-center sm:text-left">
@@ -627,10 +629,10 @@
                     </div>
                   </div>
                 <div class="legend mt-2">
-                  <strong>Legend:</strong>
-                  <span><span class="dot operational"></span>Operational</span>
-                  <span><span class="dot partial"></span>Partial degradation</span>
-                  <span><span class="dot severe"></span>Severe degradation</span>
+                  <strong class="text-sm text-gray-400">Legend:</strong>
+                  <span class="text-green-600 "><span class="dot operational"></span>Operational</span>
+                  <span class="text-amber-600"><span class="dot partial"></span>Partial degradation</span>
+                  <span class="text-red-600"><span class="dot severe"></span>Severe degradation</span>
                </div>
                 </div>
 
@@ -926,7 +928,7 @@
       align-items: center;
       gap: 20px;
       color: #d9d9d9;
-      padding: 10px;
+      padding: 20px;
     }
 
   .legend span {
@@ -948,7 +950,7 @@
     }
 
   .partial {
-      background-color: #fbbd08; /* Yellow */
+      background-color: oklch(76.9% 0.188 70.08); /* Yellow */
     }
 
   .severe {
