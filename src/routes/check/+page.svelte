@@ -205,9 +205,8 @@
   @media (max-width: 165px) {
    .bar {
     width: 90px;     
-    height: 25px;    
+    height: 20px;    
   }
-}
-
+ }
 </style>
 
