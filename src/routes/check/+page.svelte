@@ -62,6 +62,7 @@
   const startLabel15 = getStartLabelForDays(15);
 
   const endLabel = end.toLocaleString(undefined, { month: "short", day: "numeric" });
+
 </script>
 
 <div class="layout">
