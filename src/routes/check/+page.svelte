@@ -175,6 +175,12 @@
     .timeline .label90, .timeline .label60, .timeline .label30{ display:none; }
   }
 
+   @media (max-width: 165px) {
+   .bar {
+    width: 90px;     
+    height: 20px;    
+  }
+  } 
   .timeline{
     display:flex; justify-content:space-between; margin-top:8px;
     font-size:0.85rem; color:#9ea0a3;
