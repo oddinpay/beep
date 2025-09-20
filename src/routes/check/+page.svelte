@@ -6,6 +6,7 @@
   start.setDate(end.getDate() - (TOTAL_DAYS - 1));
 
   type StatusType = "up" | "down" | "warn" | "default";
+
   interface StatusEntry {
     date: Date;
     status: StatusType;
@@ -30,6 +31,7 @@
   // Example marks
   markStatus("2025-06-23", "down");
   markStatus("2025-09-20", "warn");
+  markStatus("2025-09-19", "warn");
 
   // --- precompute uptime values ---
   function uptimeForLast(n: number): string {
@@ -199,5 +201,13 @@
     font-size: 0.85rem;
     color: var(--muted);
   }
+
+  @media (max-width: 165px) {
+   .bar {
+    width: 90px;     
+    height: 25px;    
+  }
+}
+
 </style>
 
