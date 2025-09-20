@@ -4,7 +4,7 @@
   const today = new Date();
   const end = new Date(today);
   const start = new Date(end);
- start.setDate(end.getDate() - (TOTAL_DAYS));
+  start.setDate(end.getDate() - (TOTAL_DAYS));
 
   type StatusType = "up" | "down" | "warn" | "default";
 
