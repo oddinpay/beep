@@ -65,7 +65,7 @@
 </script>
 
 <div class="layout">
-  <section class="card border">
+  <section class="card">
     <div class="card-header">
       <div>API</div>
       <div class="uptimes">
@@ -94,16 +94,16 @@
 
 <style>
   :root {
-    --bg: #0e2a3f;
-    --text: #e9f2fb;
+    --bg: #FFFFFF;
+    --text: #000000;
     --up: #4ce04c;
     --warn: #f2a900;
     --down: #f05d5e;
-    --default: #ffffff;
+    --default: #e5e7eb;
     --chip-radius: 1px;
   }
 
-  .layout { padding: 5px; }
+  .layout { padding: 10px; }
 
   .card {
     max-width: 950px;
@@ -111,7 +111,7 @@
     padding: 40px 40px ;
     background: var(--bg);
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
     color: var(--text);
   }
 
@@ -125,19 +125,20 @@
   }
 
   .bar {
-    display: grid;
-    grid-gap: 2px; 
+    display: flex;
+    gap: 2px;
+    justify-content: space-between;
   }
 
   .chip {
     border-radius: var(--chip-radius);
     background: var(--default);
+    flex-grow: 1;
     height: 24px;
-    transition: transform 0.2s ease-in-out;
   }
 
   .chip:hover {
-    transform: scale(1.2);
+    transform: scaleY(1.2);
   }
 
   /* Hide all by default */
@@ -201,7 +202,7 @@
     justify-content: space-between;
     margin-top: 8px;
     font-size: 0.85rem;
-    color: var(--muted);
+    color: #9ea0a3;
   }
 
   @media (max-width: 165px) {
