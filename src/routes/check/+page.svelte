@@ -4,7 +4,7 @@
   const today = new Date();
   const end = new Date(today);
   const start = new Date(end);
-  start.setDate(end.getDate() - (TOTAL_DAYS - 1));
+ start.setDate(end.getDate() - (TOTAL_DAYS));
 
   type StatusType = "up" | "down" | "warn" | "default";
 
@@ -30,7 +30,7 @@
   }
 
   // Example marks
-  markStatus("2025-06-23", "down");
+  markStatus("2025-06-22", "down");
   markStatus("2025-09-20", "warn");
   markStatus("2025-09-19", "warn");
 
