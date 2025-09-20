@@ -47,7 +47,17 @@
     (today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
   );
 
-  const startLabel = start.toLocaleString(undefined, { month: "short", day: "numeric" });
+  function getStartLabelForDays(days: number): string {
+    const tempStart = new Date(end);
+    tempStart.setDate(end.getDate() - (days));
+    return tempStart.toLocaleString(undefined, { month: "short", day: "numeric" });
+  }
+
+  const startLabel90 = getStartLabelForDays(90);
+  const startLabel60 = getStartLabelForDays(60);
+  const startLabel30 = getStartLabelForDays(30);
+  const startLabel15 = getStartLabelForDays(15);
+
   const endLabel = end.toLocaleString(undefined, { month: "short", day: "numeric" });
 </script>
 
@@ -70,7 +80,10 @@
     </div>
 
     <div class="timeline">
-      <span>{startLabel}</span>
+      <span class="label15">{startLabel15}</span>
+      <span class="label30">{startLabel30}</span>
+      <span class="label60">{startLabel60}</span>
+      <span class="label90">{startLabel90}</span>
       <span>{endLabel}</span>
     </div>
   </section>
@@ -90,7 +103,7 @@
   .layout { padding: 5px; }
 
   .card {
-    max-width: 1150px;
+    max-width: 1000px;
     margin: 40px auto;
     padding: 20px 32px;
     background: var(--bg);
@@ -119,6 +132,14 @@
     height: 22px;
   }
 
+  /* Hide all by default */
+  .timeline .label15,
+  .timeline .label30,
+  .timeline .label60 {
+    display: none;
+  }
+  .timeline .label90 { display: inline; }
+
   /* Hide all uptime spans by default */
   .uptimes .uptime15,
   .uptimes .uptime30,
@@ -135,6 +156,8 @@
     .chip:nth-child(n+16) { display: none; }
     .uptimes .uptime90 { display: none; }
     .uptimes .uptime15 { display: inline; }
+    .timeline .label90 { display: none; }
+    .timeline .label15 { display: inline; }
     .chip { height: 14px; }
   }
 
@@ -143,6 +166,8 @@
     .chip:nth-child(n+31) { display: none; }
     .uptimes .uptime90 { display: none; }
     .uptimes .uptime30 { display: inline; }
+    .timeline .label90 { display: none; }
+    .timeline .label30 { display: inline; }
     .chip { height: 18px; }
   }
 
@@ -151,12 +176,15 @@
     .chip:nth-child(n+61) { display: none; }
     .uptimes .uptime90 { display: none; }
     .uptimes .uptime60 { display: inline; }
+    .timeline .label90 { display: none; }
+    .timeline .label60 { display: inline; }
     .chip { height: 20px; }
   }
 
   @media (min-width: 901px) {
     .bar { grid-template-columns: repeat(90, 1fr); }
     .uptime90 { display: inline; }
+    .timeline .label90 { display: inline; }
     .chip { height: 22px; }
   }
 
