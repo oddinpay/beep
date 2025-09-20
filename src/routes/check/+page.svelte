@@ -65,7 +65,7 @@
 </script>
 
 <div class="layout">
-  <section class="card">
+  <section class="card border">
     <div class="card-header">
       <div>API</div>
       <div class="uptimes">
@@ -106,11 +106,11 @@
   .layout { padding: 5px; }
 
   .card {
-    max-width: 900px;
+    max-width: 950px;
     margin: 40px auto;
-    padding: 20px 32px;
+    padding: 40px 40px ;
     background: var(--bg);
-    border-radius: 12px;
+    border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.25);
     color: var(--text);
   }
@@ -126,14 +126,19 @@
 
   .bar {
     display: grid;
-    gap: 2px;
+    grid-gap: 2px; 
   }
 
   .chip {
     border-radius: var(--chip-radius);
     background: var(--default);
     height: 24px;
-    }
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .chip:hover {
+    transform: scale(1.2);
+  }
 
   /* Hide all by default */
   .timeline .label15,
