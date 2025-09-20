@@ -1,4 +1,5 @@
 <script lang="ts">
+
   const TOTAL_DAYS = 90;
   const today = new Date();
   const end = new Date(today);
@@ -105,7 +106,7 @@
   .layout { padding: 5px; }
 
   .card {
-    max-width: 1000px;
+    max-width: 900px;
     margin: 40px auto;
     padding: 20px 32px;
     background: var(--bg);
@@ -131,8 +132,8 @@
   .chip {
     border-radius: var(--chip-radius);
     background: var(--default);
-    height: 22px;
-  }
+    height: 24px;
+    }
 
   /* Hide all by default */
   .timeline .label15,
@@ -160,7 +161,6 @@
     .uptimes .uptime15 { display: inline; }
     .timeline .label90 { display: none; }
     .timeline .label15 { display: inline; }
-    .chip { height: 14px; }
   }
 
   @media (min-width: 311px) and (max-width: 600px) {
@@ -170,7 +170,6 @@
     .uptimes .uptime30 { display: inline; }
     .timeline .label90 { display: none; }
     .timeline .label30 { display: inline; }
-    .chip { height: 18px; }
   }
 
   @media (min-width: 601px) and (max-width: 900px) {
@@ -180,14 +179,12 @@
     .uptimes .uptime60 { display: inline; }
     .timeline .label90 { display: none; }
     .timeline .label60 { display: inline; }
-    .chip { height: 20px; }
   }
 
   @media (min-width: 901px) {
     .bar { grid-template-columns: repeat(90, 1fr); }
     .uptime90 { display: inline; }
     .timeline .label90 { display: inline; }
-    .chip { height: 22px; }
   }
 
   .chip.warn { background: var(--warn); }
