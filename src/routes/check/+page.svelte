@@ -1,96 +1,80 @@
 <script lang="ts">
-
   const TOTAL_DAYS = 90;
   const today = new Date();
-
-  // End is today
   const end = new Date(today);
-
-  // Start is 90 days before end
   const start = new Date(end);
-  start.setDate(end.getDate() - (TOTAL_DAYS - 1 ));
-  
-  // Types
-  type StatusType = "up" | "down" | "warn" | "default";
+  start.setDate(end.getDate() - (TOTAL_DAYS - 1));
 
+  type StatusType = "up" | "down" | "warn" | "default";
   interface StatusEntry {
     date: Date;
     status: StatusType;
   }
 
-
   const statuses: StatusEntry[] = Array.from({ length: TOTAL_DAYS }, (_, i) => {
-    const tempDate = new Date(start); 
+    const tempDate = new Date(start);
     tempDate.setDate(tempDate.getDate() + i);
     return { date: tempDate, status: "default" };
   });
 
-
-
-  // Function to mark a specific date with a status
   function markStatus(dateString: string, status: StatusType) {
     const date = new Date(dateString);
-    const index = statuses.findIndex((entry) => entry.date.toDateString() === date.toDateString());
+    const index = statuses.findIndex(
+      (entry) => entry.date.toDateString() === date.toDateString()
+    );
     if (index !== -1) {
       statuses[index].status = status;
     }
   }
 
-  // Example: mark specific days
-
-  markStatus("2025-09-20", "warn");
+  // Example marks
   markStatus("2025-06-23", "down");
+  markStatus("2025-09-20", "warn");
 
+  // --- precompute uptime values ---
+  function uptimeForLast(n: number): string {
+    const recent = statuses.slice(-n);
+    const upDays = recent.filter((s) => s.status !== "down").length;
+    return ((upDays / n) * 100).toFixed(3);
+  }
 
+  const uptime15 = uptimeForLast(15);
+  const uptime30 = uptimeForLast(30);
+  const uptime60 = uptimeForLast(60);
+  const uptime90 = uptimeForLast(90);
 
-  let width: number = $state(0);
-
-  let days: number = $derived(
-    width === 0 ? 90 : width <= 310 ? 15 : width <= 600 ? 30 : width <= 900 ? 60 : 90
- );
-
-  const dayIndex: number = Math.floor(
+  const dayIndex = Math.floor(
     (today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
   );
 
-  let recent: StatusEntry[] = $derived(statuses.slice(-Math.min(days, TOTAL_DAYS)));
-
-  let upDays: number = $derived(recent.filter((s) => s.status !== "down").length);
-
-  let pct: string = $derived(((upDays / days) * 100).toFixed(3));
-
-  let startLabel: string = $derived(
-    start.toLocaleString(undefined, { month: "short", day: "numeric" })
-  );
-
-  let endLabel: string = $derived(
-    end.toLocaleString(undefined, { month: "short", day: "numeric" })
-  );
+  const startLabel = start.toLocaleString(undefined, { month: "short", day: "numeric" });
+  const endLabel = end.toLocaleString(undefined, { month: "short", day: "numeric" });
 </script>
 
 <div class="layout">
-  <section class="card {days === 15 ? 'tiny' : ''}">
+  <section class="card">
     <div class="card-header">
       <div>API</div>
-      <div>{pct}% uptime</div>
+      <div class="uptimes">
+        <span class="uptime15">{uptime15}% uptime</span>
+        <span class="uptime30">{uptime30}% uptime</span>
+        <span class="uptime60">{uptime60}% uptime</span>
+        <span class="uptime90">{uptime90}% uptime</span>
+      </div>
     </div>
 
     <div class="bar">
-      {#each recent as s, i}
-      <div
-        class="chip {s.status} {i === dayIndex ? s.status : ''}"
-      ></div>
+      {#each statuses as s, i}
+        <div class="chip {s.status} {i === dayIndex ? s.status : ''}"></div>
       {/each}
     </div>
-    
+
     <div class="timeline">
       <span>{startLabel}</span>
       <span>{endLabel}</span>
     </div>
   </section>
 </div>
-
-<svelte:window bind:innerWidth={width} />
 
 <style>
   :root {
@@ -99,13 +83,11 @@
     --up: #4ce04c;
     --warn: #f2a900;
     --down: #f05d5e;
-    --default: #ffffff; 
-    --chip-radius: 2px;
+    --default: #ffffff;
+    --chip-radius: 1px;
   }
 
-  .layout {
-    padding: 5px;
-  }
+  .layout { padding: 5px; }
 
   .card {
     max-width: 1150px;
@@ -113,7 +95,7 @@
     padding: 20px 32px;
     background: var(--bg);
     border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 10px rgba(0,0,0,0.25);
     color: var(--text);
   }
 
@@ -126,49 +108,61 @@
     gap: 6px;
   }
 
-  .card-header > div:first-child {
-    flex-shrink: 0; 
-  }
-  .card-header > div:last-child {
-    white-space: nowrap; 
-    flex-shrink: 0;
-    font-variant-numeric: tabular-nums; 
-    min-width: 140px; 
-    text-align: right;
-  }
-  @media (max-width: 400px) {
-    .card-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .card-header > div:last-child {
-      text-align: left;
-      min-width: auto;
-    }
-  }
-  /* --- END FIX --- */
-
   .bar {
     display: grid;
-    grid-auto-flow: column;
     gap: 2px;
- }
+  }
 
   .chip {
-    height: 25px;
     border-radius: var(--chip-radius);
-    background: var(--default); 
+    background: var(--default);
+    height: 22px;
   }
 
-  .chip.warn {
-    background: var(--warn);
+  /* Hide all uptime spans by default */
+  .uptimes .uptime15,
+  .uptimes .uptime30,
+  .uptimes .uptime60 {
+    display: none;
   }
-  .chip.down {
-    background: var(--down);
+  .uptimes .uptime90 {
+    display: inline;
   }
-  .chip.up {
-    background: var(--up); 
+
+  /* Show only the right one per breakpoint */
+  @media (max-width: 310px) {
+    .bar { grid-template-columns: repeat(15, 1fr); }
+    .chip:nth-child(n+16) { display: none; }
+    .uptimes .uptime90 { display: none; }
+    .uptimes .uptime15 { display: inline; }
+    .chip { height: 14px; }
   }
+
+  @media (min-width: 311px) and (max-width: 600px) {
+    .bar { grid-template-columns: repeat(30, 1fr); }
+    .chip:nth-child(n+31) { display: none; }
+    .uptimes .uptime90 { display: none; }
+    .uptimes .uptime30 { display: inline; }
+    .chip { height: 18px; }
+  }
+
+  @media (min-width: 601px) and (max-width: 900px) {
+    .bar { grid-template-columns: repeat(60, 1fr); }
+    .chip:nth-child(n+61) { display: none; }
+    .uptimes .uptime90 { display: none; }
+    .uptimes .uptime60 { display: inline; }
+    .chip { height: 20px; }
+  }
+
+  @media (min-width: 901px) {
+    .bar { grid-template-columns: repeat(90, 1fr); }
+    .uptime90 { display: inline; }
+    .chip { height: 22px; }
+  }
+
+  .chip.warn { background: var(--warn); }
+  .chip.down { background: var(--down); }
+  .chip.up   { background: var(--up); }
 
   .timeline {
     display: flex;
@@ -176,35 +170,6 @@
     margin-top: 8px;
     font-size: 0.85rem;
     color: var(--muted);
-  }
-
-  /* very small screens (15 days) */
-  @media (max-width: 310px) {
-    .card-header {
-      font-size: 0.8rem;
-    }
-    .timeline {
-      font-size: 0.7rem;
-    }
-    .bar {
-      gap: 2px;
-    }
-    .chip {
-      height: 14px;
-    }
-  }
-
-  .card.tiny .card-header {
-    font-size: 0.8rem;
-  }
-  .card.tiny .timeline {
-    font-size: 0.7rem;
-  }
-  .card.tiny .bar {
-    gap: 2px;
-  }
-  .card.tiny .chip {
-    height: 14px;
   }
 </style>
 
