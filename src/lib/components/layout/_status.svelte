@@ -981,6 +981,6 @@
   }
 
   .badge {
-     border: 1px solid  #a6eb84;
+     border: 1px solid #a6eb84;
   }
 </style>
