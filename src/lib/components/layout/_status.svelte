@@ -893,10 +893,10 @@
                             {maintenance.status.statusLabel}
                           </span>
                           <div class="flex flex-col text-left leading-tight">
-                            <span class="text-base font-semibold text-gray-900">
+                            <span class="text-base font-semibold text-[var(--inactive-service)]">
                               {maintenance.service}
                             </span>
-                            <time class="text-base text-gray-500">
+                            <time class="text-base text-[var(--inactive)]">
                               {maintenance.time}
                             </time>
                           </div>
