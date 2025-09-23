@@ -1,6 +1,7 @@
 <script>
   const year = new Date().getFullYear();
-  const brand = "ODDINPAY";
+  const brand = "BEEP";
+  const company = "ODDINPAY";
   const entity = "LLC";
 </script>
 
@@ -91,7 +92,7 @@
   <div class="footer-content">
     <div class="footer-left">
       <div class="logo">{brand}</div>
-      <div class="copyright">© {year} {brand}, {entity}.</div>
+      <div class="copyright">© {year} {company}, {entity}.</div>
     </div>
 
     <div class="footer-right">
