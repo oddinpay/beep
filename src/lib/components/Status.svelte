@@ -142,28 +142,28 @@
 
 
   let incidents: Incident[] = [
+      {
+        title: "Elevated iDeal errors",
+        entries: [
         {
-          title: "Elevated iDeal errors",
-          entries: [
-            {
-              time: "Sep 22, 2025 20:14 UTC",
-              status: Indicators.Resolved,
-              description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
-            },
-            {
-              time: "Sep 22, 2025 13:05 UTC",
-              status: Indicators.Investigating,
-              description: "We are investigating reports of increased errors on iDeal payments.",
-            },
-            {
-              time: "Sep 22, 2025 12:45 UTC",
-              status: Indicators.Inprogress,
-              description: "We are investigating reports of increased errors on iDeal payments.",
-            },
-          ],
+          time: "Sep 22, 2025 20:14 UTC",
+          status: Indicators.Resolved,
+          description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
         },
+        {
+          time: "Sep 22, 2025 13:05 UTC",
+          status: Indicators.Investigating,
+          description: "We are investigating reports of increased errors on iDeal payments.",
+        },
+        {
+          time: "Sep 22, 2025 12:45 UTC",
+          status: Indicators.Inprogress,
+          description: "We are investigating reports of increased errors on iDeal payments.",
+        },
+      ],
+    },
     
-      ];
+  ];
 
 
   let maintenances: Maintenance[] = [
@@ -187,14 +187,14 @@
         service: "PayPal",
         time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00",
       },
-      ];
+  ];
 
     
   let statuses = [
         { title: "Global payments", description: "Checkout" },
         { title: "Revenue automation", description: "Billing" },
         { title: "Custom store", description: "Domain" },
-        { title: "Core components", description: "Dashboard, support, payouts, and webhooks Dashboard, support, payouts, and webhooks and webhooks " },
+        { title: "Core components", description: "Dashboard" },
       ];
 
 </script>

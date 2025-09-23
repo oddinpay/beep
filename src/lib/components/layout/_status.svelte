@@ -467,7 +467,10 @@
     #content p {
       font-size: 15px;
       line-height: 1.7;
-      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      display: -webkit-box;
+      overflow: hidden;
     }
 
     #content h1 {
@@ -970,8 +973,8 @@
   
   @media (max-width: 600px) {
     .legend {
-      flex-direction: column;     /* stack vertically */
-      align-items: flex-start;    /* align to left */
+      flex-direction: column;     
+      align-items: flex-start;  
       gap: 8px;
     }
 
