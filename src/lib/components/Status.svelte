@@ -163,7 +163,7 @@
         { title: "Global payments", description: "Checkout" },
         { title: "Revenue automation", description: "Billing" },
         { title: "Custom store", description: "Domain" },
-        { title: "Core components", description: "Dashboard, support, payouts, and webhooks Dashboard, support, payouts, and webhooks" },
+        { title: "Core components", description: "Dashboard, support, payouts, and webhooks Dashboard, support, payouts, and webhooks and webhooks " },
       ];
 
 </script>
@@ -207,7 +207,7 @@
     ] as status}
       <div class="status-card">
         <strong>{status.title}</strong>
-        <p  style="color: #666;">{status.description}</p>
+        <p style="color: #666;">{status.description}</p>
       </div>
     {/each}
   </div>

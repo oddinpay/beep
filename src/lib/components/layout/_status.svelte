@@ -467,6 +467,7 @@
     #content p {
       font-size: 15px;
       line-height: 1.7;
+      line-clamp: 2;
     }
 
     #content h1 {
