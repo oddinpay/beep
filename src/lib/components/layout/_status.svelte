@@ -75,17 +75,29 @@
     }
   }
 
-  // Example usage of the function
-  updateApiStatus("API 1", "21/09/2025", "down");
-  updateApiStatus("API 1", "22/09/2025", "up");
-
 
   let monitors = [
     { title: "Global payments", description: "Checkout", status: "up" },
-    { title: "Revenue automation", description: "Billing", status: "warn" },
+    { title: "Revenue automation", description: "Billing", status: "up" },
     { title: "Custom store", description: "Domain", status: "up" },
     { title: "Core components", description: "Dashboard", status: "up" },
   ];
+
+  // Example usage of the function
+  updateApiStatus("API 1", "21/09/2025", "warn");
+  updateApiStatus("API 1", "22/09/2025", "up");
+
+
+  let overallStatus = $derived.by(() => {
+    const allStatuses = [
+      ...monitors.map(m => m.status),
+      ...mockData.flatMap(api => api.statuses.map(s => s.status))
+    ];
+
+    if (allStatuses.includes("down")) return "down";
+    if (allStatuses.includes("warn")) return "warn";
+    return "up";
+  });
 
 
   const dayIndex = Math.floor(
@@ -450,11 +462,7 @@
     }
   }
 
-  let overallStatus = $derived.by(() => {
-    if (monitors.some(m => m.status === "down")) return "down";
-    if (monitors.some(m => m.status === "warn")) return "warn";
-    return "up";
-  });
+
 </script>
 
 <Loader />
