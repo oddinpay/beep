@@ -1,6 +1,7 @@
 <script>
-  // Optional: pass props for year/company if needed
   const year = new Date().getFullYear();
+  const brand = "ODDINPAY";
+  const entity = "LLC";
 </script>
 
 <style>
@@ -11,7 +12,6 @@
     padding: 60px 40px 30px;
     overflow: hidden;
   }
-
 
   footer::before {
     content: "";
@@ -31,6 +31,7 @@
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
+    gap: 20px;
   }
 
   .footer-left {
@@ -66,16 +67,33 @@
   .footer-right a:hover {
     text-decoration: underline;
   }
+
+  /* --- Responsive Styles --- */
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      align-items: right;
+      text-align: flex-end;
+    }
+
+    .footer-left, 
+    .footer-right {
+      align-items: right;
+    }
+
+    .footer-right {
+      margin-top: 15px;
+    }
+  }
 </style>
 
 <footer>
   <div class="footer-content">
     <div class="footer-left">
-      <div class="logo">ODDINPAY</div>
-      <div class="copyright">© {year} ODDINPAY, LLC.</div>
+      <div class="logo">{brand}</div>
+      <div class="copyright">© {year} {brand}, {entity}.</div>
     </div>
 
-    <!-- Right: Links -->
     <div class="footer-right">
       <a href="#">Visit our full website</a>
       <a href="#">Privacy &amp; terms</a>
