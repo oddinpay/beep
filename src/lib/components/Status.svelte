@@ -28,7 +28,7 @@
     return ((upDays / n) * 100).toFixed(3);
   }
 
-  const apiNames = ["API 1", "API 2"];
+  const apiNames = ["API 1", "API 2", "API 3"];
 
   const mockData: ApiData[] = apiNames.map((name) => ({
     name,
@@ -103,12 +103,12 @@
         description: string;
       }
 
-      interface Incident {
+  interface Incident {
         title: string;
         entries: IncidentEntry[];
       }
 
-      let incidents: Incident[] = [
+  let incidents: Incident[] = [
         {
           title: "Elevated iDeal errors",
           entries: [
@@ -137,7 +137,7 @@
         time: string;
       }
 
-      let maintenances: Maintenance[] = [
+  let maintenances: Maintenance[] = [
         {
       status: "inprogress",
       statusLabel: "In progress",
@@ -159,12 +159,11 @@
       ];
 
     
-      let statuses = [
+  let statuses = [
         { title: "Global payments", description: "Checkout" },
         { title: "Revenue and finance automation", description: "Billing" },
-        { title: "Store", description: "Domain" },
+        { title: "Custom store", description: "Domain" },
         { title: "oddin core components", description: "Dashboard, support, payouts, and webhooks" },
-        { title: "Acquirers and payment methods", description: "Banks, card networks, and local payments" }
       ];
 
 </script>
