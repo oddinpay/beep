@@ -251,7 +251,7 @@
         {#each maintenances as maintenance}
           <div class="maintenance-card">
         <div class="header">
-          <span class="badge {maintenance.status.badge}">{maintenance.status.statusLabel}</span>
+          <span class="badge2 {maintenance.status.badge}">{maintenance.status.statusLabel}</span>
           <span class="service">{maintenance.service}</span>
         </div>
         <div class="time lg:text-right">
@@ -323,7 +323,6 @@
   .badge.resolved {
     background:  #d7f7c2;
     color:  #006908;
-    border-radius: 4px;
     font-weight: 600;
     border: 1px solid  #a6eb84;
   }
@@ -331,17 +330,28 @@
   .badge.investigating {
     background: #e5e6e7;
     color: #4b5563;
-    border-radius: 4px;
     font-weight: 600;
     border: 1px solid #cecece;
   }
 
-  .badge.scheduled {
+  .badge2.scheduled {
     background: #e5e6e7;
     color: #4b5563;
-    border-radius: 4px;
     font-weight: 600;
     border: 1px solid #cecece;
+  }
+
+  .badge {
+    font-size: 0.8rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+  }
+  
+  .badge2 {
+    font-size: 0.8rem;
+    padding: 0px 6px;
+    border-radius: 4px;
+    
   }
 
   .maintenance-list {
@@ -368,13 +378,6 @@
     color: var(--inactive);
   }
 
-
-  .badge {
-    font-size: 0.8rem;
-    padding: 3px 8px;
-    border-radius: 4px;
-    color: white;
-  }
 
 
   @media (max-width: 750px) {
