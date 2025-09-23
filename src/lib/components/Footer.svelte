@@ -59,15 +59,18 @@
     gap: 8px;
   }
 
+
   .footer-right a {
     color: #1a1f36;
-    text-decoration: none;
+    text-decoration: none;   
     font-size: 14px;
+    transition: opacity 0.3s ease; 
   }
 
   .footer-right a:hover {
-    text-decoration: underline;
+    opacity: 0.7; 
   }
+
 
   /* --- Responsive Styles --- */
   @media (max-width: 768px) {
@@ -91,7 +94,7 @@
 <footer>
   <div class="footer-content">
     <div class="footer-left">
-      <div class="logo">{brand}</div>
+      <div class="logo"><a href="https://oddinpay.com" target="_blank" rel="noopener noreferrer">{brand}</a></div>
       <div class="copyright">© {year} {company}, {entity}.</div>
     </div>
 
