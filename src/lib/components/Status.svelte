@@ -161,9 +161,9 @@
     
   let statuses = [
         { title: "Global payments", description: "Checkout" },
-        { title: "Revenue and finance automation", description: "Billing" },
+        { title: "Revenue automation", description: "Billing" },
         { title: "Custom store", description: "Domain" },
-        { title: "oddin core components", description: "Dashboard, support, payouts, and webhooks" },
+        { title: "Core components", description: "Dashboard, support, payouts, and webhooks" },
       ];
 
 </script>
