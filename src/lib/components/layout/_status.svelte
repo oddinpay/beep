@@ -39,6 +39,13 @@
 
   const apiStatus = ["up", "up", "warn"] as StatusType[];
 
+  let monitors = [
+    { title: "Global payments", description: "Checkout", status: "up" },
+    { title: "Revenue automation", description: "Billing", status: "up" },
+    { title: "Custom store", description: "Domain", status: "up" },
+    { title: "Core components", description: "Dashboard", status: "up" },
+  ];
+
 
   const mockData: ApiData[] = apiNames.map((name) => ({
     name,
@@ -81,12 +88,7 @@
   }
 
 
-  let monitors = [
-    { title: "Global payments", description: "Checkout", status: "up" },
-    { title: "Revenue automation", description: "Billing", status: "up" },
-    { title: "Custom store", description: "Domain", status: "up" },
-    { title: "Core components", description: "Dashboard", status: "up" },
-  ];
+
 
   // Example usage of the function
   apiNames.forEach((name, index) => {
