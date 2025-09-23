@@ -237,8 +237,13 @@
       ...statuses
     ] as status}
       <div class="status-card">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          
+          <div>
         <strong>{status.title}</strong>
         <p style="color: #666;">{status.description}</p>
+          </div>
+        </div>
       </div>
     {/each}
   </div>
