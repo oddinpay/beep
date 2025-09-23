@@ -76,7 +76,7 @@
   }
 
   // Example usage of the function
-  updateApiStatus("API 1", "21/09/2025", "up");
+  updateApiStatus("API 1", "21/09/2025", "down");
   updateApiStatus("API 1", "22/09/2025", "up");
 
   const dayIndex = Math.floor(
