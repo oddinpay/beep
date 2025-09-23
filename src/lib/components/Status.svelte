@@ -1,8 +1,7 @@
 <script lang="ts">
-
   const TOTAL_DAYS = 90;
   const today = new Date();
-  const end = new Date(today); 
+  const end = new Date(today);
   const start = new Date(end);
   start.setDate(end.getDate() - 89);
 
@@ -33,11 +32,8 @@
   const mockData: ApiData[] = apiNames.map((name) => ({
     name,
     statuses: Array.from({ length: TOTAL_DAYS }, (_, i) => {
-      new Date(start).toLocaleDateString() === new Date().toLocaleDateString() ? new Date(start) : new Date(start);
-      new Date (end ).toLocaleDateString() === new Date().toLocaleDateString() ? new Date(end) : new Date(end);
       const tempDate = new Date(start);
       tempDate.setDate(start.getDate() + i);
-      console.log("tempDate", tempDate.toLocaleDateString());
       return { date: tempDate, status: "default" };
     }),
     uptime15: "0.000",
@@ -52,7 +48,6 @@
     api.uptime60 = calculateUptime(api, 60);
     api.uptime90 = calculateUptime(api, 90);
   }
-
 
   function updateApiStatus(apiName: string, date: string, status: StatusType) {
     const api = mockData.find((a) => a.name === apiName);
@@ -74,7 +69,6 @@
     }
   }
 
-
   // Example usage of the function
   updateApiStatus("API 1", "21/09/2025", "up");
   updateApiStatus("API 1", "22/09/2025", "up");
@@ -95,69 +89,73 @@
   const startLabel15 = getStartLabelForDays(14);
   const endLabel = end.toLocaleString(undefined, { month: "short", day: "numeric" });
 
-
   interface IncidentEntry {
-        time: string;
-        status: string;
-        statusLabel: string;
-        description: string;
-      }
+    time: string;
+    status: string;
+    statusLabel: string;
+    description: string;
+  }
 
-      interface Incident {
-        title: string;
-        entries: IncidentEntry[];
-      }
+  interface Incident {
+    title: string;
+    entries: IncidentEntry[];
+  }
 
-      const incidents: Incident[] = [
+  let incidents: Incident[] = [
+    {
+      title: "Elevated iDeal errors",
+      entries: [
         {
-          title: "Elevated iDeal errors",
-          entries: [
-            {
-              time: "Sep 22, 2025 20:14 UTC",
-              status: "resolved",
-              statusLabel: "Resolved",
-              description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
-            },
-            {
-              time: "Sep 22, 2025 13:05 UTC",
-              status: "investigating",
-              statusLabel: "Investigating",
-              description: "We are investigating reports of increased errors on iDeal payments.",
-            },
-          ],
+          time: "Sep 22, 2025 20:14 UTC",
+          status: "resolved",
+          statusLabel: "Resolved",
+          description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
         },
-    
-      ];
-
-
- interface Maintenance {
-        status: string;
-        statusLabel: string;
-        service: string;
-        time: string;
-      }
-
-      const maintenances: Maintenance[] = [
         {
+          time: "Sep 22, 2025 13:05 UTC",
+          status: "investigating",
+          statusLabel: "Investigating",
+          description: "We are investigating reports of increased errors on iDeal payments.",
+        },
+      ],
+    },
+  ];
+
+  interface Maintenance {
+    status: string;
+    statusLabel: string;
+    service: string;
+    time: string;
+  }
+
+  let maintenances: Maintenance[] = [
+    {
       status: "inprogress",
       statusLabel: "In progress",
       service: "API",
       time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-        },
-        {
+    },
+    {
       status: "inprogress",
       statusLabel: "In progress",
       service: "API",
       time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-        },
-        {
+    },
+    {
       status: "inprogress",
       statusLabel: "In progress",
       service: "PayPal",
       time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-        },
-      ];
+    },
+  ];
 
+  let statuses = [
+    { title: "Global payments", description: "Checkout" },
+    { title: "Revenue and finance automation", description: "Billing" },
+    { title: "Store", description: "Domain" },
+    { title: "Oddin core components", description: "Dashboard, support, payouts, and webhooks" },
+    { title: "Acquirers and payment methods", description: "Banks, card networks, and local payments" },
+  ];
 </script>
 
 <div class="layout">
@@ -194,30 +192,14 @@
   <div class="left">
     <h3>System status</h3>
 
-    <div class="status-card">
-      <strong>Global payments</strong>
-      <p>Checkout</p>
-    </div>
-
-    <div class="status-card">
-      <strong>Revenue and finance automation</strong>
-      <p>Billing</p>
-    </div>
-
-    <div class="status-card">
-      <strong>Store</strong>
-      <p>Domain</p>
-    </div>
-
-    <div class="status-card">
-      <strong>oddin core components</strong>
-      <p>Dashboard, support, payouts, and webhooks</p>
-    </div>
-
-    <div class="status-card">
-      <strong>Acquirers and payment methods</strong>
-      <p>Banks, card networks, and local payments</p>
-    </div>
+    {#each [
+      ...statuses
+    ] as status}
+      <div class="status-card">
+        <strong>{status.title}</strong>
+        <p>{status.description}</p>
+      </div>
+    {/each}
   </div>
 
   <!-- Right column -->
@@ -289,11 +271,12 @@
   }
 
   .incident-card {
-    background: #fff;
-    color: #222;
-    padding: 20px;
+    background: #fdfdfd;
+    color: black;
+    padding: 30px;
     border-radius: 8px;
     margin-bottom: 20px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
   }
 
 
