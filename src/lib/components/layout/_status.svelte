@@ -118,6 +118,8 @@
     },
   } as const;
 
+
+
   // Each value inside Indicators
   type Indicator = typeof Indicators[keyof typeof Indicators];
 
@@ -185,8 +187,8 @@
   ];
 
   let monitors = [
-    { title: "Global payments", description: "Checkout", status: "down" },
-    { title: "Revenue automation", description: "Billing", status: "up" },
+    { title: "Global payments", description: "Checkout", status: "up" },
+    { title: "Revenue automation", description: "Billing", status: "warn" },
     { title: "Custom store", description: "Domain", status: "up" },
     { title: "Core components", description: "Dashboard", status: "up" },
   ];
@@ -644,7 +646,7 @@
                       class="headline8"
                       style="font-size: clamp(2.5rem, 3vh, 5rem);"
                     >
-                      No problems detected.
+                      {overallStatus === 'up' ? 'All Systems Operational' : overallStatus === 'warn' ? 'System Outage Detected' : 'Critical Issues Detected'}
                     </h1>
                     <p class="text-base text-gray-500 font-bold text-center sm:text-left">
                       <span class="text-lg">
