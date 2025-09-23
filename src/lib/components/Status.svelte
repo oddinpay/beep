@@ -1,7 +1,8 @@
 <script lang="ts">
+
   const TOTAL_DAYS = 90;
   const today = new Date();
-  const end = new Date(today);
+  const end = new Date(today); 
   const start = new Date(end);
   start.setDate(end.getDate() - 89);
 
@@ -32,8 +33,11 @@
   const mockData: ApiData[] = apiNames.map((name) => ({
     name,
     statuses: Array.from({ length: TOTAL_DAYS }, (_, i) => {
+      new Date(start).toLocaleDateString() === new Date().toLocaleDateString() ? new Date(start) : new Date(start);
+      new Date (end ).toLocaleDateString() === new Date().toLocaleDateString() ? new Date(end) : new Date(end);
       const tempDate = new Date(start);
       tempDate.setDate(start.getDate() + i);
+      console.log("tempDate", tempDate.toLocaleDateString());
       return { date: tempDate, status: "default" };
     }),
     uptime15: "0.000",
@@ -48,6 +52,7 @@
     api.uptime60 = calculateUptime(api, 60);
     api.uptime90 = calculateUptime(api, 90);
   }
+
 
   function updateApiStatus(apiName: string, date: string, status: StatusType) {
     const api = mockData.find((a) => a.name === apiName);
@@ -69,6 +74,7 @@
     }
   }
 
+
   // Example usage of the function
   updateApiStatus("API 1", "21/09/2025", "up");
   updateApiStatus("API 1", "22/09/2025", "up");
@@ -89,73 +95,78 @@
   const startLabel15 = getStartLabelForDays(14);
   const endLabel = end.toLocaleString(undefined, { month: "short", day: "numeric" });
 
+
   interface IncidentEntry {
-    time: string;
-    status: string;
-    statusLabel: string;
-    description: string;
-  }
+        time: string;
+        status: string;
+        statusLabel: string;
+        description: string;
+      }
 
-  interface Incident {
-    title: string;
-    entries: IncidentEntry[];
-  }
+      interface Incident {
+        title: string;
+        entries: IncidentEntry[];
+      }
 
-  let incidents: Incident[] = [
-    {
-      title: "Elevated iDeal errors",
-      entries: [
+      let incidents: Incident[] = [
         {
-          time: "Sep 22, 2025 20:14 UTC",
-          status: "resolved",
-          statusLabel: "Resolved",
-          description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
+          title: "Elevated iDeal errors",
+          entries: [
+            {
+              time: "Sep 22, 2025 20:14 UTC",
+              status: "resolved",
+              statusLabel: "Resolved",
+              description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
+            },
+            {
+              time: "Sep 22, 2025 13:05 UTC",
+              status: "investigating",
+              statusLabel: "Investigating",
+              description: "We are investigating reports of increased errors on iDeal payments.",
+            },
+          ],
         },
+    
+      ];
+
+
+ interface Maintenance {
+        status: string;
+        statusLabel: string;
+        service: string;
+        time: string;
+      }
+
+      let maintenances: Maintenance[] = [
         {
-          time: "Sep 22, 2025 13:05 UTC",
-          status: "investigating",
-          statusLabel: "Investigating",
-          description: "We are investigating reports of increased errors on iDeal payments.",
-        },
-      ],
-    },
-  ];
-
-  interface Maintenance {
-    status: string;
-    statusLabel: string;
-    service: string;
-    time: string;
-  }
-
-  let maintenances: Maintenance[] = [
-    {
       status: "inprogress",
       statusLabel: "In progress",
       service: "API",
       time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-    },
-    {
+        },
+        {
       status: "inprogress",
       statusLabel: "In progress",
       service: "API",
       time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-    },
-    {
+        },
+        {
       status: "inprogress",
       statusLabel: "In progress",
       service: "PayPal",
       time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-    },
-  ];
+        },
+      ];
 
-  let statuses = [
-    { title: "Global payments", description: "Checkout" },
-    { title: "Revenue and finance automation", description: "Billing" },
-    { title: "Store", description: "Domain" },
-    { title: "Oddin core components", description: "Dashboard, support, payouts, and webhooks" },
-    { title: "Acquirers and payment methods", description: "Banks, card networks, and local payments" },
-  ];
+    
+      let statuses = [
+        { title: "Global payments", description: "Checkout" },
+        { title: "Revenue and finance automation", description: "Billing" },
+        { title: "Store", description: "Domain" },
+        { title: "oddin core components", description: "Dashboard, support, payouts, and webhooks" },
+        { title: "Acquirers and payment methods", description: "Banks, card networks, and local payments" }
+      ];
+
 </script>
 
 <div class="layout">
@@ -197,7 +208,7 @@
     ] as status}
       <div class="status-card">
         <strong>{status.title}</strong>
-        <p>{status.description}</p>
+        <p style="color: #666;">{status.description}</p>
       </div>
     {/each}
   </div>
@@ -335,22 +346,12 @@
   }
 
 
-  @media (max-width: 900px) {
+  @media (max-width: 1024px) {
       .status-page {
         grid-template-columns: 1fr;
       }
     }
  
-  @media (max-width: 768px) {
-      .grid-container {
-        grid-template-columns: 1fr; 
-      }
-      .item:nth-child(3) {
-        grid-column: auto; 
-      }
-    }
-
-
 
   .layout{ padding: 10px; }
 

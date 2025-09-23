@@ -802,7 +802,7 @@
             </article>
             <!-- Pagination -->
             <Pagination.Content
-              class="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex pb-40 "
+              class="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex pb-50 "
             >
               <Pagination.Item>
                 <Pagination.PrevButton
