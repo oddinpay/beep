@@ -77,14 +77,14 @@
 
 
   let monitors = [
-    { title: "Global payments", description: "Checkout", status: "up" },
+    { title: "Global payments", description: "Checkout", status: "down" },
     { title: "Revenue automation", description: "Billing", status: "up" },
     { title: "Custom store", description: "Domain", status: "up" },
     { title: "Core components", description: "Dashboard", status: "up" },
   ];
 
   // Example usage of the function
-  updateApiStatus("API 1", "21/09/2025", "warn");
+  updateApiStatus("API 1", "21/09/2025", "up");
   updateApiStatus("API 1", "22/09/2025", "up");
 
 
