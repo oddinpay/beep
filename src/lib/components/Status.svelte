@@ -170,22 +170,22 @@
       {
         status: Indicators.Completed,
         service: "API",
-        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
+        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00",
       },
       {
         status: Indicators.Scheduled,
         service: "API",
-        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
+        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00",
       },
       {
         status: Indicators.Scheduled,
         service: "API",
-        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
+        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00",
       },
       {
         status: Indicators.Inprogress,
         service: "PayPal",
-        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
+        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00",
       },
       ];
 
@@ -262,18 +262,26 @@
     <h3>Maintenance</h3>
       <div class="maintenance-list">
         {#each maintenances as maintenance}
-          <div class="maintenance-card">
-        <div class="header">
-          <span class="badge2  {maintenance.status.badge}">{maintenance.status.statusLabel}</span>
-          <span class="service">{maintenance.service}</span>
+        <div class="flex justify-between items-center p-3 gap-4 ">
+        <!-- Badge -->
+        <span
+          class="inline-flex items-center px-2.5 badge2 py-1 rounded-full text-xs font-medium
+                {maintenance.status.badge}">
+          {maintenance.status.statusLabel}
+        </span>
+
+        <!-- Service + Time stacked -->
+        <div class="flex flex-col text-left leading-tight">
+          <span class="text-base font-semibold text-gray-900">
+            {maintenance.service}
+          </span>
+          <time class="text-base text-gray-500">
+            {maintenance.time}
+          </time>
         </div>
-        <div class="time lg:text-right">
-          <time class="text-[var(--inactive)] font-medium">{maintenance.time}</time>
-        </div>
-          </div>
-        {/each}
+     </div>
+      {/each}
       </div>
- 
     </div>
     </div>
 </div>
@@ -389,7 +397,9 @@
   
   .badge2 {
     font-size: 0.8rem;
-    padding: 0px 6px;
+    padding: 2px 6px;
+    display: inline-block;    
+    white-space: nowrap; 
     border-radius: 4px;
   }
 
