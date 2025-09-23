@@ -346,7 +346,7 @@
   }
 
 
-  @media (max-width: 1024px) {
+  @media (max-width: 800px) {
       .status-page {
         grid-template-columns: 1fr;
       }
