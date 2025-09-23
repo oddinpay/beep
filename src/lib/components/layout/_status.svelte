@@ -35,6 +35,11 @@
 
   const apiNames = ["API 1", "API 2", "API 3"];
 
+  const apiDates = ["21/09/2025", "22/09/2025", "23/09/2025"];
+
+  const apiStatus = ["up", "down", "warn"] as StatusType[];
+
+
   const mockData: ApiData[] = apiNames.map((name) => ({
     name,
     statuses: Array.from({ length: TOTAL_DAYS }, (_, i) => {
@@ -77,15 +82,16 @@
 
 
   let monitors = [
-    { title: "Global payments", description: "Checkout", status: "down" },
+    { title: "Global payments", description: "Checkout", status: "up" },
     { title: "Revenue automation", description: "Billing", status: "up" },
     { title: "Custom store", description: "Domain", status: "up" },
     { title: "Core components", description: "Dashboard", status: "up" },
   ];
 
   // Example usage of the function
-  updateApiStatus("API 1", "21/09/2025", "up");
-  updateApiStatus("API 2", "22/09/2025", "up");
+  apiNames.forEach((name, index) => {
+    updateApiStatus(name, apiDates[index], apiStatus[index]);
+  });
 
 
   let overallStatus = $derived.by(() => {
@@ -743,7 +749,7 @@
                   <section class="card" style="margin-bottom: 2px;">
                     <div class="card-header">
                       <div style="display: flex; align-items: center; gap: 5px;">
-                        {#if overallStatus === 'up'}
+                        {#if api.statuses.some(s => s.status === 'up')}
                             <svg
                               class="w-5 h-5"
                               xmlns="http://www.w3.org/2000/svg"
@@ -756,7 +762,7 @@
                                 clip-rule="evenodd"
                               />
                             </svg>
-                          {:else if overallStatus === 'warn'}
+                          {:else if api.statuses.some(s => s.status === 'warn')}
                             <svg
                               class="w-5 h-5"
                               xmlns="http://www.w3.org/2000/svg"
@@ -769,7 +775,7 @@
                             </svg>
                           {:else if overallStatus === 'down'}
                               <svg
-                                  class="w-5 h-5"
+                                  class="w-5 h-5 inline-block"
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
                                 >
@@ -779,7 +785,7 @@
                                 />
                               </svg>
                           {/if}
-                        <div>{api.name}</div>
+                        <div class="text-lg">{api.name}</div>
                       </div>
                       <div class="uptimes">
                         <span class="uptime15">{api.uptime15}% uptime</span>
