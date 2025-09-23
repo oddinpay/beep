@@ -96,17 +96,42 @@
   const endLabel = end.toLocaleString(undefined, { month: "short", day: "numeric" });
 
 
+
+  const Indicators = {
+    Resolved: {
+      badge: "resolved",
+      statusLabel: "Resolved",
+    },
+    Investigating: {
+      badge: "investigating",
+      statusLabel: "Investigating",
+    },
+    Scheduled: {
+      badge: "scheduled",
+      statusLabel: "Scheduled",
+    },
+  } as const;
+
+  // Each value inside Indicators
+  type Indicator = typeof Indicators[keyof typeof Indicators];
+
   interface IncidentEntry {
-        time: string;
-        status: string;
-        statusLabel: string;
-        description: string;
-      }
+    time: string;
+    description: string;
+    status: Indicator; 
+  }
 
   interface Incident {
-        title: string;
-        entries: IncidentEntry[];
+    title: string;
+    entries: IncidentEntry[];
+  }
+
+  interface Maintenance {
+        status: Indicator;
+        service: string;
+        time: string;
       }
+
 
   let incidents: Incident[] = [
         {
@@ -114,14 +139,12 @@
           entries: [
             {
               time: "Sep 22, 2025 20:14 UTC",
-              status: "resolved",
-              statusLabel: "Resolved",
+              status: Indicators.Resolved,
               description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
             },
             {
               time: "Sep 22, 2025 13:05 UTC",
-              status: "investigating",
-              statusLabel: "Investigating",
+              status: Indicators.Investigating,
               description: "We are investigating reports of increased errors on iDeal payments.",
             },
           ],
@@ -130,32 +153,27 @@
       ];
 
 
- interface Maintenance {
-        status: string;
-        statusLabel: string;
-        service: string;
-        time: string;
-      }
-
   let maintenances: Maintenance[] = [
-        {
-      status: "inprogress",
-      statusLabel: "In progress",
-      service: "API",
-      time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-        },
-        {
-      status: "inprogress",
-      statusLabel: "In progress",
-      service: "API",
-      time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-        },
-        {
-      status: "inprogress",
-      statusLabel: "In progress",
-      service: "PayPal",
-      time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
-        },
+      {
+        status: Indicators.Scheduled,
+        service: "API",
+        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
+      },
+      {
+        status: Indicators.Scheduled,
+        service: "API",
+        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
+      },
+      {
+        status: Indicators.Scheduled,
+        service: "API",
+        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
+      },
+      {
+        status: Indicators.Scheduled,
+        service: "PayPal",
+        time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
+      },
       ];
 
     
@@ -220,9 +238,9 @@
         <h3>{incident.title}</h3>
         {#each incident.entries as entry}
           <div class="status-entry">
-            <span class="time">{entry.time}</span>
-            <span class="badge {entry.status}">{entry.statusLabel}</span>
-            <p class="mt-2" style="font-size: 16px">{entry.description}</p>
+            <span class="time font-bold">{entry.time}</span>
+            <span class="badge {entry.status.badge}">{entry.status.statusLabel}</span>
+            <p class="mt-2 text-gray-600" style="font-size: 16px">{entry.description}</p>
           </div>
         {/each}
       </div>
@@ -233,11 +251,11 @@
         {#each maintenances as maintenance}
           <div class="maintenance-card">
         <div class="header">
-          <span class="badge {maintenance.status}">{maintenance.statusLabel}</span>
+          <span class="badge {maintenance.status.badge}">{maintenance.status.statusLabel}</span>
           <span class="service">{maintenance.service}</span>
         </div>
         <div class="time lg:text-right">
-          <time>{maintenance.time}</time>
+          <time class="text-[var(--inactive)] font-medium">{maintenance.time}</time>
         </div>
           </div>
         {/each}
@@ -255,6 +273,7 @@
     --up:#4ce04c;
     --warn:#f2a900;
     --down:#f05d5e;
+    --inactive: #6b7280;
     --default:#e5e7eb;
     --chip-radius:1px;
     --today-ring:rgba(0,0,0,.25);
@@ -302,15 +321,27 @@
 
 
   .badge.resolved {
-    background: #4CAF50;
+    background:  #d7f7c2;
+    color:  #006908;
+    border-radius: 4px;
+    font-weight: 600;
+    border: 1px solid  #a6eb84;
   }
 
   .badge.investigating {
-    background: #607d8b;
+    background: #e5e6e7;
+    color: #4b5563;
+    border-radius: 4px;
+    font-weight: 600;
+    border: 1px solid #cecece;
   }
 
-  .badge.inprogress {
-    background: #1976d2;
+  .badge.scheduled {
+    background: #e5e6e7;
+    color: #4b5563;
+    border-radius: 4px;
+    font-weight: 600;
+    border: 1px solid #cecece;
   }
 
   .maintenance-list {
@@ -334,6 +365,7 @@
 
   .service {
     font-weight: 600;
+    color: var(--inactive);
   }
 
 

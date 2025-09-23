@@ -626,7 +626,7 @@
 
                         <span class="text-base mt-5 text-center sm:text-left">
                           <span
-                          class="inline-flex pointer-events-none items-center px-4 py-0.5 rounded-full bg-green-100 text-green-700 text-sm font-semibold no-underline"
+                          class="inline-flex pointer-events-none items-center px-4 py-0.5 rounded-full badge bg-green-100 text-green-700 text-sm font-semibold no-underline"
                           style="text-decoration: none;"
                           >
                           {badge}
@@ -978,5 +978,9 @@
     .legend strong {
       margin-bottom: 4px;
     }
+  }
+
+  .badge {
+    box-shadow: rgba(21,128,61,0.05) 0px 1px 3px 0px, rgba(21,128,61,0.20) 0px 0px 0px 1px;
   }
 </style>
