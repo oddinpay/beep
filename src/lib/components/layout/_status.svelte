@@ -681,8 +681,10 @@
                     </p>
                     <span class="text-base mt-5 text-center sm:text-left">
                       <span
-                        class="inline-flex pointer-events-none items-center px-4 py-0.5 rounded-full badgecover bg-green-100 text-green-700 text-sm font-semibold no-underline"
-                        style="text-decoration: none;"
+                        class="inline-flex pointer-events-none items-center px-4 py-0.5 rounded-full badgecover text-sm font-semibold no-underline"
+                        style=" 
+                        border: 1px solid {overallStatus === 'up' ? '#a6eb84' : overallStatus === 'warn' ? '#ffddb3' : '#f05d5e'};
+                        text-decoration: none; background-color: {overallStatus === 'up' ? '#d7f7c2' : overallStatus === 'warn' ? '#fff4e5' : '#fddede'}; color: {overallStatus === 'up' ? '#006908' : overallStatus === 'warn' ? '#b45309' : '#db2828'};"
                       >
                         {badge}
                       </span>
@@ -1042,11 +1044,6 @@
       margin-bottom: 4px;
     }
   }
-
-  .badgecover {
-     border: 1px solid #a6eb84;
-  }
-
 
  .status-page {
     display: grid;
