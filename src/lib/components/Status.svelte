@@ -383,14 +383,13 @@
     font-size: 0.8rem;
     padding: 4px 6px;
     border-radius: 4px;
-    white-space: nowrap;
+    
   }
   
   .badge2 {
     font-size: 0.8rem;
     padding: 0px 6px;
     border-radius: 4px;
-    
   }
 
   .maintenance-list {
