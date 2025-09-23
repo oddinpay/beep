@@ -381,7 +381,7 @@
 
   .badge {
     font-size: 0.8rem;
-    padding: 2px 8px;
+    padding: 0px 6px;
     display: inline-block;    
     white-space: nowrap; 
     border-radius: 4px;
