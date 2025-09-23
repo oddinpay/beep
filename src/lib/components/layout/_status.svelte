@@ -3,6 +3,7 @@
   import { Button } from "$lib/components/ui/button/index.js"; 
   import Buttong from "$lib/components/Buttong.svelte";
   import Loader from "../Loader.svelte";
+  import Footer from "../Footer.svelte";
 
 
   const TOTAL_DAYS = 90;
@@ -42,7 +43,7 @@
   let monitors = [
     { title: "Global payments", description: "Checkout", status: "up" },
     { title: "Revenue automation", description: "Billing", status: "up" },
-    { title: "Custom store", description: "Domain", status: "down" },
+    { title: "Custom store", description: "Domain", status: "up" },
     { title: "Core components", description: "Dashboard", status: "up" },
   ];
 
@@ -929,7 +930,7 @@
   </div>
 </div>
 
-
+<Footer />
 
 <style>
   :root {
