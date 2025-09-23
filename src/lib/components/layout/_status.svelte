@@ -37,12 +37,12 @@
 
   const apiDates = ["21/09/2025", "24/09/2025", "23/09/2025"];
 
-  const apiStatus = ["up", "down", "warn"] as StatusType[];
+  const apiStatus = ["up", "up", "up"] as StatusType[];
 
   let monitors = [
     { title: "Global payments", description: "Checkout", status: "up" },
     { title: "Revenue automation", description: "Billing", status: "up" },
-    { title: "Custom store", description: "Domain", status: "up" },
+    { title: "Custom store", description: "Domain", status: "down" },
     { title: "Core components", description: "Dashboard", status: "up" },
   ];
 
