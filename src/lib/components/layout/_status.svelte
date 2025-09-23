@@ -74,10 +74,10 @@
 
   const currentPage = $derived(getValidPage());
 
-  function setPage(p: number) {
-    const pathname = page.url.pathname;
-    goto(`${pathname}?page=${p}`, { replaceState: true });
-  }
+  // function setPage(p: number) {
+  //   const pathname = page.url.pathname;
+  //   goto(`${pathname}?page=${p}`, { replaceState: true });
+  // }
 
   $effect(() => {
     console.log("Total pages:", totalPages);
@@ -296,44 +296,44 @@
   function makeBase(color: string) {
     return COLOR_STYLES[color] ?? COLOR_STYLES.gray; // fallback to gray
   }
-  const sections = $derived(
-    Array.isArray(inputSections) && inputSections.length
-      ? inputSections.map((s: any, i: number) => {
-          const key = `${s.color ?? "section"}-${i}`;
+  // const sections = $derived(
+  //   Array.isArray(inputSections) && inputSections.length
+  //     ? inputSections.map((s: any, i: number) => {
+  //         const key = `${s.color ?? "section"}-${i}`;
 
-          // Build Tailwind classes dynamically from markdown color
-          const style = makeBase(s.color);
+  //         // Build Tailwind classes dynamically from markdown color
+  //         const style = makeBase(s.color);
 
-          const rawItems: AccordionItemNoVal[] = Array.isArray(s.items)
-            ? s.items
-            : [
-                {
-                  date: s.date ?? "",
-                  color: s.color ?? "",
-                  title: s.title ?? s.PageTitle ?? s.heading ?? "",
-                  content: s.content ?? "",
-                  PageTitle: s.PageTitle ?? s.title ?? "",
-                  active: s.active ?? false,
-                  features: s.features ?? [],
-                  cover: s.cover ?? s.covers?.[0] ?? "",
-                },
-              ].filter(
-                (item) =>
-                  item.title || item.PageTitle || item.content || item.date,
-              );
+  //         const rawItems: AccordionItemNoVal[] = Array.isArray(s.items)
+  //           ? s.items
+  //           : [
+  //               {
+  //                 date: s.date ?? "",
+  //                 color: s.color ?? "",
+  //                 title: s.title ?? s.PageTitle ?? s.heading ?? "",
+  //                 content: s.content ?? "",
+  //                 PageTitle: s.PageTitle ?? s.title ?? "",
+  //                 active: s.active ?? false,
+  //                 features: s.features ?? [],
+  //                 cover: s.cover ?? s.covers?.[0] ?? "",
+  //               },
+  //             ].filter(
+  //               (item) =>
+  //                 item.title || item.PageTitle || item.content || item.date,
+  //             );
 
-          return {
-            key,
-            items: rawItems,
-            ...style,
-          };
-        })
-      : [],
-  );
+  //         return {
+  //           key,
+  //           items: rawItems,
+  //           ...style,
+  //         };
+  //       })
+  //     : [],
+  // );
 
-  const highlightPhrases = [
-    { phrase: "Learn more", href: "/docs", class: "highlight-indigo-500" }, 
-  ];
+  // const highlightPhrases = [
+  //   { phrase: "Learn more", href: "/docs", class: "highlight-indigo-500" }, 
+  // ];
 
   function escapeRegex(s: string) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -397,38 +397,38 @@
     return result;
   }
 
-  function renderContentParts(
-    text: string,
-    phrases: { phrase: string; href: string; class: string }[],
-  ): Part[] {
-    if (!text) return [];
-    const urlRe = /(https?:\/\/[^\s<]+|www\.[^\s<]+|\/[^\s<]+)/g;
-    let lastIndex = 0;
-    let result: Part[] = [];
-    let match: RegExpExecArray | null;
+  // function renderContentParts(
+  //   text: string,
+  //   phrases: { phrase: string; href: string; class: string }[],
+  // ): Part[] {
+  //   if (!text) return [];
+  //   const urlRe = /(https?:\/\/[^\s<]+|www\.[^\s<]+|\/[^\s<]+)/g;
+  //   let lastIndex = 0;
+  //   let result: Part[] = [];
+  //   let match: RegExpExecArray | null;
 
-    while ((match = urlRe.exec(text)) !== null) {
-      const before = text.slice(lastIndex, match.index);
-      result.push(...highlightInPlainParts(before, phrases));
+  //   while ((match = urlRe.exec(text)) !== null) {
+  //     const before = text.slice(lastIndex, match.index);
+  //     result.push(...highlightInPlainParts(before, phrases));
 
-      const rawUrl = match[0];
-      const href = normalizeHref(rawUrl);
-      result.push({
-        type: "link",
-        text: rawUrl,
-        href,
-        class: "link-underline",
-        external: href.startsWith("http"),
-      });
+  //     const rawUrl = match[0];
+  //     const href = normalizeHref(rawUrl);
+  //     result.push({
+  //       type: "link",
+  //       text: rawUrl,
+  //       href,
+  //       class: "link-underline",
+  //       external: href.startsWith("http"),
+  //     });
 
-      lastIndex = match.index + rawUrl.length;
-    }
+  //     lastIndex = match.index + rawUrl.length;
+  //   }
 
-    const tail = text.slice(lastIndex);
-    result.push(...highlightInPlainParts(tail, phrases));
+  //   const tail = text.slice(lastIndex);
+  //   result.push(...highlightInPlainParts(tail, phrases));
 
-    return result;
-  }
+  //   return result;
+  // }
 
    function setOverflow(_node: HTMLElement) {
     if (window.matchMedia && window.matchMedia("(min-width: 1279px)").matches) {
