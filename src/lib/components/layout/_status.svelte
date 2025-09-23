@@ -981,6 +981,6 @@
   }
 
   .badge {
-    box-shadow: rgba(21,128,61,0.05) 0px 1px 3px 0px, rgba(21,128,61,0.20) 0px 0px 0px 1px;
+     border: 1px solid  #a6eb84;
   }
 </style>
