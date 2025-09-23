@@ -4,6 +4,7 @@
   import Buttong from "$lib/components/Buttong.svelte";
   import Loader from "../Loader.svelte";
 
+
   const TOTAL_DAYS = 90;
   const today = new Date();
   const end = new Date(today); 
@@ -442,6 +443,12 @@
       document.documentElement.style.overflow = "unset";
     }
   }
+
+  let overallStatus = $derived.by(() => {
+    if (monitors.some(m => m.status === "down")) return "down";
+    if (monitors.some(m => m.status === "warn")) return "warn";
+    return "up";
+  });
 </script>
 
 <Loader />
@@ -595,6 +602,43 @@
               <div class="wrapper-ui">
                 <div class="child-wrapper-ui">
                   <div class="headline-container">
+                        {#if overallStatus === 'up'}
+                          <svg
+                            class="w-20 h-20 mx-auto"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="#21ba45"
+                              fill-rule="evenodd"
+                              d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-5.97-3.03a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        {:else if overallStatus === 'warn'}
+                          <svg
+                            class="w-20 h-20 mx-auto"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fill="#d97706"
+                              d="M10 2c4.42 0 8 3.58 8 8s-3.58 8-8 8s-8-3.58-8-8s3.58-8 8-8m1.13 9.38l.35-6.46H8.52l.35 6.46zm-.09 3.36c.24-.23.37-.55.37-.96c0-.42-.12-.74-.36-.97s-.59-.35-1.06-.35s-.82.12-1.07.35s-.37.55-.37.97c0 .41.13.73.38.96c.26.23.61.34 1.06.34s.8-.11 1.05-.34"
+                            />
+                          </svg>
+                        {:else if overallStatus === 'down'}
+                          <svg
+                            class="w-20 h-20 mx-auto"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="#db2828"
+                              d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2s10 4.47 10 10m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+                            />
+                          </svg>
+                        {/if}
+
                     <h1
                       id="content"
                       class="headline8"
