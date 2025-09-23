@@ -43,7 +43,7 @@
   .footer-left .logo {
     font-weight: bold;
     font-size: 20px;
-    color: #2a2d55;
+    color: #2a741b;
   }
 
   .footer-left .copyright {
