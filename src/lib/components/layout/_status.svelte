@@ -2,11 +2,11 @@
   import { goto } from "$app/navigation";
   import { Button } from "$lib/components/ui/button/index.js"; 
   import Buttong from "$lib/components/Buttong.svelte";
-  import { Label } from "$lib/components/ui/label";
-  import ChevronLeftIcon from "@lucide/svelte/icons/chevron-left";
-  import ChevronRightIcon from "@lucide/svelte/icons/chevron-right";
+  // import { Label } from "$lib/components/ui/label";
+  // import ChevronLeftIcon from "@lucide/svelte/icons/chevron-left";
+  // import ChevronRightIcon from "@lucide/svelte/icons/chevron-right";
   import { MediaQuery } from "svelte/reactivity";
-  import * as Pagination from "$lib/components/ui/pagination/index.js";
+  // import * as Pagination from "$lib/components/ui/pagination/index.js";
   import { page } from "$app/state";
   import Status from "$lib/components/Status.svelte";
   import Loader from "../Loader.svelte";
@@ -590,11 +590,11 @@
     <main>
       <div class="relative">
 
-        <Pagination.Root page={currentPage} {count} {perPage} {siblingCount}>
+        <!-- <Pagination.Root page={currentPage} {count} {perPage} {siblingCount}>
           {#snippet children({ pages, currentPage })}
             {@const start = (currentPage - 1) * perPage}
             {@const end = currentPage * perPage}
-            {@const pageitems = sections.slice(start, end)}
+            {@const pageitems = sections.slice(start, end)} -->
             <article id="content" class="markdown-body p-5 max-w-5xl">
               <div class="flex flex-col justify-center">
                 <div class="py-25">
@@ -677,8 +677,7 @@
                   <div class="flex flex-col gap-6">
                     <div class="wrapper">
                       <div class="accordion-wrapper">
-                        {#each pageitems as section (section.key)}
-                          <!-- Section heading (render once per section) -->
+                        <!-- {#each pageitems as section (section.key)}
                           {#if section.items && section.items.length}
                             <h1 class="font-semibold text-black mb-0 mt-[4rem]">
                               <span class="block text-xl mb-4 font-semibold">
@@ -736,10 +735,9 @@
                                 {/each}
                               </p>
                             </div>
-                          {/if}
+                          {/if} -->
 
-                          <!-- Section items (one block per item) -->
-                          {#each section.items as item, idx (idx)}
+                          <!-- {#each section.items as item, idx (idx)}
                             <div class="flex items-center gap-5 mt-10 w-full">
                               <h2
                                 class="flex-1 font-semibold text-left title-clamp"
@@ -780,17 +778,17 @@
                                 {/each}
                               </ul>
                             {/if}
-                          {/each}
+                          {/each} -->
 
                           <!-- Dynamic divider: uses section.key as color token -->
-                          <div aria-hidden="true" class="my-30">
+                          <!-- <div aria-hidden="true" class="my-30">
                             <div class="relative left-1/2 -translate-x-1/2">
                               <div
                                 class={`h-[1px] w-full bg-gradient-to-r from-transparent ${section.dividerBg} to-transparent`}
                               ></div>
                             </div>
-                          </div>
-                        {/each}
+                          </div> -->
+                        <!-- {/each} -->
                       </div>
                     </div>
                   </div>
@@ -800,8 +798,7 @@
      
 
             </article>
-            <!-- Pagination -->
-            <Pagination.Content
+            <!-- <Pagination.Content
               class="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex pb-50 "
             >
               <Pagination.Item>
@@ -848,7 +845,7 @@
               </Pagination.Item>
             </Pagination.Content>
           {/snippet}
-        </Pagination.Root>
+        </Pagination.Root> -->
 
         <div aria-hidden="true" class="h-[150px]"></div>
       </div>
