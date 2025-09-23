@@ -185,7 +185,7 @@
   ];
 
   let monitors = [
-    { title: "Global payments", description: "Checkout", status: "up" },
+    { title: "Global payments", description: "Checkout", status: "down" },
     { title: "Revenue automation", description: "Billing", status: "up" },
     { title: "Custom store", description: "Domain", status: "up" },
     { title: "Core components", description: "Dashboard", status: "up" },
@@ -627,16 +627,16 @@
                             />
                           </svg>
                         {:else if overallStatus === 'down'}
-                          <svg
-                            class="w-20 h-20 mx-auto"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              fill="#db2828"
-                              d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2s10 4.47 10 10m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
-                            />
-                          </svg>
+                            <svg
+                                class="w-20 h-20 mx-auto"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                              >
+                              <path
+                                fill="#db2828"
+                                d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+                              />
+                            </svg>
                         {/if}
 
                     <h1
@@ -782,16 +782,16 @@
                               />
                             </svg>
                           {:else if status.status === 'down'}
-                            <svg
-                              class="w-10 h-10 inline-block"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill="#db2828"
-                                d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2s10 4.47 10 10m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
-                              />
-                            </svg>
+                              <svg
+                                class="w-10 h-10 inline-block"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="#db2828"
+                                  d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+                                />
+                              </svg>
                           {/if}
                           <div>
                             <strong>{status.title}</strong>
