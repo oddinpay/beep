@@ -779,7 +779,7 @@
                             </svg>
                           {:else if api.statuses.some(s => s.status === 'down')}
                               <svg
-                                  class="w-5 h-5 inline-block"
+                                  class="w-5 h-5"
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
                                 >
