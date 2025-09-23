@@ -110,6 +110,14 @@
       badge: "scheduled",
       statusLabel: "Scheduled",
     },
+    Inprogress: {
+      badge: "inprogress",
+      statusLabel: "In Progress",
+    },
+    Completed: {
+      badge: "completed",
+      statusLabel: "Completed",
+    },
   } as const;
 
   // Each value inside Indicators
@@ -147,6 +155,11 @@
               status: Indicators.Investigating,
               description: "We are investigating reports of increased errors on iDeal payments.",
             },
+            {
+              time: "Sep 22, 2025 12:45 UTC",
+              status: Indicators.Inprogress,
+              description: "We are investigating reports of increased errors on iDeal payments.",
+            },
           ],
         },
     
@@ -155,7 +168,7 @@
 
   let maintenances: Maintenance[] = [
       {
-        status: Indicators.Scheduled,
+        status: Indicators.Completed,
         service: "API",
         time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
       },
@@ -170,7 +183,7 @@
         time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
       },
       {
-        status: Indicators.Scheduled,
+        status: Indicators.Inprogress,
         service: "PayPal",
         time: "Sep 25, 2025 05:00 — Sep 25, 2025 07:00 UTC",
       },
@@ -251,7 +264,7 @@
         {#each maintenances as maintenance}
           <div class="maintenance-card">
         <div class="header">
-          <span class="badge2 {maintenance.status.badge}">{maintenance.status.statusLabel}</span>
+          <span class="badge2  {maintenance.status.badge}">{maintenance.status.statusLabel}</span>
           <span class="service">{maintenance.service}</span>
         </div>
         <div class="time lg:text-right">
@@ -274,6 +287,8 @@
     --warn:#f2a900;
     --down:#f05d5e;
     --inactive: #6b7280;
+    --inactive-service: #6b7280;
+    --active-service: black;
     --default:#e5e7eb;
     --chip-radius:1px;
     --today-ring:rgba(0,0,0,.25);
@@ -328,14 +343,37 @@
   }
 
   .badge.investigating {
-    background: #e5e6e7;
-    color: #4b5563;
+    background: #ebeef1;
+    color: #545969;
     font-weight: 600;
-    border: 1px solid #cecece;
+    border: 1px solid #d5dbe1;
+  }
+
+
+  .badge.inprogress {
+    background: #fff4e5;
+    color: #b45309;
+    font-weight: 600;
+    border: 1px solid #ffddb3;
+  }
+
+
+  .badge2.completed {
+    background:  #d7f7c2;
+    color:  #006908;
+    font-weight: 600;
+    border: 1px solid  #a6eb84;
+  }
+
+  .badge2.inprogress {
+    background: #fff4e5;
+    color: #b45309;
+    font-weight: 600;
+    border: 1px solid #ffddb3;
   }
 
   .badge2.scheduled {
-    background: #e5e6e7;
+    background: white;
     color: #4b5563;
     font-weight: 600;
     border: 1px solid #cecece;
@@ -375,7 +413,7 @@
 
   .service {
     font-weight: 600;
-    color: var(--inactive);
+    color: var(--inactive-service);
   }
 
 
