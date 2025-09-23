@@ -252,7 +252,7 @@
         {#each incident.entries as entry}
           <div class="status-entry">
             <span class="time font-bold">{entry.time}</span>
-            <span class="badge {entry.status.badge}">{entry.status.statusLabel}</span>
+            <span class="badge mt-1 {entry.status.badge}">{entry.status.statusLabel}</span>
             <p class="mt-2 text-gray-600" style="font-size: 16px">{entry.description}</p>
           </div>
         {/each}
@@ -381,9 +381,10 @@
 
   .badge {
     font-size: 0.8rem;
-    padding: 4px 6px;
+    padding: 2px 8px;
+    display: inline-block;    
+    white-space: nowrap; 
     border-radius: 4px;
-    
   }
   
   .badge2 {
