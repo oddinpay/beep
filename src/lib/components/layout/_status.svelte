@@ -1080,7 +1080,7 @@
 
   .time {
     font-size: 0.9rem;
-    color: #666;
+    color: #87888b;
     margin-right: 10px;
   }
 
