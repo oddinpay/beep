@@ -155,7 +155,7 @@
 
 
   // Each value inside Indicators
-  type Indicator = typeof Indicators[keyof typeof Indicators];
+  type Indicator = Exclude<typeof Indicators[keyof typeof Indicators], typeof Indicators.Completed | typeof Indicators.Scheduled>;
 
   interface IncidentEntry {
     time: string;
@@ -212,7 +212,7 @@
         },
         {
           time: "Sep 22, 2025 20:14 UTC",
-          status: Indicators.Completed,
+          status: Indicators.Resolved,
           description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
         },
 
@@ -221,11 +221,9 @@
   ];
 
   const statusPriority = new Map<Indicator, number>([
-      [Indicators.Completed, 0],
       [Indicators.Resolved, 0],
       [Indicators.Inprogress, 1],
       [Indicators.Investigating, 2],
-      [Indicators.Scheduled, 2],
     ]);
 
   incidents.forEach((incident) => {
