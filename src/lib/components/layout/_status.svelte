@@ -479,10 +479,11 @@
 
 
   let activeTab = $state("tab-1");
-  let direction = $state<"left" | "right">("left");
+  let direction = $state<"right" | "left">("right");
 
   $effect(() => {
     console.log("Active tab is now:", activeTab);
+    console.log("Direction is now:", direction);
   });
 
 
