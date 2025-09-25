@@ -914,11 +914,9 @@
                             </div>
 
                             <div class="right">
-                              <h3>Incidents</h3>
+                              <h3>Recent Incidents</h3>
                               {#if incidents.every(incident => incident.entries.some(entry => entry.status === Indicators.Resolved))}
-                                <div class="incident-card">
-                                  No incident to display
-                                </div>
+                                  No incidents to display
                               {:else}
                                 {#each incidents as incident}
                                   {#if !incident.entries.some(entry => entry.status === Indicators.Resolved)}
