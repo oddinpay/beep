@@ -778,7 +778,11 @@
                         direction === "left" ? "after:origin-left" : "after:origin-right"
                       }`}
                     >
-                      Tab {i + 1}
+                      {#if i === 0}
+                        Live status 
+                      {:else if i === 1}
+                        History
+                      {/if} 
                     </TabsTrigger>
                   {/each}
                 </TabsList>
