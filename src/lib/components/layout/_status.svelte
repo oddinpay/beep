@@ -913,7 +913,7 @@
                             </div>
 
                             <div class="right">
-                              <h3>Recent Incidents</h3>
+                              <h3>Recent incidents</h3>
                               {#if incidents.every(incident => incident.entries.some(entry => entry.status === Indicators.Resolved))}
                                   No incidents to display
                               {:else}
