@@ -992,7 +992,7 @@
                               {/if}
                               <h3>Maintenance</h3>
                               <div class="maintenance-list">
-                                {#each maintenances as maintenance}
+                                  {#each maintenances.filter((m) => m.status !== Indicators.Completed) as maintenance}
                                   <div class="flex justify-between items-center p-3 gap-4">
                                     <span
                                       class="inline-flex items-center px-2.5 badge2 py-1 rounded-full text-xs font-medium {maintenance.status.badge}"
