@@ -197,6 +197,7 @@
         },
       ],
     },
+
   ];
 
   let maintenances: Maintenance[] = [
@@ -956,21 +957,21 @@
                         </div> 
                     {:else if i === 1}
                         {#each incidents as incident}
-                                <div class="incident-card mt-10 ">
-                                  <h3>{incident.title}</h3>
-                                  {#each incident.entries as entry}
-                                    <div class="status-entry">
-                                      <span class="time font-bold">{entry.time}</span>
-                                      <span class="badge mt-1 {entry.status.badge}">
-                                        {entry.status.statusLabel}
-                                      </span>
-                                      <p class="mt-2 text-gray-600" style="font-size: 16px">
-                                        {entry.description}
-                                      </p>
-                                    </div>
-                                  {/each}
+                            <div class="incident-card mt-10 ">
+                              <h3>{incident.title}</h3>
+                              {#each incident.entries as entry}
+                                <div class="status-entry">
+                                  <span class="time font-bold">{entry.time}</span>
+                                  <span class="badge mt-1 {entry.status.badge}">
+                                    {entry.status.statusLabel}
+                                  </span>
+                                  <p class="mt-2 text-gray-600" style="font-size: 16px">
+                                    {entry.description}
+                                  </p>
                                 </div>
-                              {/each} 
+                              {/each}
+                            </div>
+                        {/each} 
                     {/if}
                   </TabsContent>
                 {/each}
