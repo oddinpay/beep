@@ -197,7 +197,6 @@
         },
       ],
     },
-
   ];
 
   let maintenances: Maintenance[] = [
