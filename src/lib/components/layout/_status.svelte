@@ -45,6 +45,7 @@
 
   const apiStatus = ["up", "up", "up"] as StatusType[];
 
+
   let monitors = [
     { title: "Global payments", description: "Checkout", status: "up" },
     { title: "Revenue automation", description: "Billing", status: "up" },
@@ -479,6 +480,7 @@
 
   let activeTab = "tab-1";
   let direction: "left" | "right" = "left";
+
 
   const tabsOrder = ["tab-1", "tab-3"];
 
@@ -953,14 +955,7 @@
                         <p class="text-muted-foreground mt-2 text-xs">
                           Content for Tab {i + 1}: historical data and logs.
                         </p>
-                      </div>
-                    {:else}
-                      <div class="p-4 text-center">
-                        <h3 class="text-sm font-medium">Settings (Index: {i})</h3>
-                        <p class="text-muted-foreground mt-2 text-xs">
-                          Content for Tab {i + 1}: configuration and toggles.
-                        </p>
-                      </div>
+                      </div> 
                     {/if}
                   </TabsContent>
                 {/each}
