@@ -955,12 +955,22 @@
                           </div>
                         </div> 
                     {:else if i === 1}
-                      <div class="p-4 text-center">
-                        <h3 class="text-sm font-medium">History (Index: {i})</h3>
-                        <p class="text-muted-foreground mt-2 text-xs">
-                          Content for Tab {i + 1}: historical data and logs.
-                        </p>
-                      </div> 
+                        {#each incidents as incident}
+                                <div class="incident-card mt-10 ">
+                                  <h3>{incident.title}</h3>
+                                  {#each incident.entries as entry}
+                                    <div class="status-entry">
+                                      <span class="time font-bold">{entry.time}</span>
+                                      <span class="badge mt-1 {entry.status.badge}">
+                                        {entry.status.statusLabel}
+                                      </span>
+                                      <p class="mt-2 text-gray-600" style="font-size: 16px">
+                                        {entry.description}
+                                      </p>
+                                    </div>
+                                  {/each}
+                                </div>
+                              {/each} 
                     {/if}
                   </TabsContent>
                 {/each}
