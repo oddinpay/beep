@@ -198,6 +198,21 @@
         },
       ],
     },
+    {
+      title: "Payment errors",
+      entries: [
+        {
+          time: "Sep 22, 2025 13:05 UTC",
+          status: Indicators.Investigating,
+          description: "We are investigating reports of increased errors on iDeal payments.",
+        },
+        {
+          time: "Sep 22, 2025 12:45 UTC",
+          status: Indicators.Inprogress,
+          description: "We are investigating reports of increased errors on iDeal payments.",
+        },
+      ],
+    },
   ];
 
   const statusPriority = new Map<Indicator, number>([
