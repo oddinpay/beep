@@ -789,20 +789,170 @@
                 {#each tabsOrder as t, i}
                   <TabsContent value={t}>
                     {#if i === 0}
-                      <div class="p-4 text-center">
-                        <h3 class="text-sm font-medium">Overview (Index: {i})</h3>
-                        <p class="text-muted-foreground mt-2 text-xs">
-                          Content for Tab {i + 1}: summary and quick stats.
-                        </p>
+                      <div class="layout">
+                      {#each mockData as api, index}
+                        <section class="card" style="margin-bottom: 2px;">
+                          <div class="card-header">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                              {#if api.statuses.some(s => s.status === 'up')}
+                                  <svg
+                                    class="w-5 h-5"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill="#21ba45"
+                                      fill-rule="evenodd"
+                                      d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-5.97-3.03a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                {:else if api.statuses.some(s => s.status === 'warn')}
+                                  <svg
+                                    class="w-5 h-5"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fill="#d97706"
+                                      d="M10 2c4.42 0 8 3.58 8 8s-3.58 8-8 8s-8-3.58-8-8s3.58-8 8-8m1.13 9.38l.35-6.46H8.52l.35 6.46zm-.09 3.36c.24-.23.37-.55.37-.96c0-.42-.12-.74-.36-.97s-.59-.35-1.06-.35s-.82.12-1.07.35s-.37.55-.37.97c0 .41.13.73.38.96c.26.23.61.34 1.06.34s.8-.11 1.05-.34"
+                                    />
+                                  </svg>
+                                {:else if api.statuses.some(s => s.status === 'down')}
+                                    <svg
+                                        class="w-5 h-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                      >
+                                      <path
+                                        fill="#db2828"
+                                        d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+                                      />
+                                    </svg>
+                                {/if}
+                              <div class="text-lg">{api.name}</div>
+                            </div>
+                            <div class="uptimes">
+                              <span class="uptime15">{api.uptime15}% uptime</span>
+                              <span class="uptime30">{api.uptime30}% uptime</span>
+                              <span class="uptime60">{api.uptime60}% uptime</span>
+                              <span class="uptime90">{api.uptime90}% uptime</span>
+                            </div>
+                          </div>
+                          <div class="bar">
+                            {#each api.statuses as s, i}
+                              <div class="chip {s.status} {i === dayIndex ? s.status : ''}"></div>
+                            {/each}
+                          </div>
+                          <div class="timeline">
+                            <span class="label15">15 days ago</span>
+                            <span class="label30">30 days ago</span>
+                            <span class="label60">60 days ago</span>
+                            <span class="label90">90 days ago</span>
+                            <span>Today</span>
+                          </div>
+                        </section>
+                      {/each}
+
+                      <div class="status-page">
+                        <div class="left">
+                          <h3>System status</h3>
+                          {#each monitors as status}
+                            <div class="status-card">
+                              <div style="display: flex; align-items: center; gap: 10px;">
+                                {#if status.status === 'up'}
+                                  <svg
+                                    class="w-10 h-10 inline-block"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill="#21ba45"
+                                      fill-rule="evenodd"
+                                      d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-5.97-3.03a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                {:else if status.status === 'warn'}
+                                  <svg
+                                    class="w-10 h-10 inline-block"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fill="#d97706"
+                                      d="M10 2c4.42 0 8 3.58 8 8s-3.58 8-8 8s-8-3.58-8-8s3.58-8 8-8m1.13 9.38l.35-6.46H8.52l.35 6.46zm-.09 3.36c.24-.23.37-.55.37-.96c0-.42-.12-.74-.36-.97s-.59-.35-1.06-.35s-.82.12-1.07.35s-.37.55-.37.97c0 .41.13.73.38.96c.26.23.61.34 1.06.34s.8-.11 1.05-.34"
+                                    />
+                                  </svg>
+                                {:else if status.status === 'down'}
+                                    <svg
+                                      class="w-10 h-10 inline-block"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="#db2828"
+                                        d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+                                      />
+                                    </svg>
+                                {/if}
+                                <div>
+                                  <strong>{status.title}</strong>
+                                  <p style="color: #666;">{status.description}</p>
+                                </div>
+                              </div>
+                            </div>
+                          {/each}
+                        </div>
+
+                        <div class="right">
+                          <h3>Incidents</h3>
+                          {#each incidents as incident}
+                            <div class="incident-card">
+                              <h3>{incident.title}</h3>
+                              {#each incident.entries as entry}
+                                <div class="status-entry">
+                                  <span class="time font-bold">{entry.time}</span>
+                                  <span class="badge mt-1 {entry.status.badge}">
+                                    {entry.status.statusLabel}
+                                  </span>
+                                  <p class="mt-2 text-gray-600" style="font-size: 16px">
+                                    {entry.description}
+                                  </p>
+                                </div>
+                              {/each}
+                            </div>
+                          {/each}
+
+                          <h3>Maintenance</h3>
+                          <div class="maintenance-list">
+                            {#each maintenances as maintenance}
+                              <div class="flex justify-between items-center p-3 gap-4">
+                                <span
+                                  class="inline-flex items-center px-2.5 badge2 py-1 rounded-full text-xs font-medium {maintenance.status.badge}"
+                                >
+                                  {maintenance.status.statusLabel}
+                                </span>
+                                <div class="flex flex-col text-left leading-tight">
+                                  <span class="text-base font-semibold text-[var(--inactive-service)]">
+                                    {maintenance.service}
+                                  </span>
+                                  <time class="text-base text-[var(--inactive)]">
+                                    {maintenance.time}
+                                  </time>
+                                </div>
+                              </div>
+                            {/each}
+                          </div>
+                        </div>
                       </div>
-                    {:else if i === 1}
+                    </div> 
+                {:else if i === 1}
                       <div class="p-4 text-center">
-                        <h3 class="text-sm font-medium">Details (Index: {i})</h3>
-                        <ul class="mt-2 text-xs list-disc list-inside text-muted-foreground">
-                          <li>Detail A</li>
-                          <li>Detail B</li>
-                          <li>Detail C</li>
-                        </ul>
+                        <h3 class="text-sm font-medium">History (Index: {i})</h3>
+                        <p class="text-muted-foreground mt-2 text-xs">
+                          Content for Tab {i + 1}: historical data and logs.
+                        </p>
                       </div>
                     {:else}
                       <div class="p-4 text-center">
@@ -815,165 +965,6 @@
                   </TabsContent>
                 {/each}
               </Tabs>
-
-              <div class="layout">
-                {#each mockData as api, index}
-                  <section class="card" style="margin-bottom: 2px;">
-                    <div class="card-header">
-                      <div style="display: flex; align-items: center; gap: 5px;">
-                        {#if api.statuses.some(s => s.status === 'up')}
-                            <svg
-                              class="w-5 h-5"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill="#21ba45"
-                                fill-rule="evenodd"
-                                d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-5.97-3.03a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
-                          {:else if api.statuses.some(s => s.status === 'warn')}
-                            <svg
-                              class="w-5 h-5"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fill="#d97706"
-                                d="M10 2c4.42 0 8 3.58 8 8s-3.58 8-8 8s-8-3.58-8-8s3.58-8 8-8m1.13 9.38l.35-6.46H8.52l.35 6.46zm-.09 3.36c.24-.23.37-.55.37-.96c0-.42-.12-.74-.36-.97s-.59-.35-1.06-.35s-.82.12-1.07.35s-.37.55-.37.97c0 .41.13.73.38.96c.26.23.61.34 1.06.34s.8-.11 1.05-.34"
-                              />
-                            </svg>
-                          {:else if api.statuses.some(s => s.status === 'down')}
-                              <svg
-                                  class="w-5 h-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 24 24"
-                                >
-                                <path
-                                  fill="#db2828"
-                                  d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
-                                />
-                              </svg>
-                          {/if}
-                        <div class="text-lg">{api.name}</div>
-                      </div>
-                      <div class="uptimes">
-                        <span class="uptime15">{api.uptime15}% uptime</span>
-                        <span class="uptime30">{api.uptime30}% uptime</span>
-                        <span class="uptime60">{api.uptime60}% uptime</span>
-                        <span class="uptime90">{api.uptime90}% uptime</span>
-                      </div>
-                    </div>
-                    <div class="bar">
-                      {#each api.statuses as s, i}
-                        <div class="chip {s.status} {i === dayIndex ? s.status : ''}"></div>
-                      {/each}
-                    </div>
-                    <div class="timeline">
-                      <span class="label15">15 days ago</span>
-                      <span class="label30">30 days ago</span>
-                      <span class="label60">60 days ago</span>
-                      <span class="label90">90 days ago</span>
-                      <span>Today</span>
-                    </div>
-                  </section>
-                {/each}
-
-                <div class="status-page">
-                  <div class="left">
-                    <h3>System status</h3>
-                    {#each monitors as status}
-                      <div class="status-card">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                          {#if status.status === 'up'}
-                            <svg
-                              class="w-10 h-10 inline-block"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill="#21ba45"
-                                fill-rule="evenodd"
-                                d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-5.97-3.03a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
-                          {:else if status.status === 'warn'}
-                            <svg
-                              class="w-10 h-10 inline-block"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fill="#d97706"
-                                d="M10 2c4.42 0 8 3.58 8 8s-3.58 8-8 8s-8-3.58-8-8s3.58-8 8-8m1.13 9.38l.35-6.46H8.52l.35 6.46zm-.09 3.36c.24-.23.37-.55.37-.96c0-.42-.12-.74-.36-.97s-.59-.35-1.06-.35s-.82.12-1.07.35s-.37.55-.37.97c0 .41.13.73.38.96c.26.23.61.34 1.06.34s.8-.11 1.05-.34"
-                              />
-                            </svg>
-                          {:else if status.status === 'down'}
-                              <svg
-                                class="w-10 h-10 inline-block"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  fill="#db2828"
-                                  d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m3.59 5L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
-                                />
-                              </svg>
-                          {/if}
-                          <div>
-                            <strong>{status.title}</strong>
-                            <p style="color: #666;">{status.description}</p>
-                          </div>
-                        </div>
-                      </div>
-                    {/each}
-                  </div>
-
-                  <div class="right">
-                    <h3>Incidents</h3>
-                    {#each incidents as incident}
-                      <div class="incident-card">
-                        <h3>{incident.title}</h3>
-                        {#each incident.entries as entry}
-                          <div class="status-entry">
-                            <span class="time font-bold">{entry.time}</span>
-                            <span class="badge mt-1 {entry.status.badge}">
-                              {entry.status.statusLabel}
-                            </span>
-                            <p class="mt-2 text-gray-600" style="font-size: 16px">
-                              {entry.description}
-                            </p>
-                          </div>
-                        {/each}
-                      </div>
-                    {/each}
-
-                    <h3>Maintenance</h3>
-                    <div class="maintenance-list">
-                      {#each maintenances as maintenance}
-                        <div class="flex justify-between items-center p-3 gap-4">
-                          <span
-                            class="inline-flex items-center px-2.5 badge2 py-1 rounded-full text-xs font-medium {maintenance.status.badge}"
-                          >
-                            {maintenance.status.statusLabel}
-                          </span>
-                          <div class="flex flex-col text-left leading-tight">
-                            <span class="text-base font-semibold text-[var(--inactive-service)]">
-                              {maintenance.service}
-                            </span>
-                            <time class="text-base text-[var(--inactive)]">
-                              {maintenance.time}
-                            </time>
-                          </div>
-                        </div>
-                      {/each}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </article>
