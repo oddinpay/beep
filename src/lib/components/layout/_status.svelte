@@ -815,7 +815,6 @@
                 {#each tabsOrder as t, i}
                   <TabsContent value={t}>
                     {#if i === 0}
-                        <div>
                           {#each mockData as api, index}
                             <section class="card" style="margin-bottom: 2px;">
                               <div class="card-header">
@@ -976,7 +975,6 @@
                               </div>
                             </div>
                           </div>
-                        </div> 
                     {:else if i === 1}
                         {#each incidents as incident}
                             <div class="incident-card mt-10 ">
