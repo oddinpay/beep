@@ -95,8 +95,6 @@
   }
 
 
-
-
   // Example usage of the function
   apiNames.forEach((name, index) => {
     updateApiStatus(name, apiDates[index], apiStatus[index]);
@@ -153,7 +151,6 @@
       statusLabel: "Completed",
     },
   } as const;
-
 
 
 
@@ -749,7 +746,7 @@
                     </p>
                     <span class="text-base mt-5 text-center sm:text-left">
                       <span
-                        class="inline-flex pointer-events-none items-center px-4 py-0.5 rounded-full badgecover text-sm font-semibold no-underline"
+                        class="inline-flex pointer-events-none items-center px-4 py-0.5 rounded-full text-sm font-semibold no-underline"
                         style=" 
                         border: 1px solid {overallStatus === 'up' ? '#a6eb84' : overallStatus === 'warn' ? '#ffddb3' : '#f05d5e'};
                         text-decoration: none; background-color: {overallStatus === 'up' ? '#d7f7c2' : overallStatus === 'warn' ? '#fff4e5' : '#fddede'}; color: {overallStatus === 'up' ? '#006908' : overallStatus === 'warn' ? '#b45309' : '#db2828'};"
@@ -820,22 +817,22 @@
                 <TabsList
                   class="border-border text-foreground h-auto gap-2 rounded-none border-b bg-transparent px-0 py-1"
                 >
-                  {#each tabsOrder as t, i}
-                    <TabsTrigger
-                      value={t}
-                      class={`cursor-pointer hover:bg-accent hover:text-foreground transition-colors duration-150 ease-in-out data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 after:transform after:scale-x-0 after:transition-transform after:duration-200 after:ease-in-out data-[state=active]:after:scale-x-100 data-[state=active]:after:bg-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none ${
-                        direction === "left" ? "after:origin-left" : "after:origin-right"
-                      }`}
-                    >
-                      {#if i === 0}
-                        Live status 
-                      {:else if i === 1}
-                        History
-                      {/if} 
-                    </TabsTrigger>
-                  {/each}
-                </TabsList>
-                {#each tabsOrder as t, i}
+                      {#each tabsOrder as t, i}
+                        <TabsTrigger
+                          value={t}
+                          class={`cursor-pointer hover:bg-accent hover:text-foreground transition-colors duration-150 ease-in-out data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 after:transform after:scale-x-0 after:transition-transform after:duration-200 after:ease-in-out data-[state=active]:after:scale-x-100 data-[state=active]:after:bg-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none ${
+                            direction === "left" ? "after:origin-left" : "after:origin-right"
+                          }`}
+                        >
+                          {#if i === 0}
+                            Live status 
+                          {:else if i === 1}
+                            History
+                          {/if} 
+                        </TabsTrigger>
+                      {/each}
+                    </TabsList>
+                    {#each tabsOrder as t, i}
                   <TabsContent value={t}>
                     {#if i === 0}
                           {#each mockData as api, index}
@@ -1220,6 +1217,19 @@
     border: 1px solid #ffddb3;
   }
 
+  .badge.completed {
+    background:  #d7f7c2;
+    color:  #006908;
+    font-weight: 600;
+    border: 1px solid  #a6eb84;
+  }
+
+  .badge.scheduled {
+    background: white;
+    color: #4b5563;
+    font-weight: 600;
+    border: 1px solid #cecece;
+  }
 
   .badge2.completed {
     background:  #d7f7c2;
