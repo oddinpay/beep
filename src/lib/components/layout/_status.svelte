@@ -915,23 +915,29 @@
 
                             <div class="right">
                               <h3>Incidents</h3>
-                              {#each incidents as incident}
+                              {#if incidents.every(incident => incident.entries.some(entry => entry.status === Indicators.Resolved))}
                                 <div class="incident-card">
-                                  <h3>{incident.title}</h3>
-                                  {#each incident.entries as entry}
-                                    <div class="status-entry">
-                                      <span class="time font-bold">{entry.time}</span>
-                                      <span class="badge mt-1 {entry.status.badge}">
-                                        {entry.status.statusLabel}
-                                      </span>
-                                      <p class="mt-2 text-gray-600" style="font-size: 16px">
-                                        {entry.description}
-                                      </p>
-                                    </div>
-                                  {/each}
+                                  No incident to display
                                 </div>
-                              {/each}
-
+                              {:else}
+                                {#each incidents as incident}
+                                  {#if !incident.entries.some(entry => entry.status === Indicators.Resolved)}
+                                    <div class="incident-card">
+                                      {#each incident.entries as entry}
+                                        <div class="status-entry">
+                                          <span class="time font-bold">{entry.time}</span>
+                                          <span class="badge mt-1 {entry.status.badge}">
+                                            {entry.status.statusLabel}
+                                          </span>
+                                          <p class="mt-2 text-gray-600" style="font-size: 16px">
+                                            {entry.description}
+                                          </p>
+                                        </div>
+                                      {/each}
+                                    </div>
+                                  {/if}
+                                {/each}
+                              {/if}
                               <h3>Maintenance</h3>
                               <div class="maintenance-list">
                                 {#each maintenances as maintenance}
