@@ -187,7 +187,7 @@
         },
         {
           time: "Sep 22, 2025 20:14 UTC",
-          status: Indicators.Resolved,
+          status: Indicators.Inprogress,
           description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
         },
         {
@@ -240,6 +240,11 @@
 
 
   let maintenances: Maintenance[] = [
+  {
+      status: Indicators.Completed,
+      service: "PayPal",
+      time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
+    },
     {
       status: Indicators.Completed,
       service: "API",
@@ -251,10 +256,11 @@
       time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
     },
     {
-      status: Indicators.Scheduled,
+      status: Indicators.Inprogress,
       service: "API",
       time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
     },
+ 
     {
       status: Indicators.Inprogress,
       service: "PayPal",
@@ -262,6 +268,13 @@
     },
   ];
 
+
+  maintenances.sort((a, b) => {
+        return (
+          (statusPriority.get(a.status) ?? Infinity) -
+          (statusPriority.get(b.status) ?? Infinity)
+        );
+      });
 
 
   type AccordionItem = {
@@ -568,13 +581,16 @@
       font-weight: 600;
     }
 
-    #content p {
-      font-size: 15px;
-      line-height: 1.7;
+    .monitors {
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 1;
       display: -webkit-box;
       overflow: hidden;
+    }
+
+    #content p {
+      font-size: 15px;
+      line-height: 1.7;
     }
 
     #content h1 {
@@ -944,7 +960,7 @@
                                     {/if}
                                     <div>
                                       <strong>{status.title}</strong>
-                                      <p style="color: #666;">{status.description}</p>
+                                      <p class="monitors" style="color: #666;">{status.description}</p>
                                     </div>
                                   </div>
                                 </div>
@@ -1012,7 +1028,22 @@
                                 </div>
                               {/each}
                             </div>
-                        {/each} 
+                        {/each}
+
+                       {#each maintenances as maintenance}
+                            <div class="incident-card mt-10 ">
+                              <h3>Scheduled maintenance for {maintenance.service}</h3>
+                                <div class="status-entry">
+                                  <span class="time font-bold">{maintenance.time}</span>
+                                  <span class="badge mt-1 {maintenance.status.badge}">
+                                    {maintenance.status.statusLabel}
+                                  </span>
+                                  <p class="mt-2 text-gray-600" style="font-size: 16px">
+                                    System affected: {maintenance.service}   
+                                  </p>
+                                </div>
+                            </div>
+                        {/each}
                     {/if}
                   </TabsContent>
                 {/each}
