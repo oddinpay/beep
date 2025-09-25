@@ -478,11 +478,15 @@
   }
 
 
-  let activeTab = "tab-1";
-  let direction: "left" | "right" = "left";
+  let activeTab = $state("tab-1");
+  let direction = $state<"left" | "right">("left");
+
+  $effect(() => {
+    console.log("Active tab is now:", activeTab);
+  });
 
 
-  const tabsOrder = ["tab-1", "tab-3"];
+  const tabsOrder = ["tab-1", "tab-2"];
 
   function handleChange(newValue: string) {
     const oldIndex = tabsOrder.indexOf(activeTab);
