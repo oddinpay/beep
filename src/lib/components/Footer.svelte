@@ -12,6 +12,7 @@
     color: #1a1f36;
     padding: 60px 40px 30px;
     overflow: hidden;
+    border: 1px solid #eee;
   }
 
   footer::before {
