@@ -181,15 +181,16 @@
     {
       title: "Elevated iDeal errors",
       entries: [
-        {
-          time: "Sep 22, 2025 20:14 UTC",
-          status: Indicators.Resolved,
-          description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
-        },
+        
         {
           time: "Sep 22, 2025 13:05 UTC",
           status: Indicators.Investigating,
           description: "We are investigating reports of increased errors on iDeal payments.",
+        },
+        {
+          time: "Sep 22, 2025 20:14 UTC",
+          status: Indicators.Resolved,
+          description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
         },
         {
           time: "Sep 22, 2025 12:45 UTC",
@@ -201,6 +202,7 @@
     {
       title: "Payment errors",
       entries: [
+     
         {
           time: "Sep 22, 2025 13:05 UTC",
           status: Indicators.Investigating,
@@ -211,16 +213,22 @@
           status: Indicators.Inprogress,
           description: "We are investigating reports of increased errors on iDeal payments.",
         },
+        {
+          time: "Sep 22, 2025 20:14 UTC",
+          status: Indicators.Completed,
+          description: "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
+        },
+
       ],
     },
   ];
 
   const statusPriority = new Map<Indicator, number>([
+      [Indicators.Completed, 0],
       [Indicators.Resolved, 0],
       [Indicators.Inprogress, 1],
       [Indicators.Investigating, 2],
-      [Indicators.Scheduled, 3],
-      [Indicators.Completed, 4],
+      [Indicators.Scheduled, 2],
     ]);
 
   incidents.forEach((incident) => {
