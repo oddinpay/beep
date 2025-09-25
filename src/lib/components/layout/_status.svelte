@@ -842,10 +842,10 @@
                           }`}
                         >
                           {#if i === 0}
-                            Live status 
+                            <span class={activeTab === t ? 'text-black font-semibold' : 'text-gray-400 font-semibold'}>Live status</span>
                           {:else if i === 1}
-                            History
-                          {/if} 
+                            <span class={activeTab === t ? 'text-black font-semibold' : 'text-gray-400 font-semibold'}>History</span>
+                          {/if}
                         </TabsTrigger>
                       {/each}
                     </TabsList>
