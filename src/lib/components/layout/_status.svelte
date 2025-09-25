@@ -155,18 +155,19 @@
 
 
   // Each value inside Indicators
-  type Indicator = Exclude<typeof Indicators[keyof typeof Indicators], typeof Indicators.Completed | typeof Indicators.Scheduled>;
+  type Indicator = typeof Indicators[keyof typeof Indicators];
 
   interface IncidentEntry {
     time: string;
     description: string;
-    status: Indicator; 
+    status: Exclude<Indicator, typeof Indicators.Completed | typeof Indicators.Scheduled>;
   }
 
   interface Incident {
     title: string;
-    entries: IncidentEntry[];
+    entries: IncidentEntry[]; 
   }
+
 
   interface Maintenance {
     status: Indicator;
@@ -221,9 +222,11 @@
   ];
 
   const statusPriority = new Map<Indicator, number>([
+      [Indicators.Completed, 0],
       [Indicators.Resolved, 0],
       [Indicators.Inprogress, 1],
       [Indicators.Investigating, 2],
+      [Indicators.Scheduled, 2],
     ]);
 
   incidents.forEach((incident) => {
