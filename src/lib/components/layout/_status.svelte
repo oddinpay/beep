@@ -662,7 +662,7 @@
 
     <!-- MAIN CONTENT -->
     <main>
-      <div class="relative">
+      <div class="relative p-5">
         <article id="content" class="markdown-body p-5 max-w-5xl">
           <div class="flex flex-col justify-center">
             <div class="py-25">
@@ -815,7 +815,7 @@
                 {#each tabsOrder as t, i}
                   <TabsContent value={t}>
                     {#if i === 0}
-                        <div class="layout">
+                        <div>
                           {#each mockData as api, index}
                             <section class="card" style="margin-bottom: 2px;">
                               <div class="card-header">
@@ -1269,7 +1269,6 @@
     }
  
 
-  .layout{ padding: 10px; }
 
   .card{
     max-width:950px;
