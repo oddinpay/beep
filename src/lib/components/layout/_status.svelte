@@ -156,6 +156,7 @@
 
 
 
+
   // Each value inside Indicators
   type Indicator = typeof Indicators[keyof typeof Indicators];
 
@@ -198,6 +199,24 @@
       ],
     },
   ];
+
+  const statusPriority = new Map<Indicator, number>([
+      [Indicators.Resolved, 0],
+      [Indicators.Inprogress, 1],
+      [Indicators.Investigating, 2],
+      [Indicators.Scheduled, 3],
+      [Indicators.Completed, 4],
+    ]);
+
+  incidents.forEach((incident) => {
+      incident.entries.sort((a, b) => {
+        return (
+          (statusPriority.get(a.status) ?? Infinity) -
+          (statusPriority.get(b.status) ?? Infinity)
+        );
+      });
+    });
+
 
   let maintenances: Maintenance[] = [
     {
