@@ -6,15 +6,14 @@
   let {
     class: className,
     ref = $bindable(null),
+    value,
     ...restProps
-  }: TabsPrimitive.ListProps = $props();
+  }: TabsPrimitive.RootProps = $props();
 </script>
 
-<TabsPrimitive.List
+<TabsPrimitive.Root
   bind:ref
-  class={cn(
-    "bg-muted text-muted-foreground/70 inline-flex w-fit items-center justify-center rounded-md p-0.5",
-    className,
-  )}
+  class={cn("flex min-w-0 flex-col gap-2", className)}
+  {value}
   {...restProps}
 />

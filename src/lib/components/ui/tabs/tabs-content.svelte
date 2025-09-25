@@ -1,17 +1,19 @@
 <script lang="ts">
-	import { Tabs as TabsPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
+	import { cn } from '$lib/utils.js';
+
+	import { Tabs as TabsPrimitive } from 'bits-ui';
 
 	let {
-		ref = $bindable(null),
 		class: className,
+		ref = $bindable(null),
+		value,
 		...restProps
 	}: TabsPrimitive.ContentProps = $props();
 </script>
 
 <TabsPrimitive.Content
 	bind:ref
-	data-slot="tabs-content"
-	class={cn("flex-1 outline-none", className)}
+	class={cn('flex-1 outline-hidden', className)}
+	{value}
 	{...restProps}
 />
