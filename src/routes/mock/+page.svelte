@@ -6,7 +6,7 @@
   let messages = writable([]);
 
   onMount(() => {
-    const evtSource = new EventSource("https://app1.local/status");
+    const evtSource = new EventSource("http://127.0.0.1:8976/status");
     evtSource.onmessage = function (event) {
       console.log("New message", event.data);
       var dataobj = JSON.parse(event.data);
