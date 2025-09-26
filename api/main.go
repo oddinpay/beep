@@ -47,8 +47,8 @@ type ProbeResult struct {
 	Protocol    string `json:"protocol"`
 	Status      string `json:"status"`
 	Description string `json:"description"`
-	Timestamp   string `json:"timestamp"`
 	Name        string `json:"name,omitempty"`
+	Timestamp   string `json:"timestamp"`
 
 }
 
@@ -144,7 +144,7 @@ func probeHTTP(req HttpRequest) ProbeResult {
 
 
 func probeTCP(req HttpRequest) ProbeResult {
-
+	
 	var HealthResponse = HealthResponse{Down: "down", Up: "up"}
 	conn, err := net.DialTimeout("tcp", req.Host, defaultTimeout)
 	if err != nil {
@@ -159,7 +159,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	defer conn.Close()
 
 	// Try to write a test byte
-	_, err = conn.Write([]byte("ping"))
+	_, err = conn.Write([]byte("ping\n"))
 	if err != nil {
 		return ProbeResult{
 			Protocol:    strings.ToUpper(req.Protocol),
@@ -170,14 +170,13 @@ func probeTCP(req HttpRequest) ProbeResult {
 		}
 	}
 
-	// Try to read back (if server echoes or responds)
-	buf := make([]byte, 16)
+	buf := make([]byte, 64)
 	conn.SetReadDeadline(time.Now().Add(1 * time.Second))
 	n, err := conn.Read(buf)
 	if err != nil || n == 0 {
 		return ProbeResult{
 			Protocol:    strings.ToUpper(req.Protocol),
-			Status:      strings.ToUpper(HealthResponse.Down),
+			Status:      strings.ToUpper(HealthResponse.Up),
 			Description: "no response after connect",
 			Name:        fmt.Sprintf("TCP %s", req.Host),
 			Timestamp:   time.Now().Format("15:04:05.000"),
@@ -187,16 +186,10 @@ func probeTCP(req HttpRequest) ProbeResult {
 	res := ProbeResult{
 		Protocol:    strings.ToUpper(req.Protocol),
 		Status:      strings.ToUpper(HealthResponse.Up),
-		Description: "response received",
+		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
 		Name:        fmt.Sprintf("TCP %s", req.Host),
 		Timestamp:   time.Now().Format("15:04:05.000"),
 	}
-	if b, err := json.Marshal(res); err == nil {
-		fmt.Println(string(b))
-	} else {
-		fmt.Printf("%+v\n", res)
-	}
-	return res
 	return res
 }
 
@@ -206,7 +199,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
 		{Name: "API1", Protocol: "https", Host: "oddinpay.com", Interval: 2 * time.Second},
 		{Name: "API2", Protocol: "http",  Host: "github.com", Interval: 20 * time.Second},
-		{Name: "API3", Protocol: "tcp",   Host: "127.0.0.1:8080"},
+		{Name: "API3", Protocol: "tcp",   Host: "34.230.40.69:30000"},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
