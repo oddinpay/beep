@@ -199,7 +199,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
 		{Name: "API1", Protocol: "https", Host: "oddinpay.com", Interval: 2 * time.Second},
 		{Name: "API2", Protocol: "http",  Host: "github.com", Interval: 20 * time.Second},
-		{Name: "API3", Protocol: "tcp",   Host: "34.230.40.69:30000"},
+		{Name: "API3", Protocol: "tcp",   Host: "localhost:6379"},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
@@ -209,7 +209,9 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer func() { _ = conn.Close() }()
 
-	resultChan := make(chan ProbeResult, 32)
+	capacity := max(len(reqs) * 10)
+	resultChan := make(chan ProbeResult, capacity)
+
 
 	type probeDef struct {
 		name     string
