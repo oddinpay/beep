@@ -89,43 +89,14 @@ func probeHTTP(req HttpRequest) ProbeResult {
 
 	c := &http.Client{Timeout: defaultTimeout}
 
-	protocol := strings.ToLower(strings.TrimSpace(req.Protocol))
 
-	host := strings.TrimSpace(req.Host)
-	host = strings.TrimPrefix(host, ".")
-	host = strings.TrimPrefix(host, "*.")
-
-	parts := strings.FieldsFunc(host, func(r rune) bool { return r == '.' })
-	base := ""
-
-	
-	if len(parts) >= 2 {
-		base = parts[len(parts)-2]
-	} else if len(parts) == 1 {
-		base = parts[0]
-	}
-	base = strings.TrimSpace(base)
-	if base != "" {
-		base = strings.ToUpper(base[:1]) + strings.ToLower(base[1:])
-	}
-
-	if protocol != "http" && protocol != "https" {
-		return ProbeResult{
-			req.Name,
-			strings.ToUpper(req.Protocol),
-			strings.ToUpper(HealthResponse.Down),
-			fmt.Sprintf("%s - %d protocol not allowed", base, http.StatusMethodNotAllowed),
-			time.Now().Format("16:04:05.000"),
-		}
-	}
-
-	resp, err := c.Get(fmt.Sprintf("%s://%s", protocol, req.Host))
+	resp, err := c.Get(fmt.Sprintf("%s://%s", req.Protocol, req.Host))
 	if err != nil {
 		return ProbeResult{
 			req.Name,
 			strings.ToUpper(req.Protocol),
 			strings.ToUpper(HealthResponse.Down),
-			fmt.Sprintf("%s - %s", base, err.Error()),
+			fmt.Sprintf("%s - %s", req.Host, err.Error()),
 			time.Now().Format("15:04:05.000"),
 		}
 	}
@@ -135,7 +106,7 @@ func probeHTTP(req HttpRequest) ProbeResult {
 		req.Name,
 		strings.ToUpper(req.Protocol),
 		strings.ToUpper(HealthResponse.Up),
-		fmt.Sprintf("%s - %d", base, resp.StatusCode),
+		fmt.Sprintf("%s - %d", req.Host, resp.StatusCode),
 		time.Now().Format("15:04:05.000"),
 
 	}
@@ -144,8 +115,10 @@ func probeHTTP(req HttpRequest) ProbeResult {
 
 
 func probeTCP(req HttpRequest) ProbeResult {
+
 	
 	var HealthResponse = HealthResponse{Down: "down", Up: "up"}
+
 	conn, err := net.DialTimeout("tcp", req.Host, defaultTimeout)
 	if err != nil {
 		return ProbeResult{
@@ -196,8 +169,8 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
-		{Name: "API1", Protocol: "https", Host: "oddinpay.com", Interval: 2 * time.Second},
-		{Name: "API2", Protocol: "http",  Host: "github.com", Interval: 20 * time.Second},
+		{Name: "API1", Protocol: "http", Host: "oddinpay.com", Interval: 2 * time.Second},
+		{Name: "API2", Protocol: "https",  Host: "github.com", Interval: 20 * time.Second},
 		{Name: "API3", Protocol: "tcp",   Host: "localhost:6379"},
 	}
 
@@ -230,7 +203,9 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		switch strings.ToLower(strings.TrimSpace(target.Protocol)) {
 		case "tcp":
 			fn = func() ProbeResult { return probeTCP(target) }
-		default:
+		case "http":
+			fn = func() ProbeResult { return probeHTTP(target) }
+		case "https":
 			fn = func() ProbeResult { return probeHTTP(target) }
 		}
 
