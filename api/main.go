@@ -39,13 +39,15 @@ type HttpRequest struct {
 	Host     string        `json:"host,omitempty"`
 	Protocol string        `json:"protocol,omitempty"`
 	Interval time.Duration `json:"interval,omitempty"`
+	Name     string        `json:"name,omitempty"`
 }
 
 type ProbeResult struct {
 	Protocol    string `json:"protocol"`
 	Status      string `json:"status"`
 	Description string `json:"description"`
-	Timestamp string `json:"timestamp"`
+	Timestamp   string `json:"timestamp"`
+	Name        string `json:"name,omitempty"`
 
 }
 
@@ -109,6 +111,7 @@ func probeHTTP(req HttpRequest) ProbeResult {
 			strings.ToUpper(HealthResponse.Down),
 			fmt.Sprintf("%s - %d protocol not allowed", base, http.StatusMethodNotAllowed),
 			time.Now().Format("16:04:05.000"),
+			req.Name,
 		}
 	}
 
@@ -119,6 +122,7 @@ func probeHTTP(req HttpRequest) ProbeResult {
 			strings.ToUpper(HealthResponse.Down),
 			fmt.Sprintf("%s - %s", base, err.Error()),
 			time.Now().Format("15:04:05.000"),
+			req.Name,
 		}
 	}
 
@@ -128,6 +132,7 @@ func probeHTTP(req HttpRequest) ProbeResult {
 		strings.ToUpper(HealthResponse.Up),
 		fmt.Sprintf("%s - %d", base, resp.StatusCode),
 		time.Now().Format("15:04:05.000"),
+		req.Name,
 
 	}
 
@@ -135,8 +140,8 @@ func probeHTTP(req HttpRequest) ProbeResult {
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
-		{Protocol: "https", Host: "oddinpay.com", Interval: 2 * time.Second},
-		{Protocol: "http", Host: "github.com", Interval: 20 * time.Second},
+		{Name: "API1", Protocol: "https", Host: "oddinpay.com", Interval: 2 * time.Second},
+		{Name: "API2", Protocol: "http", Host: "github.com", Interval: 20 * time.Second},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
