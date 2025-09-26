@@ -136,7 +136,7 @@ func probeHTTP(req HttpRequest) ProbeResult {
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
 		{Protocol: "https", Host: "oddinpay.com", Interval: 2 * time.Second},
-		{Protocol: "https", Host: "github.com", Interval: 20 * time.Second},
+		{Protocol: "http", Host: "github.com", Interval: 20 * time.Second},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
