@@ -194,7 +194,6 @@ func probeTCP(req HttpRequest) ProbeResult {
 }
 
 
-
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
 		{Name: "API1", Protocol: "https", Host: "oddinpay.com", Interval: 2 * time.Second},
