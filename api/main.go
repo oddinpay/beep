@@ -107,32 +107,33 @@ func probeHTTP(req HttpRequest) ProbeResult {
 
 	if protocol != "http" && protocol != "https" {
 		return ProbeResult{
+			req.Name,
 			strings.ToUpper(req.Protocol),
 			strings.ToUpper(HealthResponse.Down),
 			fmt.Sprintf("%s - %d protocol not allowed", base, http.StatusMethodNotAllowed),
 			time.Now().Format("16:04:05.000"),
-			req.Name,
 		}
 	}
 
 	resp, err := c.Get(fmt.Sprintf("%s://%s", protocol, req.Host))
 	if err != nil {
 		return ProbeResult{
+			req.Name,
 			strings.ToUpper(req.Protocol),
 			strings.ToUpper(HealthResponse.Down),
 			fmt.Sprintf("%s - %s", base, err.Error()),
 			time.Now().Format("15:04:05.000"),
-			req.Name,
 		}
 	}
 
 	defer resp.Body.Close()
 	return ProbeResult{
+
+		req.Name,
 		strings.ToUpper(req.Protocol),
 		strings.ToUpper(HealthResponse.Up),
 		fmt.Sprintf("%s - %d", base, resp.StatusCode),
 		time.Now().Format("15:04:05.000"),
-		req.Name,
 
 	}
 
