@@ -107,7 +107,7 @@ func probeHTTP(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			strings.ToUpper(req.Protocol),
 			strings.ToUpper(HealthResponse.Down),
-			fmt.Sprintf("%s - protocol not allowed", base),
+			fmt.Sprintf("%s - %d protocol not allowed", base, http.StatusMethodNotAllowed),
 			time.Now().Format("16:04:05.000"),
 		}
 	}
