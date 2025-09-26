@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -61,6 +62,8 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
+
+
 // Recovery middleware
 func recoveryMiddleware(next http.Handler) http.Handler {
 
@@ -83,6 +86,7 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 func probeHTTP(req HttpRequest) ProbeResult {
 
 	var HealthResponse = HealthResponse{Down: "down", Up: "up"}
+
 	c := &http.Client{Timeout: defaultTimeout}
 
 	protocol := strings.ToLower(strings.TrimSpace(req.Protocol))
@@ -128,7 +132,6 @@ func probeHTTP(req HttpRequest) ProbeResult {
 
 	defer resp.Body.Close()
 	return ProbeResult{
-
 		req.Name,
 		strings.ToUpper(req.Protocol),
 		strings.ToUpper(HealthResponse.Up),
@@ -139,10 +142,71 @@ func probeHTTP(req HttpRequest) ProbeResult {
 
 }
 
+
+func probeTCP(req HttpRequest) ProbeResult {
+
+	var HealthResponse = HealthResponse{Down: "down", Up: "up"}
+	conn, err := net.DialTimeout("tcp", req.Host, defaultTimeout)
+	if err != nil {
+		return ProbeResult{
+			Protocol:    strings.ToUpper(req.Protocol),
+			Status:      strings.ToUpper(HealthResponse.Down),
+			Description: err.Error(),
+			Name:        req.Name,
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+	defer conn.Close()
+
+	// Try to write a test byte
+	_, err = conn.Write([]byte("ping"))
+	if err != nil {
+		return ProbeResult{
+			Protocol:    strings.ToUpper(req.Protocol),
+			Status:      strings.ToUpper(HealthResponse.Down),
+			Description: "write failed: " + err.Error(),
+			Name:        fmt.Sprintf("TCP %s", req.Host),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+
+	// Try to read back (if server echoes or responds)
+	buf := make([]byte, 16)
+	conn.SetReadDeadline(time.Now().Add(1 * time.Second))
+	n, err := conn.Read(buf)
+	if err != nil || n == 0 {
+		return ProbeResult{
+			Protocol:    strings.ToUpper(req.Protocol),
+			Status:      strings.ToUpper(HealthResponse.Down),
+			Description: "no response after connect",
+			Name:        fmt.Sprintf("TCP %s", req.Host),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+
+	res := ProbeResult{
+		Protocol:    strings.ToUpper(req.Protocol),
+		Status:      strings.ToUpper(HealthResponse.Up),
+		Description: "response received",
+		Name:        fmt.Sprintf("TCP %s", req.Host),
+		Timestamp:   time.Now().Format("15:04:05.000"),
+	}
+	if b, err := json.Marshal(res); err == nil {
+		fmt.Println(string(b))
+	} else {
+		fmt.Printf("%+v\n", res)
+	}
+	return res
+	return res
+}
+
+
+
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
 		{Name: "API1", Protocol: "https", Host: "oddinpay.com", Interval: 2 * time.Second},
-		{Name: "API2", Protocol: "http", Host: "github.com", Interval: 20 * time.Second},
+		{Name: "API2", Protocol: "http",  Host: "github.com", Interval: 20 * time.Second},
+		{Name: "API3", Protocol: "tcp",   Host: "127.0.0.1:8080"},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
@@ -167,9 +231,18 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		if interval <= 0 {
 			interval = 1 * time.Second
 		}
+
+		var fn func() ProbeResult
+		switch strings.ToLower(strings.TrimSpace(target.Protocol)) {
+		case "tcp":
+			fn = func() ProbeResult { return probeTCP(target) }
+		default:
+			fn = func() ProbeResult { return probeHTTP(target) }
+		}
+
 		probes = append(probes, probeDef{
 			name:     fmt.Sprintf("%s://%s", target.Protocol, target.Host),
-			fn:       func() ProbeResult { return probeHTTP(target) },
+			fn:       fn,
 			intravel: interval,
 		})
 	}
