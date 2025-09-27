@@ -76,8 +76,7 @@ type ErrorResponse struct {
 
 // Allowed origins (whitelist)
 var allowedOrigins = []string{
-	"https://example.com",
-	"https://dashboard.internal",
+	"*",
 }
 
 
