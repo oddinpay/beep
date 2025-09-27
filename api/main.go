@@ -53,7 +53,9 @@ const (
 	secondsPerMin = 60
 )
 
+
 // ----------- CORS whitelist (edit as needed) -----------
+
 var allowedOrigins = []string{
 	"https://app1.local",
 }
