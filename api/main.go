@@ -271,7 +271,6 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 
 
-
 func probeDNS(req HttpRequest) ProbeResult {
 	var hr = HealthResponse{Down: "down", Up: "up"}
 	addrs, err := net.LookupHost(req.Host)
@@ -292,8 +291,6 @@ func probeDNS(req HttpRequest) ProbeResult {
 		Timestamp:   time.Now().Format("15:04:05.000"),
 	}
 }
-
-
 
 
 
