@@ -269,6 +269,28 @@ func probeTCP(req HttpRequest) ProbeResult {
 	}
 }
 
+func probeDNS(req HttpRequest) ProbeResult {
+	var hr = HealthResponse{Down: "down", Up: "up"}
+	addrs, err := net.LookupHost(req.Host)
+	if err != nil {
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    strings.ToUpper(req.Protocol),
+			Status:      strings.ToUpper(hr.Down),
+			Description: fmt.Sprintf("Error: %s", err.Error()),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+	}
+	}
+	return ProbeResult{
+		Name:        req.Name,
+		Protocol:    strings.ToUpper(req.Protocol),
+		Status:      strings.ToUpper(hr.Up),
+		Description: fmt.Sprintf("resolved %v", addrs),
+		Timestamp:   time.Now().Format("15:04:05.000"),
+	}
+}
+
+
 // -------------------- 90-DAY SLA --------------------
 
 
@@ -295,7 +317,7 @@ func (s *SlidingSLA) rotateTo(now time.Time) {
 		s.currentMinute = minNow
 		return
 	}
-	for i := 0; i < steps; i++ {
+	for range steps {
 		s.idx++
 		if s.idx >= len(s.buckets) {
 			s.idx = 0
@@ -409,6 +431,8 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 			fn = probeTCP
 		case "http", "https":
 			fn = probeHTTP
+		case "dns":
+			fn = probeDNS
 		default:
 			continue
 		}
