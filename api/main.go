@@ -195,7 +195,6 @@ func probeHTTP(req HttpRequest) ProbeResult {
 
 func probeTCP(req HttpRequest) ProbeResult {
 	var hr = HealthResponse{Down: "down", Up: "up"}
-
 	conn, err := net.DialTimeout("tcp", req.Host, defaultTimeout)
 
 
