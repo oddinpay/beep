@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"go.jetify.com/sse"
@@ -16,16 +17,22 @@ const (
 	Host = "0.0.0.0"
 	Port = "8976"
 
-	MethodGet    = "GET"
-	MethodPost   = "POST"
-	MethodPut    = "PUT"
-	MethodDelete = "DELETE"
-	MethodPatch  = "PATCH"
+	// HTTP methods
+	MethodGet     = "GET"
+	MethodPost    = "POST"
+	MethodPut     = "PUT"
+	MethodDelete  = "DELETE"
+	MethodPatch   = "PATCH"
+	MethodOptions = "OPTIONS"
 
-	ContentTypeJSON = "application/json"
+	// Content types
+	ContentTypeJSON        = "application/json"
+	ContentTypeEventStream = "text/event-stream"
 
+	// HTTP status codes
 	StatusOK                  = 200
 	StatusCreated             = 201
+	StatusNoContent           = 204
 	StatusBadRequest          = 400
 	StatusUnauthorized        = 401
 	StatusNotFound            = 404
@@ -33,8 +40,18 @@ const (
 	StatusMethodNotAllowed    = 405
 	StatusMultipleChoices     = 300
 
-	defaultTimeout = 60 * time.Second
+	// Common headers
+	HeaderContentType  = "Content-Type"
+	HeaderCacheControl = "Cache-Control"
+	HeaderConnection   = "Connection"
+	HeaderAllowOrigin  = "Access-Control-Allow-Origin"
+	HeaderAllowMethods = "Access-Control-Allow-Methods"
+	HeaderAllowHeaders = "Access-Control-Allow-Headers"
+
+	defaultTimeout = 5 * time.Second
 )
+
+// -------------------- MODELS --------------------
 
 type HttpRequest struct {
 	Host     string        `json:"host,omitempty"`
@@ -43,18 +60,13 @@ type HttpRequest struct {
 	Name     string        `json:"name,omitempty"`
 }
 
-type ProbeResult struct {
-	Protocol    string `json:"protocol"`
-	Status      string `json:"status"`
-	Description string `json:"description"`
-	Name        string `json:"name,omitempty"`
-	Timestamp   string `json:"timestamp"`
-
-}
-
-type HealthResponse struct {
-	Down string `json:"down"`
-	Up   string `json:"up"`
+type StatusPayload struct {
+	Name        string         `json:"name"`
+	Protocol    string         `json:"protocol"`
+	Status      string         `json:"status"`
+	Description string         `json:"description"`
+	SLA         map[string]any `json:"sla"`
+	Timestamp   string         `json:"timestamp"`
 }
 
 type ErrorResponse struct {
@@ -62,18 +74,25 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
+// Allowed origins (whitelist)
+var allowedOrigins = []string{
+	"https://example.com",
+	"https://dashboard.internal",
+}
 
 
-// Recovery middleware
+// -------------------- RECOVERY --------------------
+
 func recoveryMiddleware(next http.Handler) http.Handler {
-
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			if err := recover(); err != nil {
-				log.Printf("Recovered from panic: %v\n", err)
-				w.Header().Set("Content-Type", "application/json")
-				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(ErrorResponse{
+			if rec := recover(); rec != nil {
+				log.Printf("Recovered from panic: %v\n", rec)
+				if w.Header().Get(HeaderContentType) == "" {
+					w.Header().Set(HeaderContentType, ContentTypeJSON)
+				}
+				w.WriteHeader(StatusInternalServerError)
+				_ = json.NewEncoder(w).Encode(ErrorResponse{
 					Status:  "error",
 					Message: "internal server error",
 				})
@@ -83,115 +102,212 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func probeHTTP(req HttpRequest) ProbeResult {
+// -------------------- CORS --------------------
 
-	var HealthResponse = HealthResponse{Down: "down", Up: "up"}
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		allowOrigin := ""
 
+		for _, ao := range allowedOrigins {
+			if ao == "*" || ao == origin {
+				allowOrigin = ao
+				break
+			}
+		}
+
+		// If no match, reject request (optional: default to no CORS headers)
+		if allowOrigin == "" {
+			http.Error(w, "CORS origin not allowed", StatusUnauthorized)
+			return
+		}
+
+		// Apply CORS headers
+		w.Header().Set(HeaderAllowOrigin, allowOrigin)
+		w.Header().Set(HeaderAllowMethods, "GET, POST, PUT, DELETE, PATCH, OPTIONS")
+		w.Header().Set(HeaderAllowHeaders, "Content-Type, Authorization")
+
+		// Handle preflight
+		if r.Method == MethodOptions {
+			w.WriteHeader(StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+// -------------------- PROBES --------------------
+
+func probeHTTP(req HttpRequest) string {
 	c := &http.Client{Timeout: defaultTimeout}
-
-
 	resp, err := c.Get(fmt.Sprintf("%s://%s", req.Protocol, req.Host))
 	if err != nil {
-		return ProbeResult{
-			req.Name,
-			strings.ToUpper(req.Protocol),
-			strings.ToUpper(HealthResponse.Down),
-			fmt.Sprintf("%s - %s", req.Host, err.Error()),
-			time.Now().Format("15:04:05.000"),
-		}
+		return fmt.Sprintf("error: %s", err.Error())
 	}
-
 	defer resp.Body.Close()
-	return ProbeResult{
-		req.Name,
-		strings.ToUpper(req.Protocol),
-		strings.ToUpper(HealthResponse.Up),
-		fmt.Sprintf("%s - %d", req.Host, resp.StatusCode),
-		time.Now().Format("15:04:05.000"),
-
-	}
-
+	return fmt.Sprintf("%s - %d", req.Host, resp.StatusCode)
 }
 
 
-func probeTCP(req HttpRequest) ProbeResult {
-
-	
-	var HealthResponse = HealthResponse{Down: "down", Up: "up"}
-
+func probeTCP(req HttpRequest) string {
 	conn, err := net.DialTimeout("tcp", req.Host, defaultTimeout)
 	if err != nil {
-		return ProbeResult{
-			Protocol:    strings.ToUpper(req.Protocol),
-			Status:      strings.ToUpper(HealthResponse.Down),
-			Description: err.Error(),
-			Name:        req.Name,
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
+		return fmt.Sprintf("error: %s", err.Error())
 	}
 	defer conn.Close()
-
-	// Try to write a test byte
-	_, err = conn.Write([]byte("ping\n"))
-	if err != nil {
-		return ProbeResult{
-			Protocol:    strings.ToUpper(req.Protocol),
-			Status:      strings.ToUpper(HealthResponse.Down),
-			Description: "write failed: " + err.Error(),
-			Name:        fmt.Sprintf("TCP %s", req.Host),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
-
-	buf := make([]byte, 64)
-	conn.SetReadDeadline(time.Now().Add(1 * time.Second))
-	n, err := conn.Read(buf)
-	if err != nil || n == 0 {
-		return ProbeResult{
-			Protocol:    strings.ToUpper(req.Protocol),
-			Status:      strings.ToUpper(HealthResponse.Up),
-			Description: "no response after connect",
-			Name:        fmt.Sprintf("TCP %s", req.Host),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
-
-	res := ProbeResult{
-		Protocol:    strings.ToUpper(req.Protocol),
-		Status:      strings.ToUpper(HealthResponse.Up),
-		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
-		Name:        fmt.Sprintf("TCP %s", req.Host),
-		Timestamp:   time.Now().Format("15:04:05.000"),
-	}
-	return res
+	return "connection successful"
 }
 
+// -------------------- SLA TRACKER --------------------
+
+type bucket struct{ totalSec, downSec int32 }
+
+type SlidingSLA struct {
+	Target        float64
+	buckets       []bucket
+	idx           int
+	currentMinute time.Time
+	mu            sync.Mutex
+}
+
+const (
+	minutes90d    = 90 * 24 * 60
+	secondsPerMin = 60
+)
+
+func NewSlidingSLA(target float64) *SlidingSLA {
+	now := time.Now()
+	return &SlidingSLA{
+		Target:        target,
+		buckets:       make([]bucket, minutes90d),
+		currentMinute: now.Truncate(time.Minute),
+	}
+}
+
+func (s *SlidingSLA) rotateTo(now time.Time) {
+	minNow := now.Truncate(time.Minute)
+	if !minNow.After(s.currentMinute) {
+		return
+	}
+	steps := int(minNow.Sub(s.currentMinute) / time.Minute)
+	if steps > minutes90d {
+		for i := range s.buckets {
+			s.buckets[i] = bucket{}
+		}
+		s.idx = 0
+		s.currentMinute = minNow
+		return
+	}
+	for i := 0; i < steps; i++ {
+		s.idx++
+		if s.idx >= len(s.buckets) {
+			s.idx = 0
+		}
+		s.buckets[s.idx] = bucket{}
+	}
+	s.currentMinute = minNow
+}
+
+func (s *SlidingSLA) Tick(isDown bool) {
+	now := time.Now()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.rotateTo(now)
+	if s.buckets[s.idx].totalSec < secondsPerMin {
+		s.buckets[s.idx].totalSec++
+	}
+	if isDown && s.buckets[s.idx].downSec < secondsPerMin {
+		s.buckets[s.idx].downSec++
+	}
+}
+
+func (s *SlidingSLA) Snapshot() map[string]any {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	var total, down int64
+	for _, b := range s.buckets {
+		total += int64(b.totalSec)
+		down += int64(b.downSec)
+	}
+
+	if total <= 0 {
+		return map[string]any{
+			"sla_target":             "100.000%",
+			"availability_percent":   "100.000%",
+			"up_time_seconds":        0,
+			"down_time_seconds":      0,
+			"total_time_seconds":     0,
+			"error_budget_seconds":   0,
+			"error_budget_remaining": 0,
+			"sla_breached":           false,
+		}
+	}
+
+	availability := 1.0 - (float64(down) / float64(total))
+	breached := (s.Target >= 1.0 && down > 0)
+	up := total - down
+
+	return map[string]any{
+		"sla_target":             fmt.Sprintf("%.3f%%", s.Target*100),
+		"availability_percent":   fmt.Sprintf("%.3f%%", availability*100),
+		"up_time_seconds":        up,
+		"down_time_seconds":      down,
+		"total_time_seconds":     total,
+		"error_budget_seconds":   0,
+		"error_budget_remaining": 0,
+		"sla_breached":           breached,
+	}
+}
+
+func (s *SlidingSLA) Reset() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for i := range s.buckets {
+		s.buckets[i] = bucket{}
+	}
+	s.idx = 0
+	s.currentMinute = time.Now().Truncate(time.Minute)
+}
+
+// -------------------- GLOBAL SLA MAP --------------------
+
+var slaTrackers = struct {
+	sync.Mutex
+	m map[string]*SlidingSLA
+}{m: make(map[string]*SlidingSLA)}
+
+// -------------------- SSE HANDLER --------------------
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set(HeaderCacheControl, "no-cache")
+	w.Header().Set(HeaderConnection, "keep-alive")
+	w.Header().Set(HeaderContentType, ContentTypeEventStream)
+
 	reqs := []HttpRequest{
-		{Name: "API1", Protocol: "http",   Host: "oddinpay.com", Interval: 2 * time.Second},
-		{Name: "API2", Protocol: "https",  Host: "github.com",   Interval: 20 * time.Second},
-		{Name: "API3", Protocol: "tcp",    Host: "localhost:6379"},
+		{Name: "API1", Protocol: "http", Host: "oddinpay.com", Interval: 10 * time.Second},
+		{Name: "API2", Protocol: "https", Host: "github.com", Interval: 15 * time.Second},
+		{Name: "API3", Protocol: "tcp", Host: "localhost:6379", Interval: 5 * time.Second},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), StatusInternalServerError)
 		return
 	}
-	defer func() { _ = conn.Close() }()
 
-	capacity := max(len(reqs) * 10)
-	resultChan := make(chan ProbeResult, capacity)
-
-
-	type probeDef struct {
-		name     string
-		fn       func() ProbeResult
-		intravel time.Duration
+	// Setup SLA trackers
+	slaTrackers.Lock()
+	for _, t := range reqs {
+		if _, ok := slaTrackers.m[t.Name]; !ok {
+			slaTrackers.m[t.Name] = NewSlidingSLA(1.0)
+		}
 	}
+	slaTrackers.Unlock()
 
-	probes := make([]probeDef, 0, len(reqs))
+	// Run probes
 	for _, t := range reqs {
 		target := t
 		interval := target.Interval
@@ -199,78 +315,96 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 			interval = 1 * time.Second
 		}
 
-		var fn func() ProbeResult
+		var probeFn func(HttpRequest) string
 		switch strings.ToLower(strings.TrimSpace(target.Protocol)) {
 		case "tcp":
-			fn = func() ProbeResult { return probeTCP(target) }
-		case "http":
-			fn = func() ProbeResult { return probeHTTP(target) }
-		case "https":
-			fn = func() ProbeResult { return probeHTTP(target) }
+			probeFn = probeTCP
+		case "http", "https":
+			probeFn = probeHTTP
 		}
 
-		probes = append(probes, probeDef{
-			name:     fmt.Sprintf("%s://%s", target.Protocol, target.Host),
-			fn:       fn,
-			intravel: interval,
-		})
-	}
-
-	for _, p := range probes {
-		go func(p probeDef) {
-			
-			initial := p.fn()
-			select {
-			case resultChan <- initial:
-			case <-r.Context().Done():
-				return
-			default:
-			}
-
-			ticker := time.NewTicker(p.intravel)
+		go func(req HttpRequest, fn func(HttpRequest) string, interval time.Duration) {
+			ticker := time.NewTicker(interval)
 			defer ticker.Stop()
-
 			for {
 				select {
 				case <-r.Context().Done():
 					return
 				case <-ticker.C:
-					result := p.fn()
-					select {
-					case resultChan <- result:
-					case <-r.Context().Done():
-						return
-					default:
+					desc := fn(req)
+					status := "UP"
+					if strings.HasPrefix(desc, "error:") {
+						status = "DOWN"
 					}
+
+					// Update SLA for this probe
+					slaTrackers.Lock()
+					tracker := slaTrackers.m[req.Name]
+					slaTrackers.Unlock()
+					tracker.Tick(status == "DOWN")
+
+					// Build unified response
+					payload := StatusPayload{
+						Name:        req.Name,
+						Protocol:    strings.ToUpper(req.Protocol),
+						Status:      status,
+						Description: desc,
+						SLA:         tracker.Snapshot(),
+						Timestamp:   time.Now().Format(time.RFC3339),
+					}
+
+					_ = conn.SendData(r.Context(), payload)
 				}
 			}
-		}(p)
+		}(target, probeFn, interval)
 	}
 
-	for {
-		select {
-		case <-r.Context().Done():
-			return
-		case res := <-resultChan:
-			if err := conn.SendData(r.Context(), res); err != nil {
-				return
-			}
-		}
-	}
+	<-r.Context().Done()
 }
 
-func main() {
+// -------------------- RESET HANDLER --------------------
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/status", StatusHandler)
+func ResetHandler(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
+	empty := r.URL.Query().Get("empty") == "true"
 
-	// Wrap the mux with recovery
-	handler := recoveryMiddleware(mux)
+	slaTrackers.Lock()
+	if name != "" {
+		if tracker, ok := slaTrackers.m[name]; ok {
+			tracker.Reset()
+		}
+	} else {
+		for _, tracker := range slaTrackers.m {
+			tracker.Reset()
+		}
+	}
+	slaTrackers.Unlock()
 
-	fmt.Printf("API server running at http://%s:%s\n", Host, Port)
-	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
+	if empty {
+		w.WriteHeader(StatusNoContent)
 		return
 	}
 
+	w.Header().Set(HeaderContentType, ContentTypeJSON)
+	w.WriteHeader(StatusOK)
+	_ = json.NewEncoder(w).Encode(map[string]any{
+		"sla_reset": true,
+		"probe":     name,
+	})
+}
+
+// -------------------- MAIN --------------------
+
+func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/status", StatusHandler)
+	mux.HandleFunc("/status/reset", ResetHandler)
+
+	handler := recoveryMiddleware(corsMiddleware(mux))
+
+	fmt.Printf("API server running at http://%s:%s\n", Host, Port)
+	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
+		log.Fatal(err)
+	}
 }
 
