@@ -25,9 +25,11 @@ const (
 	MethodPatch   = "PATCH"
 	MethodOptions = "OPTIONS"
 
+
 	// Content types
 	ContentTypeJSON        = "application/json"
 	ContentTypeEventStream = "text/event-stream"
+
 
 	// HTTP status codes
 	StatusOK                  = 200
@@ -327,6 +329,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 		"sla_breached":         breached,
 	}
 }
+
 
 func (s *SlidingSLA) Reset() {
 	s.mu.Lock()
