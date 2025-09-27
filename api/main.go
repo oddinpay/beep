@@ -451,8 +451,8 @@ func ResetHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/status", StatusHandler)
-	mux.HandleFunc("/status/reset", ResetHandler)
+	mux.HandleFunc("/uptime", StatusHandler)
+	mux.HandleFunc("/uptime/reset", ResetHandler)
 
 	handler := recoveryMiddleware(corsMiddleware(mux))
 
