@@ -342,7 +342,6 @@ func (s *SlidingSLA) Reset() {
 }
 
 
-
 // -------------------- SSE HANDLER --------------------
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
