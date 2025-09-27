@@ -294,6 +294,68 @@ func probeDNS(req HttpRequest) ProbeResult {
 
 
 
+func probeUDP(req HttpRequest) ProbeResult {
+	var hr = HealthResponse{Down: "down", Up: "up"}
+
+	raddr, err := net.ResolveUDPAddr("udp", req.Host)
+	if err != nil {
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    "UDP",
+			Status:      strings.ToUpper(hr.Down),
+			Description: "resolve error: " + err.Error(),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+
+	conn, err := net.DialUDP("udp", nil, raddr)
+	if err != nil {
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    "UDP",
+			Status:      strings.ToUpper(hr.Down),
+			Description: "dial error: " + err.Error(),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+	defer conn.Close()
+	_ = conn.SetDeadline(time.Now().Add(defaultTimeout))
+
+	_, err = conn.Write([]byte("ping\n"))
+	if err != nil {
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    "UDP",
+			Status:      strings.ToUpper(hr.Down),
+			Description: "write error: " + err.Error(),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+
+	// Try read (optional)
+	buf := make([]byte, 64)
+	n, _, err := conn.ReadFromUDP(buf)
+	if err != nil {
+		// No reply → still count as UP
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    "UDP",
+			Status:      strings.ToUpper(hr.Up),
+			Description: "write ok (no reply)",
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+
+	return ProbeResult{
+		Name:        req.Name,
+		Protocol:    "UDP",
+		Status:      strings.ToUpper(hr.Up),
+		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
+		Timestamp:   time.Now().Format("15:04:05.000"),
+	}
+}
+
+
 
 
 // -------------------- 90-DAY SLA --------------------
@@ -407,6 +469,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		{Name: "API1", 	   Protocol: "http",  Host: "oddinpay.com"},
 		{Name: "API2", 	   Protocol: "https", Host: "github.com", Interval: 10 * time.Second},
 		{Name: "API3",     Protocol: "dns",   Host: "oddinpa.com"},
+		{Name: "UDP",      Protocol: "udp",   Host: "localhost:9999"},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
@@ -438,6 +501,8 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 			fn = probeHTTP
 		case "dns":
 			fn = probeDNS
+		case "udp":
+			fn = probeUDP
 		default:
 			continue
 		}
