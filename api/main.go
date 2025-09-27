@@ -169,9 +169,9 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
-		{Name: "API1", Protocol: "http", Host: "oddinpay.com", Interval: 2 * time.Second},
-		{Name: "API2", Protocol: "https",  Host: "github.com", Interval: 20 * time.Second},
-		{Name: "API3", Protocol: "tcp",   Host: "localhost:6379"},
+		{Name: "API1", Protocol: "http",   Host: "oddinpay.com", Interval: 2 * time.Second},
+		{Name: "API2", Protocol: "https",  Host: "github.com",   Interval: 20 * time.Second},
+		{Name: "API3", Protocol: "tcp",    Host: "localhost:6379"},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
