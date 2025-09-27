@@ -51,6 +51,11 @@ const (
 	defaultTimeout = 5 * time.Second
 )
 
+// ----------- CORS whitelist (edit as needed) -----------
+var allowedOrigins = []string{
+	"https://app1.local",
+}
+
 // -------------------- MODELS --------------------
 
 type HttpRequest struct {
@@ -60,25 +65,28 @@ type HttpRequest struct {
 	Name     string        `json:"name,omitempty"`
 }
 
+type HealthResponse struct {
+	Down string `json:"down"`
+	Up   string `json:"up"`
+}
+
+type ProbeResult struct {
+	Name        string `json:"name"`        
+	Protocol    string `json:"protocol"`
+	Status      string `json:"status"`
+	Description string `json:"description"`
+	Timestamp   string `json:"timestamp"`
+}
+
 type StatusPayload struct {
-	Name        string         `json:"name"`
-	Protocol    string         `json:"protocol"`
-	Status      string         `json:"status"`
-	Description string         `json:"description"`
-	SLA         map[string]any `json:"sla"`
-	Timestamp   string         `json:"timestamp"`
+	Probe     ProbeResult    `json:"probe"`
+	SLA       map[string]any `json:"sla"`
 }
 
 type ErrorResponse struct {
 	Status  string `json:"status"`
 	Message string `json:"message"`
 }
-
-// Allowed origins (whitelist)
-var allowedOrigins = []string{
-	"*",
-}
-
 
 // -------------------- RECOVERY --------------------
 
@@ -107,58 +115,105 @@ func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 		allowOrigin := ""
-
 		for _, ao := range allowedOrigins {
-			if ao == "*" || ao == origin {
+			if ao == origin {
 				allowOrigin = ao
 				break
 			}
 		}
-
-		// If no match, reject request (optional: default to no CORS headers)
 		if allowOrigin == "" {
 			http.Error(w, "CORS origin not allowed", StatusUnauthorized)
 			return
 		}
 
-		// Apply CORS headers
 		w.Header().Set(HeaderAllowOrigin, allowOrigin)
 		w.Header().Set(HeaderAllowMethods, "GET, POST, PUT, DELETE, PATCH, OPTIONS")
 		w.Header().Set(HeaderAllowHeaders, "Content-Type, Authorization")
 
-		// Handle preflight
 		if r.Method == MethodOptions {
 			w.WriteHeader(StatusNoContent)
 			return
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }
 
 // -------------------- PROBES --------------------
 
-func probeHTTP(req HttpRequest) string {
+func probeHTTP(req HttpRequest) ProbeResult {
+	var hr = HealthResponse{Down: "down", Up: "up"}
 	c := &http.Client{Timeout: defaultTimeout}
+
 	resp, err := c.Get(fmt.Sprintf("%s://%s", req.Protocol, req.Host))
 	if err != nil {
-		return fmt.Sprintf("error: %s", err.Error())
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    strings.ToUpper(req.Protocol),
+			Status:      strings.ToUpper(hr.Down),
+			Description: fmt.Sprintf("%s - %s", req.Host, err.Error()),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
 	}
 	defer resp.Body.Close()
-	return fmt.Sprintf("%s - %d", req.Host, resp.StatusCode)
+
+	return ProbeResult{
+		Name:        req.Name,
+		Protocol:    strings.ToUpper(req.Protocol),
+		Status:      strings.ToUpper(hr.Up),
+		Description: fmt.Sprintf("%s - %d", req.Host, resp.StatusCode),
+		Timestamp:   time.Now().Format("15:04:05.000"),
+	}
 }
 
+func probeTCP(req HttpRequest) ProbeResult {
+	var hr = HealthResponse{Down: "down", Up: "up"}
 
-func probeTCP(req HttpRequest) string {
 	conn, err := net.DialTimeout("tcp", req.Host, defaultTimeout)
 	if err != nil {
-		return fmt.Sprintf("error: %s", err.Error())
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    strings.ToUpper(req.Protocol),
+			Status:      strings.ToUpper(hr.Down),
+			Description: err.Error(),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
 	}
 	defer conn.Close()
-	return "connection successful"
+
+	_, err = conn.Write([]byte("ping\n"))
+	if err != nil {
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    strings.ToUpper(req.Protocol),
+			Status:      strings.ToUpper(hr.Down),
+			Description: "write failed: " + err.Error(),
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+
+	buf := make([]byte, 64)
+	_ = conn.SetReadDeadline(time.Now().Add(1 * time.Second))
+	n, err := conn.Read(buf)
+	if err != nil || n == 0 {
+		return ProbeResult{
+			Name:        req.Name,
+			Protocol:    strings.ToUpper(req.Protocol),
+			Status:      strings.ToUpper(hr.Up),
+			Description: "no response after connect",
+			Timestamp:   time.Now().Format("15:04:05.000"),
+		}
+	}
+
+	return ProbeResult{
+		Name:        req.Name,
+		Protocol:    strings.ToUpper(req.Protocol),
+		Status:      strings.ToUpper(hr.Up),
+		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
+		Timestamp:   time.Now().Format("15:04:05.000"),
+	}
 }
 
-// -------------------- SLA TRACKER --------------------
+// -------------------- 90-DAY SLA --------------------
 
 type bucket struct{ totalSec, downSec int32 }
 
@@ -239,8 +294,6 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 			"up_time_seconds":        0,
 			"down_time_seconds":      0,
 			"total_time_seconds":     0,
-			"error_budget_seconds":   0,
-			"error_budget_remaining": 0,
 			"sla_breached":           false,
 		}
 	}
@@ -250,25 +303,23 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	up := total - down
 
 	return map[string]any{
-		"sla_target":             fmt.Sprintf("%.3f%%", s.Target*100),
-		"availability_percent":   fmt.Sprintf("%.3f%%", availability*100),
-		"up_time_seconds":        up,
-		"down_time_seconds":      down,
-		"total_time_seconds":     total,
-		"error_budget_seconds":   0,
-		"error_budget_remaining": 0,
-		"sla_breached":           breached,
+		"sla_target":           fmt.Sprintf("%.3f%%", s.Target*100),
+		"availability_percent": fmt.Sprintf("%.3f%%", availability*100),
+		"up_time_seconds":      up,
+		"down_time_seconds":    down,
+		"total_time_seconds":   total,
+		"sla_breached":         breached,
 	}
 }
 
 func (s *SlidingSLA) Reset() {
 	s.mu.Lock()
-	defer s.mu.Unlock()
 	for i := range s.buckets {
 		s.buckets[i] = bucket{}
 	}
 	s.idx = 0
 	s.currentMinute = time.Now().Truncate(time.Minute)
+	s.mu.Unlock()
 }
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -286,9 +337,9 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(HeaderContentType, ContentTypeEventStream)
 
 	reqs := []HttpRequest{
-		{Name: "API1", Protocol: "http", Host: "oddinpay.com", Interval: 10 * time.Second},
-		{Name: "API2", Protocol: "https", Host: "github.com", Interval: 15 * time.Second},
-		{Name: "API3", Protocol: "tcp", Host: "localhost:6379", Interval: 5 * time.Second},
+		{Name: "", Protocol: "http", Host: "oddinpay.com"},
+		{Name: "API2", Protocol: "https", Host: "github.com", Interval: 10 * time.Second},
+		{Name: "API3", Protocol: "tcp", Host: "localhost:6379"},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
@@ -297,7 +348,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Setup SLA trackers
 	slaTrackers.Lock()
 	for _, t := range reqs {
 		if _, ok := slaTrackers.m[t.Name]; !ok {
@@ -306,7 +356,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	slaTrackers.Unlock()
 
-	// Run probes
 	for _, t := range reqs {
 		target := t
 		interval := target.Interval
@@ -314,48 +363,40 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 			interval = 1 * time.Second
 		}
 
-		var probeFn func(HttpRequest) string
+		var fn func(HttpRequest) ProbeResult
 		switch strings.ToLower(strings.TrimSpace(target.Protocol)) {
 		case "tcp":
-			probeFn = probeTCP
+			fn = probeTCP
 		case "http", "https":
-			probeFn = probeHTTP
+			fn = probeHTTP
+		default:
+			continue
 		}
 
-		go func(req HttpRequest, fn func(HttpRequest) string, interval time.Duration) {
-			ticker := time.NewTicker(interval)
+		go func(req HttpRequest, pfn func(HttpRequest) ProbeResult, iv time.Duration) {
+			ticker := time.NewTicker(iv)
 			defer ticker.Stop()
 			for {
 				select {
 				case <-r.Context().Done():
 					return
 				case <-ticker.C:
-					desc := fn(req)
-					status := "UP"
-					if strings.HasPrefix(desc, "error:") {
-						status = "DOWN"
-					}
+					res := pfn(req)
 
-					// Update SLA for this probe
 					slaTrackers.Lock()
 					tracker := slaTrackers.m[req.Name]
 					slaTrackers.Unlock()
-					tracker.Tick(status == "DOWN")
+					isDown := strings.ToUpper(res.Status) != "UP"
+					tracker.Tick(isDown)
 
-					// Build unified response
 					payload := StatusPayload{
-						Name:        req.Name,
-						Protocol:    strings.ToUpper(req.Protocol),
-						Status:      status,
-						Description: desc,
-						SLA:         tracker.Snapshot(),
-						Timestamp:   time.Now().Format(time.RFC3339),
+						Probe:     res,
+						SLA:       tracker.Snapshot(),
 					}
-
 					_ = conn.SendData(r.Context(), payload)
 				}
 			}
-		}(target, probeFn, interval)
+		}(target, fn, interval)
 	}
 
 	<-r.Context().Done()
