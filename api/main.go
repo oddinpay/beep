@@ -269,6 +269,9 @@ func probeTCP(req HttpRequest) ProbeResult {
 	}
 }
 
+
+
+
 func probeDNS(req HttpRequest) ProbeResult {
 	var hr = HealthResponse{Down: "down", Up: "up"}
 	addrs, err := net.LookupHost(req.Host)
@@ -289,6 +292,11 @@ func probeDNS(req HttpRequest) ProbeResult {
 		Timestamp:   time.Now().Format("15:04:05.000"),
 	}
 }
+
+
+
+
+
 
 
 // -------------------- 90-DAY SLA --------------------
@@ -401,7 +409,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	reqs := []HttpRequest{
 		{Name: "API1", 	   Protocol: "http",  Host: "oddinpay.com"},
 		{Name: "API2", 	   Protocol: "https", Host: "github.com", Interval: 10 * time.Second},
-		{Name: "API3",     Protocol: "tcp",   Host: "localhost:9000"},
+		{Name: "API3",     Protocol: "dns",   Host: "oddinpa.com"},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
