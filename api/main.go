@@ -58,6 +58,15 @@ var allowedOrigins = []string{
 	"https://app1.local",
 }
 
+
+// -------------------- GLOBAL SLA MAP --------------------
+
+var slaTrackers = struct {
+	sync.Mutex
+	m map[string]*SlidingSLA
+}{m: make(map[string]*SlidingSLA)}
+
+
 // -------------------- MODELS --------------------
 
 type HttpRequest struct {
@@ -327,12 +336,7 @@ func (s *SlidingSLA) Reset() {
 	s.mu.Unlock()
 }
 
-// -------------------- GLOBAL SLA MAP --------------------
 
-var slaTrackers = struct {
-	sync.Mutex
-	m map[string]*SlidingSLA
-}{m: make(map[string]*SlidingSLA)}
 
 // -------------------- SSE HANDLER --------------------
 
