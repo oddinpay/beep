@@ -49,6 +49,8 @@ const (
 	HeaderAllowHeaders = "Access-Control-Allow-Headers"
 
 	defaultTimeout = 5 * time.Second
+	minutes90d    = 90 * 24 * 60
+	secondsPerMin = 60
 )
 
 // ----------- CORS whitelist (edit as needed) -----------
@@ -71,7 +73,7 @@ type HealthResponse struct {
 }
 
 type ProbeResult struct {
-	Name        string `json:"name"`        
+	Name        string `json:"name,omitempty"`
 	Protocol    string `json:"protocol"`
 	Status      string `json:"status"`
 	Description string `json:"description"`
@@ -87,6 +89,19 @@ type ErrorResponse struct {
 	Status  string `json:"status"`
 	Message string `json:"message"`
 }
+
+
+type bucket struct{ totalSec, downSec int32 }
+
+
+type SlidingSLA struct {
+	Target        float64
+	buckets       []bucket
+	idx           int
+	currentMinute time.Time
+	mu            sync.Mutex
+}
+
 
 // -------------------- RECOVERY --------------------
 
@@ -169,6 +184,8 @@ func probeTCP(req HttpRequest) ProbeResult {
 	var hr = HealthResponse{Down: "down", Up: "up"}
 
 	conn, err := net.DialTimeout("tcp", req.Host, defaultTimeout)
+
+
 	if err != nil {
 		return ProbeResult{
 			Name:        req.Name,
@@ -215,20 +232,6 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 // -------------------- 90-DAY SLA --------------------
 
-type bucket struct{ totalSec, downSec int32 }
-
-type SlidingSLA struct {
-	Target        float64
-	buckets       []bucket
-	idx           int
-	currentMinute time.Time
-	mu            sync.Mutex
-}
-
-const (
-	minutes90d    = 90 * 24 * 60
-	secondsPerMin = 60
-)
 
 func NewSlidingSLA(target float64) *SlidingSLA {
 	now := time.Now()
@@ -263,6 +266,7 @@ func (s *SlidingSLA) rotateTo(now time.Time) {
 	s.currentMinute = minNow
 }
 
+
 func (s *SlidingSLA) Tick(isDown bool) {
 	now := time.Now()
 	s.mu.Lock()
@@ -276,6 +280,7 @@ func (s *SlidingSLA) Tick(isDown bool) {
 		s.buckets[s.idx].downSec++
 	}
 }
+
 
 func (s *SlidingSLA) Snapshot() map[string]any {
 	s.mu.Lock()
