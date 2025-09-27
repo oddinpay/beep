@@ -351,9 +351,9 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(HeaderContentType, ContentTypeEventStream)
 
 	reqs := []HttpRequest{
-		{Name: "", Protocol: "http", Host: "oddinpay.com"},
+		{Name: "", 	   Protocol: "http",  Host: "oddinpay.com"},
 		{Name: "API2", Protocol: "https", Host: "github.com", Interval: 10 * time.Second},
-		{Name: "API3", Protocol: "tcp", Host: "localhost:6379"},
+		{Name: "API3", Protocol: "tcp",   Host: "localhost:6379"},
 	}
 
 	conn, err := sse.Upgrade(r.Context(), w)
