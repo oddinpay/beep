@@ -415,6 +415,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	<-r.Context().Done()
 }
 
+
 // -------------------- RESET HANDLER --------------------
 
 func ResetHandler(w http.ResponseWriter, r *http.Request) {
