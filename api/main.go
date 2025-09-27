@@ -166,6 +166,33 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+
+func formatDurationFull(seconds int64) string {
+    days := seconds / 86400
+    seconds %= 86400
+    hours := seconds / 3600
+    seconds %= 3600
+    minutes := seconds / 60
+    seconds %= 60
+
+    parts := []string{}
+    if days > 0 {
+        parts = append(parts, fmt.Sprintf("%dd", days))
+    }
+    if hours > 0 {
+        parts = append(parts, fmt.Sprintf("%dh", hours))
+    }
+    if minutes > 0 {
+        parts = append(parts, fmt.Sprintf("%dm", minutes))
+    }
+    if seconds > 0 || len(parts) == 0 {
+        parts = append(parts, fmt.Sprintf("%ds", seconds))
+    }
+
+    return strings.Join(parts, " ")
+}
+
+
 // -------------------- PROBES --------------------
 
 func probeHTTP(req HttpRequest) ProbeResult {
@@ -304,6 +331,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 		down += int64(b.downSec)
 	}
 
+
 	if total <= 0 {
 		return map[string]any{
 			"sla_target":             "100.000%",
@@ -322,9 +350,9 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	return map[string]any{
 		"sla_target":           fmt.Sprintf("%.3f%%", s.Target*100),
 		"availability_percent": fmt.Sprintf("%.3f%%", availability*100),
-		"up_time_seconds":      up,
-		"down_time_seconds":    down,
-		"total_time_seconds":   total,
+		"up_time_seconds":      formatDurationFull(up),
+		"down_time_seconds":    formatDurationFull(down),
+		"total_time_seconds":   formatDurationFull(total),
 		"sla_breached":         breached,
 	}
 }
