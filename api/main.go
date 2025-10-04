@@ -94,7 +94,7 @@ var defaultReqs = func() []HttpRequest {
 		{Name: "HTTPS",      Protocol: "https",    Host: "app.local"},
 		{Name: "TCP",   	 Protocol: "tcp", 	   Host: "localhost:8888"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
-		{Name: "UDP", 	     Protocol: "udp", 	   Host: "localhost"},
+		{Name: "UDP", 	     Protocol: "udp", 	   Host: "localhost:3333"},
 		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
 		{Name: "ICMP",	     Protocol: "icmp", 	   Host: "www.youtube.com"},
 	}
@@ -408,10 +408,11 @@ func probeUDP(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Id:          ulid.Make().String(),
 			Name:        req.Name,
-			Protocol:    "UDP",
-			State:      []string{hr.Down},
+			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "Error: " + err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
+			Date:		 []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+			State:       []string{hr.Down,"down", "up", "down"},
 		}
 	}
 
@@ -420,10 +421,11 @@ func probeUDP(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Id:          ulid.Make().String(),
 			Name:        req.Name,
-			Protocol:    "UDP",
-			State:       []string{(hr.Down)},
+			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "dial error: " + err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
+			Date:		 []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+			State:       []string{hr.Down,"down", "up", "down"},
 		}
 	}
 	defer conn.Close()
@@ -434,10 +436,11 @@ func probeUDP(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Id:          ulid.Make().String(),
 			Name:        req.Name,
-			Protocol:    "UDP",
-			State:      []string{hr.Down},
+			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "write error: " + err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
+			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+			State:       []string{hr.Down,"down", "up", "down"},
 		}
 	}
 
@@ -449,20 +452,22 @@ func probeUDP(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Id:          ulid.Make().String(),
 			Name:        req.Name,
-			Protocol:    "UDP",
-			State:       []string{hr.Up},
+			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "write ok (no reply)",
 			Timestamp:   time.Now().Format("15:04:05.000"),
+			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+			State:       []string{"warn",hr.Up, "up", "down"},
 		}
 	}
 
 	return ProbeResult{
 		Id:          ulid.Make().String(),
 		Name:        req.Name,
-		Protocol:    "UDP",
-		State:       []string{hr.Up},
+		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
 		Timestamp:   time.Now().Format("15:04:05.000"),
+		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+		State:       []string{hr.Up,"warn"},
 	}
 }
 
