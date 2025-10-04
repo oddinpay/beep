@@ -42,8 +42,9 @@
   // --- utils ---
 
   function coerceStatus(s?: StatusType): StatusType {
-  return s === "up" || s === "down" || s === "warn" ? s : "warn";
-}
+    return s === "up" || s === "down" || s === "warn" ? s : "warn";
+  
+  }
 
   function currentStatusFor(x: { statuses?: StatusEntry[]; status?: StatusType }): StatusType {
     const arr = Array.isArray(x?.statuses) ? x!.statuses! : [];
@@ -52,11 +53,6 @@
       const idx = Math.max(0, Math.min(dayIndex, arr.length - 1));
       const candidate = arr[idx]?.status as StatusType | undefined;
       return coerceStatus(candidate);
-    }
-
-    // No array and no status field at all → treat as hard "down"
-    if (!x?.status) {
-      return "down"; // <- consistent red stop when probe not running
     }
 
     // Single status exists
