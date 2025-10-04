@@ -113,7 +113,7 @@
     return [parseDate(rawDate as Date | string).toLocaleDateString()];
   }
 
-  const lastGoodUptime90 = new Map<string, string>();
+  let lastGoodUptime90 = new Map<string, string>();
 
   const fmtUptime = $derived.by(() => (v: unknown): string | null => {
     const s = String(v ?? "").replace("%", "").trim();
