@@ -50,14 +50,6 @@
     return x?.status ?? "warn";
   }
 
-  function parseSlaPercent(probe: any): string | null {
-    const raw = probe?.sla?.uptime90 ?? probe?.uptime90;
-    if (raw == null) return null;
-    const num = Number(String(raw).replace('%', '').trim());
-    return Number.isFinite(num) ? num.toFixed(3) : null;
-  }
-
-
   function asStatus(s: any): StatusType {
       return s === "up" || s === "down" || s === "warn" ? s : "default";
   }
@@ -147,17 +139,17 @@
       });
 
 
-      const uptime90 = parseSlaPercent(probe) ?? "00.000";
+      const uptime90 =  "000.000";
 
       console.log("Calculated uptime90 for", probe?.name, ":", uptime90);
 
       const api: ApiData = {
         name: String(probe?.name ?? ""),
         statuses,
-        uptime15: "00.000",
-        uptime30: "00.000",
-        uptime60: "00.000",
-        uptime90: uptime90 ?? "00.000",
+        uptime15: "000.000",
+        uptime30: "000.000",
+        uptime60: "000.000",
+        uptime90: uptime90 ?? "000.000",
       };
 
       return api;
