@@ -128,11 +128,6 @@
   let mockData = $derived.by(() => {
     const probes = Object.values($probeMap) as ApiData[];
     
-    for (const p of probes) {
-      console.log(p?.name, p?.uptime90);
-    }
-
-
     const unique = new Map<string, ApiData>();
     for (const p of probes) {
       if (!p || !p.id) continue;
