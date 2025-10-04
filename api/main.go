@@ -112,7 +112,6 @@ var defaultReqs = func() []HttpRequest {
 	return out
 }()
 
-
 // -------------------- MODELS --------------------
 
 type HttpRequest struct {

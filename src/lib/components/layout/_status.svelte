@@ -58,8 +58,6 @@
   }
 
 
-
-
   function asStatus(s: any): StatusType {
       return s === "up" || s === "down" || s === "warn" ? s : "default";
   }
