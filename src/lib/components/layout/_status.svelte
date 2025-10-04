@@ -114,8 +114,24 @@
     return [parseDate(rawDate as Date | string).toLocaleDateString()];
   }
 
+  const lastGoodUptime90 = new Map<string, string>();
+
+  function fmtUptime(v: unknown): string | null {
+    const s = String(v ?? "").replace("%", "").trim();
+    const n = Number.isFinite(v) && typeof v === "number"
+      ? v
+      : parseFloat(s);
+    if (!Number.isFinite(n)) return null;
+    return n.toFixed(3).padStart(7, "0");
+    }
+
+
   let mockData = $derived.by(() => {
     const probes = Object.values($probeMap) as ApiData[];
+    
+    for (const p of probes) {
+      console.log(p?.name, p?.uptime90);
+    }
 
 
     const unique = new Map<string, ApiData>();
@@ -149,9 +165,14 @@
       });
 
 
-      const uptime90 =  "000.000";
+        // --- robust + sticky uptime90 ---
+      const name = String(probe?.name ?? "");
+      const next = fmtUptime(probe?.uptime90);
+      const uptime90 = next ?? lastGoodUptime90.get(name) ?? "000.000";
+      if (next) lastGoodUptime90.set(name, uptime90);
 
-      console.log("Calculated uptime90 for", probe?.name, ":", uptime90);
+      console.log("Calculated uptime90 for", name, ":", uptime90);
+
 
       const api: ApiData = {
         name: String(probe?.name ?? ""),
@@ -159,7 +180,7 @@
         uptime15: "000.000",
         uptime30: "000.000",
         uptime60: "000.000",
-        uptime90: uptime90 ?? "000.000",
+        uptime90: uptime90 ,
       };
 
       return api;
