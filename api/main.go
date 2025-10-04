@@ -1208,7 +1208,7 @@ func ResetHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-// -------------------- REST State HANDLER --------------------
+// -------------------- RESTAPI HANDLER --------------------
 
 func RestStatusHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != MethodGet {
