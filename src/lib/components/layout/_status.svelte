@@ -118,7 +118,6 @@
 
       console.log("Calculated uptime90 for", probe?.name, ":", uptime90);
 
-
       const api: ApiData = {
         name: String(probe?.name ?? ""),
         statuses,
@@ -127,8 +126,6 @@
         uptime60: "0.000",
         uptime90,
       };
-
-
 
       return api;
     });
