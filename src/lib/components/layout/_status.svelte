@@ -42,15 +42,17 @@
   // --- utils ---
 
   function coerceStatus(s?: StatusType): StatusType {
-    return asStatus(s ?? "default");
+    return s === "up" || s === "down" || s === "warn" ? s : "warn";
+  
   }
 
   function currentStatusFor(x: { statuses?: StatusEntry[]; status?: StatusType }): StatusType {
-    const arr = Array.isArray(x?.statuses) ? x.statuses : [];
+    const arr = Array.isArray(x?.statuses) ? x!.statuses! : [];
 
     if (arr.length) {
       const idx = Math.max(0, Math.min(dayIndex, arr.length - 1));
-      return coerceStatus(arr[idx]?.status);
+      const candidate = arr[idx]?.status as StatusType | undefined;
+      return coerceStatus(candidate);
     }
 
     return coerceStatus(x.status);
