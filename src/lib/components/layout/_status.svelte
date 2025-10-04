@@ -116,14 +116,14 @@
 
   const lastGoodUptime90 = new Map<string, string>();
 
-  function fmtUptime(v: unknown): string | null {
+  const fmtUptime = $derived.by(() => (v: unknown): string | null => {
     const s = String(v ?? "").replace("%", "").trim();
-    const n = Number.isFinite(v) && typeof v === "number" ? v : parseFloat(s);
+    const n = typeof v === "number" && Number.isFinite(v) ? v : parseFloat(s);
     if (!Number.isFinite(n)) return null;
 
     const formatted = n.toFixed(3);
     return n < 100 ? formatted.padStart(6, "0") : formatted;
-  }
+  });
 
 
   let mockData = $derived.by(() => {
@@ -165,13 +165,11 @@
       });
 
 
-        // --- robust + sticky uptime90 ---
       const name = String(probe?.name ?? "");
       const next = fmtUptime(probe?.uptime90);
       const uptime90 = next ?? lastGoodUptime90.get(name) ?? "000.000";
       if (next) lastGoodUptime90.set(name, uptime90);
 
-      console.log("Calculated uptime90 for", name, ":", uptime90);
 
 
       const api: ApiData = {
