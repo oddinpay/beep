@@ -155,6 +155,7 @@
     const probes = Object.values($probeMap) as any[];
     const unique = new Map<string, any>();
 
+    console.log(probes)
 
     for (const p of probes) {
       if (!p) continue;
@@ -180,10 +181,15 @@
         nameCounts.set(id, 0);
       }
 
+      let status = (api as any).state ?? 'warn';
+
+
+      console.log("Assigning status for", api?.name, ":", status);
+
        apiMap.set(id, {
-        title: String((api as any).name ?? id),
-        description: "API",
-        status: status ?? 'warn',
+       title: String((api as any).name ?? id),
+       description: "API",
+       status: status,
       });
     }
 

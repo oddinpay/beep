@@ -479,7 +479,7 @@ func ProbeICMP(req HttpRequest) ProbeResult {
 			Description: "Pinger error: " + err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date: 	     []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Up},
+			State:       []string{hr.Down},
 		}
 	}
 	pinger.Count = 1
@@ -495,7 +495,7 @@ func ProbeICMP(req HttpRequest) ProbeResult {
 			Description: "Run error: " + err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Up},
+			State:       []string{hr.Down},
 		}
 	}
 	stats := pinger.Statistics()
@@ -505,7 +505,7 @@ func ProbeICMP(req HttpRequest) ProbeResult {
 			Id:          ulid.Make().String(),
 			Name:        req.Name,
 			Protocol:    "ICMP",
-			State:       []string{hr.Down},
+			State:       []string{hr.Up},
 			Description: fmt.Sprintf("0/%d packets received", stats.PacketsSent),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 		}
