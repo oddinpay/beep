@@ -41,7 +41,6 @@
 
   // --- utils ---
 
-
   function currentStatusFor(x: { statuses?: StatusEntry[]; status?: StatusType }): StatusType {
     const arr = x?.statuses;
     if (Array.isArray(arr) && arr.length) {
