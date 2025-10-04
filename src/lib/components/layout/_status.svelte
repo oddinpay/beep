@@ -180,20 +180,10 @@
         nameCounts.set(id, 0);
       }
 
-
-      const status =
-        (api.state as StatusType) === "down" ||
-        api.statuses?.some((s: any) => s.state === "down")
-          ? "down"
-          : (api.state as StatusType) === "warn" ||
-            api.statuses?.some((s: any) => s.state === "warn")
-          ? "warn"
-          : "up";
-
-      apiMap.set(id, {
+       apiMap.set(id, {
         title: String((api as any).name ?? id),
         description: "API",
-        status,
+        status: status ?? 'warn',
       });
     }
 
