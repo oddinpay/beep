@@ -151,9 +151,7 @@
     const apiMap = new Map<string, { title: string; description: string; status: string }>();
     const probes = Object.values($probeMap) as any[];
     const unique = new Map<string, any>();
-
    
-
     for (const p of probes) {
       if (!p) continue;
       unique.set(String(p.name), p);
