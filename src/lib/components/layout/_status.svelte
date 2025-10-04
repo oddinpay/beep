@@ -45,9 +45,9 @@
     const arr = x?.statuses;
     if (Array.isArray(arr) && arr.length) {
       const idx = Math.max(0, Math.min(dayIndex, arr.length - 1));
-      return arr[idx]?.status ?? "default";
+      return arr[idx]?.status ?? "warn";
     }
-    return x?.status ?? "default";
+    return x?.status ?? "warn";
   }
 
   function parseSlaPercent(probe: any): string | null {

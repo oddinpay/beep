@@ -91,6 +91,7 @@ var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
 	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "jack", Password: "jackSecret"},
 		{Name: "HTTPS",      Protocol: "https",    Host: "app.local"},
+		{Name: "HTTPS",      Protocol: "https",    Host: "app.local"},
 		{Name: "TCP",   	 Protocol: "tcp", 	   Host: "localhost:8888"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
 		{Name: "UDP", 	     Protocol: "udp", 	   Host: "localhost"},
