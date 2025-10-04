@@ -118,12 +118,12 @@
 
   function fmtUptime(v: unknown): string | null {
     const s = String(v ?? "").replace("%", "").trim();
-    const n = Number.isFinite(v) && typeof v === "number"
-      ? v
-      : parseFloat(s);
+    const n = Number.isFinite(v) && typeof v === "number" ? v : parseFloat(s);
     if (!Number.isFinite(n)) return null;
-    return n.toFixed(3).padStart(7, "0");
-    }
+
+    const formatted = n.toFixed(3);
+    return n < 100 ? formatted.padStart(6, "0") : formatted;
+  }
 
 
   let mockData = $derived.by(() => {
