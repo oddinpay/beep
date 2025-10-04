@@ -89,15 +89,13 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "jack", Password: "jackSecret"},
+	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "jack", Password: "jackSecret"},
 		{Name: "HTTPS",      Protocol: "https",    Host: "app.local"},
 		{Name: "TCP",   	 Protocol: "tcp", 	   Host: "localhost:8888"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
 		{Name: "UDP", 	     Protocol: "udp", 	   Host: "localhost"},
 		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
 		{Name: "ICMP",	     Protocol: "icmp", 	   Host: "www.youtube.com"},
-		{Name: "POSTGRES",   Protocol: "postgres", Host: ""},
-	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "jack", Password: "jackSecret"},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))
@@ -735,7 +733,7 @@ func ProbeRedis(req HttpRequest) ProbeResult {
 		Description: desc,
 		Timestamp:   time.Now().Format("15:04:05.000"),
 		Date:        []string{time.Now().Format("02/01/2006"),"29/09/2025", "26/09/2025", "25/09/2025"},
-		State:       []string{hr.Up,"down", "warn", "down"},
+		State:       []string{hr.Up,"up", "warn", "down"},
 	}
 
 }

@@ -50,17 +50,41 @@
     return x?.status ?? "default";
   }
 
-    function monitorStatus(x: any): StatusType {
-      if (Array.isArray(x?.statuses) && x.statuses.length) {
-        const idx = Math.max(0, Math.min(dayIndex, x.statuses.length - 1));
-        return (x.statuses[idx]?.status ?? "default") as StatusType;
-      }
-    const s = x?.state;
-    if (Array.isArray(s)) return (s.at(-1) ?? "default") as StatusType;
-    if (typeof s === "string") return s as StatusType;
-    if (typeof x?.status === "string") return x.status as StatusType;
-    return "default";
+  function parseSlaPercent(probe: any): string | null {
+    const raw = probe?.sla?.uptime90 ?? probe?.uptime90;
+    if (raw == null) return null;
+    const num = Number(String(raw).replace('%', '').trim());
+    return Number.isFinite(num) ? num.toFixed(3) : null;
   }
+
+
+
+
+  function asStatus(s: any): StatusType {
+      return s === "up" || s === "down" || s === "warn" ? s : "default";
+  }
+
+  function monitorStatus(x: any): StatusType {
+    const dates = Array.isArray(x?.date) ? x.date : (x?.date ? [x.date] : []);
+    const states = Array.isArray(x?.state) ? x.state : (x?.state ? [x.state] : []);
+
+    if (dates.length && states.length) {
+      let newestIdx = 0;
+      let newestTime = -Infinity;
+      for (let i = 0; i < dates.length; i++) {
+        const t = +parseDate(dates[i]); 
+        if (t > newestTime) { newestTime = t; newestIdx = i; }
+      }
+      return asStatus(states[newestIdx] ?? states[0]);
+    }
+
+  if (Array.isArray(x?.state) && x.state.length) return asStatus(x.state[0]);
+  if (typeof x?.state === "string") return asStatus(x.state);
+  if (typeof x?.status === "string") return asStatus(x.status);
+
+  return "warn";
+}
+
 
   function parseDate(dateString: string | Date): Date {
     if (dateString instanceof Date) return dateString;
@@ -125,17 +149,17 @@
       });
 
 
-      let  uptime90 = probe?.uptime90 != null ? String(probe.uptime90) : "0.000";
+      const uptime90 = parseSlaPercent(probe) ?? "00.000";
 
       console.log("Calculated uptime90 for", probe?.name, ":", uptime90);
 
       const api: ApiData = {
         name: String(probe?.name ?? ""),
         statuses,
-        uptime15: "0.000",
-        uptime30: "0.000",
-        uptime60: "0.000",
-        uptime90,
+        uptime15: "00.000",
+        uptime30: "00.000",
+        uptime60: "00.000",
+        uptime90: uptime90 ?? "00.000",
       };
 
       return api;
