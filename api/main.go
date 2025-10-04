@@ -97,6 +97,7 @@ var defaultReqs = func() []HttpRequest {
 		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
 		{Name: "ICMP",	     Protocol: "icmp", 	   Host: "www.youtube.com"},
 		{Name: "POSTGRES",   Protocol: "postgres", Host: ""},
+	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "jack", Password: "jackSecret"},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))

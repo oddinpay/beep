@@ -50,6 +50,17 @@
     return x?.status ?? "default";
   }
 
+    function monitorStatus(x: any): StatusType {
+      if (Array.isArray(x?.statuses) && x.statuses.length) {
+        const idx = Math.max(0, Math.min(dayIndex, x.statuses.length - 1));
+        return (x.statuses[idx]?.status ?? "default") as StatusType;
+      }
+    const s = x?.state;
+    if (Array.isArray(s)) return (s.at(-1) ?? "default") as StatusType;
+    if (typeof s === "string") return s as StatusType;
+    if (typeof x?.status === "string") return x.status as StatusType;
+    return "default";
+  }
 
   function parseDate(dateString: string | Date): Date {
     if (dateString instanceof Date) return dateString;
@@ -179,7 +190,7 @@
        apiMap.set(id, {
         title: String((api as any).name ?? id),
         description: "API",
-        status: status ?? "warn",
+        status: monitorStatus(api),
       });
     }
 
