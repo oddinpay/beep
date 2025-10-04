@@ -678,7 +678,7 @@ func ProbeRedis(req HttpRequest) ProbeResult {
 			Description: "Client init error: " + err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date:        []string{time.Now().Format("02/01/2006"),"29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Down,"down", "up", "down"},
+			State:       []string{hr.Down,"up", "up", "down"},
 		}
 	}
 	defer client.Close()
