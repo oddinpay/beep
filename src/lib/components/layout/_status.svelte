@@ -55,25 +55,25 @@
   }
 
   function monitorStatus(x: any): StatusType {
-    const dates = Array.isArray(x?.date) ? x.date : (x?.date ? [x.date] : []);
-    const states = Array.isArray(x?.state) ? x.state : (x?.state ? [x.state] : []);
+      const dates = Array.isArray(x?.date) ? x.date : (x?.date ? [x.date] : []);
+      const states = Array.isArray(x?.state) ? x.state : (x?.state ? [x.state] : []);
 
-    if (dates.length && states.length) {
-      let newestIdx = 0;
-      let newestTime = -Infinity;
-      for (let i = 0; i < dates.length; i++) {
-        const t = +parseDate(dates[i]); 
-        if (t > newestTime) { newestTime = t; newestIdx = i; }
+      if (dates.length && states.length) {
+        let newestIdx = 0;
+        let newestTime = -Infinity;
+        for (let i = 0; i < dates.length; i++) {
+          const t = +parseDate(dates[i]); 
+          if (t > newestTime) { newestTime = t; newestIdx = i; }
+        }
+        return asStatus(states[newestIdx] ?? states[0]);
       }
-      return asStatus(states[newestIdx] ?? states[0]);
-    }
 
-  if (Array.isArray(x?.state) && x.state.length) return asStatus(x.state[0]);
-  if (typeof x?.state === "string") return asStatus(x.state);
-  if (typeof x?.status === "string") return asStatus(x.status);
+    if (Array.isArray(x?.state) && x.state.length) return asStatus(x.state[0]);
+    if (typeof x?.state === "string") return asStatus(x.state);
+    if (typeof x?.status === "string") return asStatus(x.status);
 
-  return "warn";
-}
+    return "warn";
+  }
 
 
   function parseDate(dateString: string | Date): Date {
