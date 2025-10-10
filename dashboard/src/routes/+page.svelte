@@ -9,7 +9,7 @@
 
 <div class="flex min-h-screen items-start justify-center bg-black py-4">
 	<div class="w-full max-w-7xl">
-		<div class="sticky top-0 mx-auto w-full max-w-7xl px-4 py-4">
+		<div class="mx-auto w-full max-w-7xl px-4 py-4">
 			<Header />
 		</div>
 
