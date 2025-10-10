@@ -7,26 +7,29 @@
 	let currentTab = 'tab-2';
 </script>
 
-<div class="flex min-h-screen items-start justify-center bg-black py-10">
+<div class="flex min-h-screen items-start justify-center bg-black py-4">
 	<div class="w-full max-w-7xl">
-		<div class="w-full bg-black">
-			<div class="mx-auto w-full max-w-7xl px-4 py-10">
-				<Header />
-			</div>
+		<div class="mx-auto w-full max-w-7xl px-4 py-4">
+			<Header />
 		</div>
+
 		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
-			<TabsList class="flex w-full gap-2 bg-transparent p-4 md:w-80 md:flex-col">
+			<TabsList
+				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6
+				       md:max-h-[calc(100vh-3rem)] md:w-80 md:flex-col md:overflow-y-hidden"
+			>
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
 					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
 				>
-					<House class="h-8 w-8" /> Home 
+					<House class="h-8 w-8" /> Home
 				</TabsTrigger>
+
 				<TabsTrigger
 					value="tab-1"
 					onclick={() => goto('/monitors')}
-					class="flex w-full cursor-pointer  items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
 				>
 					<SquareActivity class="h-8 w-8" /> Monitors
 				</TabsTrigger>
@@ -34,7 +37,7 @@
 				<TabsTrigger
 					value="tab-2"
 					onclick={() => goto('/incidents')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3  rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
 				>
 					<ShieldAlert class="h-8 w-8" /> Incidents
 				</TabsTrigger>
@@ -56,10 +59,46 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div class="grow cursor-auto rounded-lg border border-border bg-zinc-900 p-8 text-start">
-				<TabsContent value="tab-2">
-					<p class="text-base text-gray-200">Content for Tab 2</p>
-				</TabsContent>
+			<div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
+				<div
+					class="col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(40dvh-3rem)] md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+						<p class="text-base text-gray-200">Content for Tab 0</p>
+					</TabsContent>
+				</div>
+
+				<div
+					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Content for Tab 1</p>
+					</TabsContent>
+				</div>
+
+				<div
+					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Content for Tab 2</p>
+					</TabsContent>
+				</div>
+
+				<div
+					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Content for Tab 3</p>
+					</TabsContent>
+				</div>
+
+				<div
+					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Content for Tab 4</p>
+					</TabsContent>
+				</div>
 			</div>
 		</Tabs>
 	</div>

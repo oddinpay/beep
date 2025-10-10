@@ -33,10 +33,14 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div class="grow cursor-auto rounded-lg border border-border bg-zinc-900 p-8 text-start">
-				<TabsContent value="tab-5">
-					<p class="text-base text-gray-200">Content for Tab 5</p>
-				</TabsContent>
+			<div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
+				<div
+					class="col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(40dvh-3rem)] md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+						<p class="text-base text-gray-200">Content for Tab 0</p>
+					</TabsContent>
+				</div>
 			</div>
 		</Tabs>
 	</div>
