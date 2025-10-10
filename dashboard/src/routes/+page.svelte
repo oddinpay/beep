@@ -59,7 +59,7 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div class="grid w-full px-10 grid-cols-1 gap-4 md:grid-cols-2">
+			<div class="grid w-[1100px] px-10 grid-cols-1 gap-4 md:grid-cols-2">
 				<div
 					class="col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(40dvh-3rem)] md:overflow-y-hidden"
 				>
