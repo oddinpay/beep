@@ -7,7 +7,7 @@
 	let currentTab = 'tab-0';
 </script>
 
-<div class=" flex min-h-screen items-start justify-center bg-black py-10">
+<div class="flex min-h-screen items-start justify-center bg-black py-10">
 	<div class="w-full max-w-7xl">
 		<div class="w-full bg-black">
 			<div class="mx-auto w-full max-w-7xl px-4 py-10">
