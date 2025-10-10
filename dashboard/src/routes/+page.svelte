@@ -61,22 +61,10 @@
 
 			<div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
 				<div
-					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(40dvh-3rem)] md:overflow-y-hidden"
-				>
-					<div
-						class="absolute top-0 bottom-0 left-1/2 w-[0.2px] -translate-x-1/2 bg-zinc-800"
-					></div>
-
-					<TabsContent value="tab-0" class="h-auto min-h-[300px]">
-						<p class="text-base text-gray-200">Content for Tab 0</p>
-					</TabsContent>
-				</div>
-
-				<div
 					class="min-h-[400px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Content for Tab 1</p>
+						<p class="text-base text-gray-200">Total Monitors</p>
 					</TabsContent>
 				</div>
 
@@ -84,7 +72,14 @@
 					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Content for Tab 2</p>
+						<p class="text-base text-gray-200">Total Incidents</p>
+					</TabsContent>
+				</div>
+				<div
+					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(40dvh-3rem)] md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+						<p class="text-base text-gray-200">Create Status Page</p>
 					</TabsContent>
 				</div>
 			</div>
