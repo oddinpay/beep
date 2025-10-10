@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
-			<TabsList class="flex w-full gap-2 bg-transparent p-4 md:w-80 md:flex-col">
+			<TabsList class=" flex w-full gap-2 self-start bg-transparent p-4 md:w-80 md:flex-col ">
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
@@ -58,12 +58,24 @@
 			</TabsList>
 
 			<!-- Content Area -->
-			<div class="flex-grow overflow-auto rounded-lg border border-border bg-zinc-900 p-8">
+			<div class=" flex-grow rounded-lg border border-border bg-zinc-900 p-8">
 				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
 					<p class="text-base text-gray-200">Content for Tab 0</p>
 				</TabsContent>
 			</div>
-			<div class="flex-grow overflow-auto rounded-lg border border-border bg-zinc-900 p-8">
+			<div class=" flex-grow rounded-lg border border-border bg-zinc-900 p-8">
+				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+					<p class="text-base text-gray-200">Content for Tab 0</p>
+				</TabsContent>
+				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+					<p class="text-base text-gray-200">Content for Tab 0</p>
+				</TabsContent>
+				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+					<p class="text-base text-gray-200">Content for Tab 0</p>
+				</TabsContent>
+				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+					<p class="text-base text-gray-200">Content for Tab 0</p>
+				</TabsContent>
 				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
 					<p class="text-base text-gray-200">Content for Tab 0</p>
 				</TabsContent>
