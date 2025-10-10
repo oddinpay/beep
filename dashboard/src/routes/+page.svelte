@@ -7,12 +7,10 @@
 	let currentTab = 'tab-0';
 </script>
 
-<div class="flex min-h-screen items-start justify-center bg-black py-5">
+<div class="flex min-h-screen items-start justify-center bg-black py-4">
 	<div class="w-full max-w-7xl">
-		<div class="w-full bg-black">
-			<div class="mx-auto w-full max-w-7xl px-4 py-5">
-				<Header />
-			</div>
+		<div class="sticky top-0 mx-auto w-full max-w-7xl px-4 py-4">
+			<Header />
 		</div>
 
 		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
