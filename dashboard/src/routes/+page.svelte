@@ -61,43 +61,28 @@
 
 			<div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
 				<div
-					class="min-h-[300px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
-				>
-					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Total Monitors</p>
-					</TabsContent>
-				</div>
-
-				<div
-					class="min-h-[300px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
-				>
-					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Total Incidents</p>
-					</TabsContent>
-				</div>
-				<div
 					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(40dvh-3rem)] md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-0" class="h-auto min-h-[300px]">
-						<Tabs value="tab-1" class="items-center">
+						<Tabs value="tab-1" class=" items-center">
 							<TabsList
 								class="h-auto gap-2 rounded-full border-b border-border bg-zinc-800 px-10 py-2 text-zinc-400"
 							>
 								<TabsTrigger
 									value="tab-1"
-									class="relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
+									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
 									Overview
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-2"
-									class="relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
+									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
 									Create Page
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-3"
-									class="relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
+									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
 									Settings
 								</TabsTrigger>
@@ -112,6 +97,21 @@
 								<p class="p-4 text-center text-xs text-white">Content for Tab 3</p>
 							</TabsContent>
 						</Tabs>
+					</TabsContent>
+				</div>
+				<div
+					class="min-h-[300px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Total Monitors</p>
+					</TabsContent>
+				</div>
+
+				<div
+					class="min-h-[300px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Total Incidents</p>
 					</TabsContent>
 				</div>
 			</div>
