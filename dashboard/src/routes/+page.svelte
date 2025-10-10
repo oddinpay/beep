@@ -16,10 +16,9 @@
 		</div>
 
 		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
-			
 			<TabsList
 				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6
-				       md:max-h-[calc(100vh-3rem)] md:w-80 md:flex-col md:overflow-y-auto"
+				       md:max-h-[calc(100vh-3rem)] md:w-80 md:flex-col md:overflow-y-hidden"
 			>
 				<TabsTrigger
 					value="tab-0"
@@ -62,32 +61,46 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div
-				class="flex-grow rounded-lg border border-border bg-zinc-900 p-8 md:h-[calc(100vh-3rem)] md:overflow-y-auto"
-			>
-				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
-					<p class="text-base text-gray-200">Content for Tab 0</p>
-				</TabsContent>
-			</div>
+			<div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+				<div
+					class="col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(40dvh-3rem)] md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+						<p class="text-base text-gray-200">Content for Tab 0</p>
+					</TabsContent>
+				</div>
 
-			<div
-				class="flex-grow rounded-lg border border-border bg-zinc-900 p-8 md:h-[calc(100vh-3rem)] md:overflow-y-hidden"
-			>
-				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
-					<p class="text-base text-gray-200">Content for Tab 0</p>
-				</TabsContent>
-				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
-					<p class="text-base text-gray-200">Content for Tab 0</p>
-				</TabsContent>
-				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
-					<p class="text-base text-gray-200">Content for Tab 0</p>
-				</TabsContent>
-				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
-					<p class="text-base text-gray-200">Content for Tab 0</p>
-				</TabsContent>
-				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
-					<p class="text-base text-gray-200">Content for Tab 0</p>
-				</TabsContent>
+				<div
+					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Content for Tab 1</p>
+					</TabsContent>
+				</div>
+
+				<div
+					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Content for Tab 2</p>
+					</TabsContent>
+				</div>
+
+				<div
+					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Content for Tab 3</p>
+					</TabsContent>
+				</div>
+
+				<div
+					class="min-h-[200px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
+				>
+					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
+						<p class="text-base text-gray-200">Content for Tab 4</p>
+					</TabsContent>
+				</div>
 			</div>
 		</Tabs>
 	</div>
