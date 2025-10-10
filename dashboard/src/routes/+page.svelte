@@ -57,8 +57,14 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div class="grow cursor-auto rounded-lg border border-border bg-zinc-900 p-8 text-start">
-				<TabsContent value="tab-0">
+			<!-- Content Area -->
+			<div class="flex-grow overflow-auto rounded-lg border border-border bg-zinc-900 p-8">
+				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
+					<p class="text-base text-gray-200">Content for Tab 0</p>
+				</TabsContent>
+			</div>
+			<div class="flex-grow overflow-auto rounded-lg border border-border bg-zinc-900 p-8">
+				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
 					<p class="text-base text-gray-200">Content for Tab 0</p>
 				</TabsContent>
 			</div>
