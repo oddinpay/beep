@@ -15,7 +15,7 @@
 			user: 'Chris Tompson'
 		},
 		{
-			action: 'shared',
+			action: 'shared PR',
 			id: 2,
 			target: 'New component library',
 			timestamp: '45 minutes ago',
@@ -79,7 +79,7 @@
 			<Button
 				size="icon"
 				variant="ghost"
-				class="text-zinc-100 cursor-pointer hover:bg-zinc-600 hover:text-zinc-100 relative size- rounded-full shadow-none"
+				class="size- relative cursor-pointer rounded-full text-zinc-100 shadow-none hover:bg-zinc-600 hover:text-zinc-100"
 				aria-label="Open notifications"
 				{...props}
 			>
@@ -88,7 +88,7 @@
 				{#if unreadCount > 0}
 					<div
 						aria-hidden="true"
-						class="bg-green-300 absolute top-0.5 right-0.5 size-1 rounded-full"
+						class="absolute top-0.5 right-0.5 size-1 rounded-full bg-green-300"
 					></div>
 				{/if}
 			</Button>
@@ -98,30 +98,33 @@
 		<div class="flex items-baseline justify-between gap-4 px-3 py-2">
 			<div class="text-sm font-semibold">Notifications</div>
 			{#if unreadCount > 0}
-				<button class="text-xs cursor-pointer font-medium hover:underline" onclick={handleMarkAllAsRead}>
+				<button
+					class="cursor-pointer text-xs font-medium hover:underline"
+					onclick={handleMarkAllAsRead}
+				>
 					Mark all as read
 				</button>
 			{/if}
 		</div>
-		<div role="separator" aria-orientation="horizontal" class="bg-border  -mx-1 my-1 h-px"></div>
+		<div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-border"></div>
 		{#each notifications as notification (notification.id)}
-			<div class="hover:bg-accent rounded-md px-3 py-2 text-sm transition-colors">
+			<div class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent">
 				<div class="relative flex items-start pe-3">
 					<div class="flex-1 space-y-1">
 						<button
-							class="text-foreground/80 cursor-pointer text-left after:absolute after:inset-0"
+							class="cursor-pointer text-left text-foreground/80 after:absolute after:inset-0"
 							onclick={() => handleNotificationClick(notification.id)}
 						>
-							<span class="text-foreground font-medium hover:underline">
+							<span class="font-medium text-foreground hover:underline">
 								{notification.user}
 							</span>
 							{notification.action}
-							<span class="text-foreground font-medium hover:underline">
+							<span class="font-medium text-foreground hover:underline">
 								{notification.target}
 							</span>
 							.
 						</button>
-						<div class="text-muted-foreground text-xs">
+						<div class="text-xs text-muted-foreground">
 							{notification.timestamp}
 						</div>
 					</div>
