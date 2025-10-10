@@ -14,12 +14,17 @@
 				<Header />
 			</div>
 		</div>
-		<Tabs value={currentTab} class=" flex w-full flex-col gap-8 md:flex-row">
-			<TabsList class="flex w-full gap-2 self-start bg-transparent p-4 md:w-80 md:flex-col">
+
+		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
+			<!-- Make this sticky on desktop -->
+			<TabsList
+				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6
+				       md:max-h-[calc(100vh-3rem)] md:w-80 md:flex-col md:overflow-y-auto"
+			>
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
-					class="flex w-full cursor-pointer  items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
 				>
 					<House class="h-8 w-8" /> Home
 				</TabsTrigger>
@@ -27,7 +32,7 @@
 				<TabsTrigger
 					value="tab-1"
 					onclick={() => goto('/monitors')}
-					class="flex w-full cursor-pointer  items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
 				>
 					<SquareActivity class="h-8 w-8" /> Monitors
 				</TabsTrigger>
@@ -35,7 +40,7 @@
 				<TabsTrigger
 					value="tab-2"
 					onclick={() => goto('/incidents')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3  rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
 				>
 					<ShieldAlert class="h-8 w-8" /> Incidents
 				</TabsTrigger>
@@ -57,13 +62,18 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<!-- Content Area -->
-			<div class=" flex-grow rounded-lg border border-border bg-zinc-900 p-8">
+			<!-- Content Area (optional: make this the scroll container on desktop) -->
+			<div
+				class="flex-grow rounded-lg border border-border bg-zinc-900 p-8 md:h-[calc(100vh-3rem)] md:overflow-y-auto"
+			>
 				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
 					<p class="text-base text-gray-200">Content for Tab 0</p>
 				</TabsContent>
 			</div>
-			<div class=" flex-grow rounded-lg border border-border bg-zinc-900 p-8">
+
+			<div
+				class="flex-grow rounded-lg border border-border bg-zinc-900 p-8 md:h-[calc(100vh-3rem)] md:overflow-y-hidden"
+			>
 				<TabsContent value="tab-0" class="h-auto min-h-[300px]">
 					<p class="text-base text-gray-200">Content for Tab 0</p>
 				</TabsContent>
