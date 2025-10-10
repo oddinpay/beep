@@ -7,15 +7,15 @@
 	let currentTab = 'tab-0';
 </script>
 
-<div class="flex min-h-screen items-start justify-center bg-black py-10">
+<div class=" flex min-h-screen items-start justify-center bg-black py-10">
 	<div class="w-full max-w-7xl">
 		<div class="w-full bg-black">
 			<div class="mx-auto w-full max-w-7xl px-4 py-10">
 				<Header />
 			</div>
 		</div>
-		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
-			<TabsList class=" flex w-full gap-2 self-start bg-transparent p-4 md:w-80 md:flex-col ">
+		<Tabs value={currentTab} class=" flex w-full flex-col gap-8 md:flex-row">
+			<TabsList class="flex w-full gap-2 self-start bg-transparent p-4 md:w-80 md:flex-col">
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
