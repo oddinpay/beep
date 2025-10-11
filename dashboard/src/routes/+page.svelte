@@ -22,7 +22,7 @@
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:px-6 xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md  py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:px-6 xl:text-3xl"
 				>
 					<House class="h-8 w-8" /> Home
 				</TabsTrigger>
