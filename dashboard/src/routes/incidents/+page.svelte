@@ -61,7 +61,7 @@
 
 			<div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
 				<div
-					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(40dvh-3rem)] md:overflow-y-hidden"
+					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(70dvh-3rem)] md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-2" class="h-auto min-h-[300px]">
 						<Tabs value="tab-2" class=" items-center">
@@ -72,25 +72,25 @@
 									value="tab-1"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-									Active
+									Create Incident
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-2"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-									Pending
+									Active
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-3"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-									Resolved
+								 Pending	
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-4"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-									Create Incident
+									Resolved
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-1">
@@ -102,27 +102,11 @@
 							<TabsContent value="tab-3">
 								<p class="p-4 text-center text-xs text-white">No status page created</p>
 							</TabsContent>
-							<TabsContent value="tab-4">
-								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
-							</TabsContent>
+
 						</Tabs>
 					</TabsContent>
 				</div>
-				<div
-					class="min-h-[300px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
-				>
-					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Up</p>
-					</TabsContent>
-				</div>
-
-				<div
-					class="min-h-[300px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
-				>
-					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Down</p>
-					</TabsContent>
-				</div>
+				
 			</div>
 		</Tabs>
 	</div>
