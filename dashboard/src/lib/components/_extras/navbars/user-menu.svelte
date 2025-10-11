@@ -40,18 +40,11 @@
 		</DropdownMenuLabel>
 		<DropdownMenuSeparator />
 		<DropdownMenuGroup>
-			<DropdownMenuItem
-				onclick={() => goto('/connect')}
-				class="cursor-pointer"
-			>
+			<DropdownMenuItem onclick={() => goto('/connect')} class="cursor-pointer">
 				<Unplug size={16} class="opacity-60" aria-hidden="true" />
 				<span>Connect</span>
 			</DropdownMenuItem>
 			<DropdownMenuSeparator />
-			<DropdownMenuItem class="cursor-pointer">
-				<Box size={16} class="opacity-60" aria-hidden="true" />
-				<span>Developers</span>
-			</DropdownMenuItem>
 			<DropdownMenuItem class="cursor-pointer">
 				<BookOpenText size={16} class="opacity-60" aria-hidden="true" />
 				<span>Docs</span>
