@@ -33,7 +33,7 @@
 				</TabsTrigger>
 			</TabsList>
 
-			  <div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
+			<div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
 				<div
 					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(50dvh-3rem)] md:overflow-y-hidden"
 				>
@@ -46,25 +46,24 @@
 									value="tab-5"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								 Connect	
+									Connect
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-6"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								  Status 
+									API Keys
 								</TabsTrigger>
-
 							</TabsList>
 							<TabsContent value="tab-5">
 								<p class="p-4 text-center text-xs text-white">No status page created</p>
 							</TabsContent>
 							<TabsContent value="tab-6">
 								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
-							</TabsContent>	
+							</TabsContent>
 						</Tabs>
 					</TabsContent>
-				</div>		
+				</div>
 			</div>
 		</Tabs>
 	</div>
