@@ -106,7 +106,7 @@
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
 						<p class="text-base text-gray-200">Total Monitors</p>
 						<Gauge
-							colors={{ primary: 'stroke-green-700', secondary: 'stroke-green-300' }}
+							colors={{ primary: 'stroke-green-700', secondary: 'stroke-green-200' }}
 							class="text-white"
 							show_value
 							size="lg"
@@ -121,7 +121,7 @@
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
 						<p class="text-base text-gray-200">Total Incidents</p>
 						<Gauge
-							colors={{ primary: 'stroke-amber-700', secondary: 'stroke-amber-300' }}
+							colors={{ primary: 'stroke-amber-700', secondary: 'stroke-amber-200' }}
 							class="text-white"
 							show_value
 							size="lg"
