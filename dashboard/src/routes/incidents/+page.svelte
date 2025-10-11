@@ -21,7 +21,7 @@
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
 				>
 					<House class="h-8 w-8" /> Home
 				</TabsTrigger>
@@ -29,7 +29,7 @@
 				<TabsTrigger
 					value="tab-1"
 					onclick={() => goto('/monitors')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
 				>
 					<SquareActivity class="h-8 w-8" /> Monitors
 				</TabsTrigger>
@@ -37,7 +37,7 @@
 				<TabsTrigger
 					value="tab-2"
 					onclick={() => goto('/incidents')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
 				>
 					<ShieldAlert class="h-8 w-8" /> Incidents
 				</TabsTrigger>
@@ -45,7 +45,7 @@
 				<TabsTrigger
 					value="tab-3"
 					onclick={() => goto('/alerts')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
 				>
 					<Siren class="h-8 w-8" /> Alerts
 				</TabsTrigger>
@@ -53,7 +53,7 @@
 				<TabsTrigger
 					value="tab-4"
 					onclick={() => goto('/schedules')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
 				>
 					<CalendarCheck class="h-8 w-8" /> Schedules
 				</TabsTrigger>
