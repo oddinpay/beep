@@ -78,10 +78,16 @@
 									value="tab-2"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								   	
+									Pending
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-3"
+									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
+								>
+									Resolved
+								</TabsTrigger>
+								<TabsTrigger
+									value="tab-4"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
 									Create Incident
@@ -91,6 +97,12 @@
 								<p class="p-4 text-center text-xs text-white">No status page created</p>
 							</TabsContent>
 							<TabsContent value="tab-2">
+								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
+							</TabsContent>
+							<TabsContent value="tab-3">
+								<p class="p-4 text-center text-xs text-white">No status page created</p>
+							</TabsContent>
+							<TabsContent value="tab-4">
 								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
 							</TabsContent>
 						</Tabs>
