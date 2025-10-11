@@ -103,7 +103,7 @@
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-4" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Live maintenance</p>
+						<p class="text-base text-gray-200">Live Maintenance</p>
 					</TabsContent>
 				</div>
 
