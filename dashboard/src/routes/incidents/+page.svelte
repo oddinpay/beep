@@ -16,7 +16,7 @@
 		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
 			<TabsList
 				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6
-				       md:max-h-[calc(100vh-3rem)] md:w-80 md:flex-col md:overflow-y-hidden"
+				       md:max-h-[calc(100dvh-3rem)] md:w-80 md:flex-col md:overflow-y-hidden"
 			>
 				<TabsTrigger
 					value="tab-0"
