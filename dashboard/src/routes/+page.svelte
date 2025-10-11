@@ -114,6 +114,7 @@
 				>
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
 						<p class="text-base text-gray-200">Total Incidents</p>
+						<Gauge class="text-white" show_value size="lg" value={100} />
 					</TabsContent>
 				</div>
 			</div>

@@ -3,6 +3,7 @@
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 	import { SquareActivity, Siren, ShieldAlert, House, CalendarCheck } from 'lucide-svelte';
 	import Header from '$lib/components/Header.svelte';
+	import { Gauge } from '$lib/components/ui/gauge';
 
 	let currentTab = 'tab-1';
 </script>
@@ -72,13 +73,13 @@
 									value="tab-1"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								 Overview	
+									Overview
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-2"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								   Add New Monitor	
+									Add New Monitor
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-1">
@@ -87,7 +88,6 @@
 							<TabsContent value="tab-2">
 								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
 							</TabsContent>
-
 						</Tabs>
 					</TabsContent>
 				</div>
@@ -96,6 +96,13 @@
 				>
 					<TabsContent value="tab-1" class="h-auto min-h-[150px]">
 						<p class="text-base text-gray-200">Up</p>
+						<Gauge
+							colors={{ primary: 'stroke-green-700', secondary: 'stroke-green-300' }}
+							class="text-white"
+							show_value
+							size="lg"
+							value={100}
+						/>
 					</TabsContent>
 				</div>
 
@@ -104,6 +111,13 @@
 				>
 					<TabsContent value="tab-1" class="h-auto min-h-[150px]">
 						<p class="text-base text-gray-200">Down</p>
+						<Gauge
+							colors={{ primary: 'stroke-red-700', secondary: 'stroke-red-300' }}
+							class="text-white"
+							show_value
+							size="lg"
+							value={100}
+						/>
 					</TabsContent>
 				</div>
 			</div>
