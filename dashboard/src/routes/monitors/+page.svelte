@@ -82,7 +82,7 @@
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-1">
-								<p class="p-4 text-center text-xs text-white">No status page created</p>
+								<p class="p-4 text-center text-xs text-white">No status page created yet</p>
 							</TabsContent>
 							<TabsContent value="tab-2">
 								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
