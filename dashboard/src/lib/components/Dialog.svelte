@@ -94,7 +94,7 @@
 {#snippet Avatar()}
 	<div class="mt-10 px-6">
 		<div
-			class="relative flex size-20 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-zinc-700 shadow-xs shadow-black/10"
+			class="relative flex size-20 items-center justify-center overflow-hidden rounded-full border-4 border-zinc-600 bg-zinc-700 shadow-xs shadow-black/10"
 		>
 			{#if profileImageHandler.previewUrl}
 				<img
