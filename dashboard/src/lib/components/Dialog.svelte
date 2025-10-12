@@ -65,7 +65,6 @@
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="title">Title</Label>
 								<Input
-									style="font-family: 'Inter Variable', Arial, sans-serif;"
 									class="border-zinc-600 text-white"
 									id="{id}-title"
 									placeholder="Beep"
@@ -77,7 +76,6 @@
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="slug">Slug</Label>
 								<Input
-									style="font-family: 'Inter Variable', Arial, sans-serif;"
 									class="border-zinc-600 text-white"
 									id="{id}-slug"
 									placeholder="Beep"
@@ -88,9 +86,7 @@
 						</div>
 					</form>
 
-					<div
-						class="flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border"
-					></div>
+					<div></div>
 
 					<Button variant="outline">Publish Page</Button>
 				</Dialog.Content>
