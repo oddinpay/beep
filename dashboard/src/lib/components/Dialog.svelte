@@ -77,7 +77,7 @@
 								<Label class="font-bold text-gray-300" for="signup-slug">Slug</Label>
 								<Input
 									class="border-zinc-600 text-white"
-									id="signup-slug"
+									id="{id}-signup-slug"
 									placeholder="Enter your slug"
 									type="text"
 									required
