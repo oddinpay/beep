@@ -98,7 +98,7 @@
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
 						<p class="text-base text-gray-200">Total Monitors</p>
 						<Gauge
-							colors={{ primary: 'stroke-green-700', secondary: 'stroke-green-200' }}
+							colors={{ primary: 'stroke-indigo-400', secondary: 'stroke-indigo-200' }}
 							class="text-white"
 							show_value
 							size="lg"
