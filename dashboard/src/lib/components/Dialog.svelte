@@ -78,7 +78,7 @@
 								<Input
 									class="border-zinc-600 text-white"
 									id="{id}-slug"
-									placeholder="Beep"
+									placeholder="/"
 									type="text"
 									required
 								/>
@@ -86,9 +86,7 @@
 						</div>
 					</form>
 
-					<div></div>
-
-					<Button variant="outline">Publish Page</Button>
+					<Button class="mt-2" variant="outline">Publish Page</Button>
 				</Dialog.Content>
 			</Dialog.Root>
 		</div>
