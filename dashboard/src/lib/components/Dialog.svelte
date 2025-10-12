@@ -9,7 +9,6 @@
 	import IconFileOrientation from '@tabler/icons-svelte/icons/file-orientation';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
 
-	import { useCharacterLimit } from '$lib/hooks/use-character-limit.svelte';
 	import { useImageUpload } from '$lib/hooks/use-image-upload.svelte';
 
 	import ImagePlus from '@lucide/svelte/icons/image-plus';
