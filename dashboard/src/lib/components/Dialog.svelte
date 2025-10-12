@@ -107,11 +107,11 @@
 	<Dialog.Content>
 		<div class="flex flex-col items-center gap-2">
 			<div
-				class="border-border flex size-11 shrink-0 items-center justify-center rounded-full border"
+				class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"
 				aria-hidden="true"
 			>
 				<svg
-					class="stroke-svelte size-6"
+					class="size-6 stroke-svelte"
 					xmlns="http://www.w3.org/2000/svg"
 					width="28"
 					height="28"
@@ -149,9 +149,9 @@
 		</form>
 
 		<div
-			class="before:bg-border after:bg-border flex items-center gap-3 before:h-px before:flex-1 after:h-px after:flex-1"
+			class="flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border"
 		>
-			<span class="text-muted-foreground text-xs">Or</span>
+			<span class="text-xs text-muted-foreground">Or</span>
 		</div>
 
 		<Button variant="outline">Continue with Google</Button>
@@ -196,4 +196,3 @@
 		</div>
 	</div>
 {/snippet}
- text-center text-xs
