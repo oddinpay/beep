@@ -58,22 +58,32 @@
 					<form class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
+								<Label class="font-bold text-gray-300" for="logo">Logo</Label>
+								<Input
+									class="border-zinc-700 text-white"
+									id="{id}-logo"
+									placeholder="Beep"
+									type="text"
+									required
+								/>
+							</div>
+							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="title">Title</Label>
 								<Input
 									class="border-zinc-700 text-white"
 									id="{id}-title"
-									placeholder="Beep"
+									placeholder="Beep Uptime Monitor"
 									type="text"
 									required
 								/>
 							</div>
 
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="slug">Slug</Label>
+								<Label class="font-bold text-gray-300" for="slug">Description</Label>
 								<Input
 									class="border-zinc-700 text-white"
-									id="{id}-slug"
-									placeholder="/"
+									id="{id}-description"
+									placeholder="Status page"
 									type="text"
 									required
 								/>
