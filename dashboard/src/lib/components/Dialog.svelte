@@ -65,7 +65,7 @@
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="title">Title</Label>
 								<Input
-									class="border-zinc-600 text-white"
+									class="border-zinc-700 text-white"
 									id="{id}-title"
 									placeholder="Beep"
 									type="text"
@@ -76,7 +76,7 @@
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="slug">Slug</Label>
 								<Input
-									class="border-zinc-600 text-white"
+									class="border-zinc-700 text-white"
 									id="{id}-slug"
 									placeholder="/"
 									type="text"
@@ -86,7 +86,7 @@
 						</div>
 					</form>
 
-					<Button class="mt-2" variant="outline">Publish Page</Button>
+					<Button class="mt-2 cursor-pointer" variant="outline">Publish Page</Button>
 				</Dialog.Content>
 			</Dialog.Root>
 		</div>
