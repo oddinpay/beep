@@ -8,6 +8,22 @@
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import IconFileOrientation from '@tabler/icons-svelte/icons/file-orientation';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
+
+	import { useCharacterLimit } from '$lib/hooks/use-character-limit.svelte';
+	import { useImageUpload } from '$lib/hooks/use-image-upload.svelte';
+
+	import Check from '@lucide/svelte/icons/check';
+	import ImagePlus from '@lucide/svelte/icons/image-plus';
+	import X from '@lucide/svelte/icons/x';
+
+	const bioLimit = useCharacterLimit(
+		180,
+		'Hey, I am Margaret, a web developer who loves turning ideas into amazing websites!'
+	);
+	const bannerImageHandler = useImageUpload({ initialImage: '/profile-bg.jpg' });
+	const profileImageHandler = useImageUpload({ initialImage: '/avatar-72-01.jpg' });
+
+	const id = $props.id();
 </script>
 
 <Empty.Root>
@@ -27,7 +43,6 @@
 					>Create Status Page</Dialog.Trigger
 				>
 				<Dialog.Content class="bg-zinc-900">
-
 					<div class="flex flex-col items-center gap-2">
 						<div
 							class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"
@@ -63,7 +78,7 @@
 					<form class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label for="signup-name">Full name</Label>
+								<Label class="font-bold text-gray-300" for="signup-name">Full name</Label>
 								<Input id="signup-name" placeholder="Matt Welsh" type="text" required />
 							</div>
 							<div class="space-y-2">
