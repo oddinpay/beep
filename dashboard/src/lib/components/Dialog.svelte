@@ -27,7 +27,7 @@
 		</Empty.Media>
 		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
-			You haven't created a status page yet. Get started by creating your first status page.
+			Get started by creating your status page and you’ll be ready to publish in no time.
 		</Empty.Description>
 	</Empty.Header>
 	<Empty.Content>
@@ -107,7 +107,7 @@
 			{/if}
 			<button
 				type="button"
-				class="absolute right-1 bottom-1 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+				class="absolute right-2 bottom-1 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 				onclick={profileImageHandler.handleThumbnailClick}
 				aria-label="Change profile picture"
 			>
