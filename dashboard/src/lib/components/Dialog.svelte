@@ -107,11 +107,11 @@
 	<Dialog.Content>
 		<div class="flex flex-col items-center gap-2">
 			<div
-				class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"
+				class="border-border flex size-11 shrink-0 items-center justify-center rounded-full border"
 				aria-hidden="true"
 			>
 				<svg
-					class="size-6 stroke-svelte"
+					class="stroke-svelte size-6"
 					xmlns="http://www.w3.org/2000/svg"
 					width="28"
 					height="28"
@@ -149,14 +149,14 @@
 		</form>
 
 		<div
-			class="flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border"
+			class="before:bg-border after:bg-border flex items-center gap-3 before:h-px before:flex-1 after:h-px after:flex-1"
 		>
-			<span class="text-xs text-muted-foreground">Or</span>
+			<span class="text-muted-foreground text-xs">Or</span>
 		</div>
 
 		<Button variant="outline">Continue with Google</Button>
 
-		<p class="text-center text-xs text-muted-foreground">
+		<p class="text-muted-foreground">
 			By signing up you agree to our
 			<a class="underline hover:no-underline" href="#title">Terms</a>.
 		</p>
@@ -196,3 +196,4 @@
 		</div>
 	</div>
 {/snippet}
+ text-center text-xs
