@@ -112,7 +112,7 @@
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
-						<p class="text-base font-semibold text-gray-200">Active Incidents</p>
+						<p class="text-base font-semibold text-zinc-200">Active Incidents</p>
 					</TabsContent>
 				</div>
 
@@ -120,7 +120,7 @@
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
-						<p class="text-base font-semibold text-gray-200">Total Incidents</p>
+						<p class="text-base font-semibold text-zinc-200">Total Incidents</p>
 					</TabsContent>
 				</div>
 			</div>
