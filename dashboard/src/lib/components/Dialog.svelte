@@ -20,8 +20,7 @@
 		180,
 		'Hey, I am Margaret, a web developer who loves turning ideas into amazing websites!'
 	);
-	const bannerImageHandler = useImageUpload({ initialImage: '/profile-bg.jpg' });
-	const profileImageHandler = useImageUpload({ initialImage: '/avatar-72-01.jpg' });
+	const profileImageHandler = useImageUpload({ initialImage: '' });
 
 	const id = $props.id();
 </script>
@@ -65,7 +64,7 @@
 								<Label class="font-bold text-gray-300" for="signup-name">Title</Label>
 								<Input
 									class="border-zinc-600 text-white"
-									id="signup-name"
+									id="{id}-signup-name"
 									placeholder="Beep"
 									type="text"
 									required
