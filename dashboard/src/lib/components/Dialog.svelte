@@ -6,14 +6,14 @@
 	import { cn } from '$lib/utils';
 
 	import * as Empty from '$lib/components/ui/empty/index.js';
-	import FolderCodeIcon from '@tabler/icons-svelte/icons/folder-code';
+	import IconFileOrientation from '@tabler/icons-svelte/icons/file-orientation';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
 </script>
 
 <Empty.Root>
 	<Empty.Header>
 		<Empty.Media variant="icon">
-			<FolderCodeIcon />
+			<IconFileOrientation />
 		</Empty.Media>
 		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
@@ -23,7 +23,7 @@
 	<Empty.Content>
 		<div class="flex gap-2">
 			<Dialog.Root>
-				<Dialog.Trigger class={cn("cursor-pointer", buttonVariants({ variant: 'outline' }))}
+				<Dialog.Trigger class={cn('cursor-pointer', buttonVariants({ variant: 'outline' }))}
 					>Create Status Page</Dialog.Trigger
 				>
 				<Dialog.Content class="bg-zinc-800">
