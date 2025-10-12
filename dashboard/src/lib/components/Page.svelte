@@ -117,9 +117,9 @@
 			{/if}
 			<button
 				type="button"
-				class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-zinc-800 text-white backdrop-blur-sm transition-[color,box-shadow,background-color,backdrop-filter] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 {profileImageHandler.previewUrl
+				class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-zinc-800 text-white transition-[color,box-shadow,background-color,backdrop-filter] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 {profileImageHandler.previewUrl
 					? 'hidden hover:flex'
-					: 'flex'} hover:opacity-50"
+					: 'flex'} hover:bg-black/50"
 				onclick={profileImageHandler.handleThumbnailClick}
 				aria-label="Change profile picture"
 			>
