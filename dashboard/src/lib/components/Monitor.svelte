@@ -29,7 +29,7 @@
 		</Empty.Media>
 		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
-			Get started by creating an uptime monitor, and you’ll see real-time updates.
+			Get started by creating an uptime monitor, and you’ll start seeing real-time updates.
 		</Empty.Description>
 	</Empty.Header>
 	<Empty.Content>
@@ -44,11 +44,11 @@
 							class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border"
 							aria-hidden="true"
 						>
-							<SquareActivity class="text-white h-10 w-10" />
+							<SquareActivity class="h-10 w-10 text-white" />
 						</div>
 
 						<Dialog.Header>
-							<Dialog.Title class=" text-gray-300 sm:text-center">Add Monitor</Dialog.Title>
+							<Dialog.Title class=" text-gray-300 sm:text-center">Add New Monitor</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
 								Set up and publish your uptime monitor.
 							</Dialog.Description>

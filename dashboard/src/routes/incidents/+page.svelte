@@ -21,7 +21,7 @@
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:px-6 xl:text-3xl"
 				>
 					<House class="h-8 w-8" /> Home
 				</TabsTrigger>
@@ -29,7 +29,7 @@
 				<TabsTrigger
 					value="tab-1"
 					onclick={() => goto('/monitors')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:px-6 xl:text-3xl"
 				>
 					<SquareActivity class="h-8 w-8" /> Monitors
 				</TabsTrigger>
@@ -37,7 +37,7 @@
 				<TabsTrigger
 					value="tab-2"
 					onclick={() => goto('/incidents')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:px-6 xl:text-3xl"
 				>
 					<ShieldAlert class="h-8 w-8" /> Incidents
 				</TabsTrigger>
@@ -45,7 +45,7 @@
 				<TabsTrigger
 					value="tab-3"
 					onclick={() => goto('/alerts')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:px-6 xl:text-3xl"
 				>
 					<Siren class="h-8 w-8" /> Alerts
 				</TabsTrigger>
@@ -53,7 +53,7 @@
 				<TabsTrigger
 					value="tab-4"
 					onclick={() => goto('/schedules')}
-					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md xl:px-6 py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:text-3xl"
+					class="flex w-full cursor-pointer items-center justify-start gap-3 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white xl:px-6 xl:text-3xl"
 				>
 					<CalendarCheck class="h-8 w-8" /> Schedules
 				</TabsTrigger>
@@ -72,27 +72,26 @@
 									value="tab-2"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								 Create Incident
+									Create Incident
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-3"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								  Active
+									Active
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-4"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								 Pending  
+									Pending
 								</TabsTrigger>
 								<TabsTrigger
 									value="tab-5"
 									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
 								>
-								  Resolved  
+									Resolved
 								</TabsTrigger>
-
 							</TabsList>
 							<TabsContent value="tab-2">
 								<p class="p-4 text-center text-xs text-white">No status page created</p>
@@ -113,7 +112,7 @@
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Active Incidents</p>
+						<p class="text-base font-semibold text-gray-200">Active Incidents</p>
 					</TabsContent>
 				</div>
 
@@ -121,7 +120,7 @@
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Total Incidents</p>
+						<p class="text-base font-semibold text-gray-200">Total Incidents</p>
 					</TabsContent>
 				</div>
 			</div>

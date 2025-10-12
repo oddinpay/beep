@@ -95,7 +95,7 @@
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Total Monitors</p>
+						<p class="text-base font-semibold text-indigo-200">Total Monitors</p>
 						<Gauge
 							colors={{ primary: 'stroke-indigo-400', secondary: 'stroke-indigo-200' }}
 							class="text-white"
@@ -110,7 +110,7 @@
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
-						<p class="text-base text-gray-200">Total Incidents</p>
+						<p class="text-base font-semibold text-amber-200">Total Incidents</p>
 						<Gauge
 							colors={{ primary: 'stroke-amber-700', secondary: 'stroke-amber-200' }}
 							class="text-white"
