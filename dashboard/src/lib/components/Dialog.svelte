@@ -92,7 +92,7 @@
 </Empty.Root>
 
 {#snippet Avatar()}
-	<div class="mt-10 px-6">
+	<label class="mt-10 px-6" aria-label="Upload profile picture">
 		<div
 			class="relative flex size-20 items-center justify-center overflow-hidden rounded-full border-4 border-zinc-600 bg-zinc-700 shadow-xs shadow-black/10"
 		>
@@ -122,5 +122,5 @@
 				aria-label="Upload profile picture"
 			/>
 		</div>
-	</div>
+	</label>
 {/snippet}
