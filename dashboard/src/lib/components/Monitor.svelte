@@ -36,7 +36,7 @@
 		<div class="flex gap-2">
 			<Dialog.Root>
 				<Dialog.Trigger class={cn('cursor-pointer', buttonVariants({ variant: 'outline' }))}
-					>Create Status Page</Dialog.Trigger
+					>Add Monitor</Dialog.Trigger
 				>
 				<Dialog.Content class="bg-zinc-900">
 					<div class="flex flex-col items-center gap-2">
@@ -58,17 +58,17 @@
 					<form class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Logo</Label>
+								<Label class="font-bold text-gray-300" for="logo">Name</Label>
 								<Input
 									class="border-zinc-700 text-white"
 									id="{id}-logo"
-									placeholder="Beep"
+									placeholder="oddinpay"
 									type="text"
 									required
 								/>
 							</div>
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="title">Title</Label>
+								<Label class="font-bold text-gray-300" for="title">Monitor Type</Label>
 								<Input
 									class="border-zinc-700 text-white"
 									id="{id}-title"
@@ -79,7 +79,7 @@
 							</div>
 
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="slug">Description</Label>
+								<Label class="font-bold text-gray-300" for="slug">URL</Label>
 								<Input
 									class="border-zinc-700 text-white"
 									id="{id}-description"
