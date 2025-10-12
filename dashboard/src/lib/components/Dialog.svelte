@@ -74,11 +74,11 @@
 							</div>
 
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="signup-slug">Slug</Label>
+								<Label class="font-bold text-gray-300" for="signup-name">Title</Label>
 								<Input
 									class="border-zinc-600 text-white"
-									id="{id}-signup-slug"
-									placeholder="Enter your slug"
+									id="{id}-signup-name"
+									placeholder="Beep"
 									type="text"
 									required
 								/>

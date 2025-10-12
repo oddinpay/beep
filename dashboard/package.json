@@ -45,6 +45,7 @@
 		]
 	},
 	"dependencies": {
+		"@fontsource-variable/inter": "^5.2.8",
 		"@sveltejs/enhanced-img": "^0.8.4",
 		"@tabler/icons-svelte": "^3.35.0",
 		"bits-ui": "^2.11.4",
