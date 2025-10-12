@@ -87,9 +87,9 @@
 								/>
 							</div>
 						</div>
-					</form>
 
-					<Button class="mt-2 cursor-pointer" variant="outline">Publish Page</Button>
+						<Button class="mt-2 w-full cursor-pointer" variant="outline">Publish Page</Button>
+					</form>
 				</Dialog.Content>
 			</Dialog.Root>
 		</div>
