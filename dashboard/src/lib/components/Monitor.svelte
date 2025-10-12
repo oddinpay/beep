@@ -5,6 +5,8 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { cn } from '$lib/utils';
 
+	import * as Select from '$lib/components/ui/select/index.js';
+
 	import { SquareActivity, Siren, ShieldAlert, House, CalendarCheck } from 'lucide-svelte';
 
 	import * as Empty from '$lib/components/ui/empty/index.js';
@@ -20,6 +22,18 @@
 	});
 
 	const id = $props.id();
+
+	const fruits = [
+		{ value: 'HTTPS', label: 'HTTPS' },
+		{ value: 'HTTP', label: 'HTTP' },
+		{ value: 'TCP', label: 'TCP' },
+		{ value: 'DNS', label: 'DNS' },
+		{ value: 'REDIS', label: 'REDIS' }
+	];
+
+	let value = $state('HTTPS');
+
+	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label  ?? fruits[0].label);
 </script>
 
 <Empty.Root>
@@ -60,7 +74,7 @@
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="logo">Name</Label>
 								<Input
-									class="border-zinc-700 text-white"
+									class=" border-zinc-700 text-white"
 									id="{id}-logo"
 									placeholder="oddinpay"
 									type="text"
@@ -69,13 +83,26 @@
 							</div>
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="title">Monitor Type</Label>
-								<Input
-									class="border-zinc-700 text-white"
-									id="{id}-title"
-									placeholder="Beep Uptime Monitor"
-									type="text"
-									required
-								/>
+								<Select.Root type="single" name="monitorType" required bind:value>
+									<Select.Trigger class="w-full border-zinc-700 text-white">
+										{triggerContent}
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Group>
+											<Select.Label>Protocol</Select.Label>
+											{#each fruits as fruit (fruit.value)}
+												<Select.Item
+													id="{id}-monitorType"
+													class="cursor-pointer"
+													value={fruit.value}
+													label={fruit.label}
+												>
+													{fruit.label}
+												</Select.Item>
+											{/each}
+										</Select.Group>
+									</Select.Content>
+								</Select.Root>
 							</div>
 
 							<div class="space-y-2">
@@ -89,9 +116,9 @@
 								/>
 							</div>
 						</div>
-					</form>
 
-					<Button class="mt-2 cursor-pointer" variant="outline">Save</Button>
+						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline">Save</Button>
+					</form>
 				</Dialog.Content>
 			</Dialog.Root>
 		</div>

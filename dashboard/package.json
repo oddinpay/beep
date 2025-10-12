@@ -14,7 +14,8 @@
 		"lint": "prettier --check . && eslint ."
 	},
 	"devDependencies": {
-		"@lucide/svelte": "^0.545.0",
+		"@internationalized/date": "^3.10.0",
+		"@lucide/svelte": "^0.544.0",
 		"@pyncz/tailwind-mask-image": "^2.0.0",
 		"@sveltejs/adapter-node": "^5.3.2",
 		"@sveltejs/kit": "^2.43.2",
