@@ -82,21 +82,12 @@
 								>
 									Create Page
 								</TabsTrigger>
-								<TabsTrigger
-									value="tab-3"
-									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
-								>
-									Settings
-								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-1">
 								<p class="p-4 text-center text-xs text-white">No status page created</p>
 							</TabsContent>
 							<TabsContent value="tab-2">
-								<Dialog />	
-							</TabsContent>
-							<TabsContent value="tab-3">
-								<p class="p-4 text-center text-xs text-white">Content for Tab 3</p>
+								<Dialog />
 							</TabsContent>
 						</Tabs>
 					</TabsContent>
