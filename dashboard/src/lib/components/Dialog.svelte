@@ -11,7 +11,7 @@
 
 	import { useImageUpload } from '$lib/hooks/use-image-upload.svelte';
 
-	import Pencil from '@lucide/svelte/icons/pencil';
+	import ImagePlus from '@lucide/svelte/icons/image-plus';
 
 	const profileImageHandler = useImageUpload({
 		initialImage: ''
@@ -107,11 +107,11 @@
 			{/if}
 			<button
 				type="button"
-				class="absolute right-2 bottom-1 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+				class="absolute cursor-pointer inset-0 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white transition-[color,box-shadow,background-color,backdrop-filter] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 {profileImageHandler.previewUrl ? 'hidden hover:flex' : 'flex'} hover:opacity-50"
 				onclick={profileImageHandler.handleThumbnailClick}
 				aria-label="Change profile picture"
 			>
-				<Pencil size={16} aria-hidden="true" />
+				<ImagePlus size={16} aria-hidden="true" />
 			</button>
 			<input
 				type="file"
