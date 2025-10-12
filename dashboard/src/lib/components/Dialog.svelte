@@ -20,7 +20,9 @@
 		180,
 		'Hey, I am Margaret, a web developer who loves turning ideas into amazing websites!'
 	);
-	const profileImageHandler = useImageUpload({ initialImage: '' });
+	const profileImageHandler = useImageUpload({
+		initialImage: ''
+	});
 
 	const id = $props.id();
 </script>
