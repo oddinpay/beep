@@ -41,14 +41,11 @@
 						<div
 							class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"
 							aria-hidden="true"
-						>
-							{@render Avatar()}
-						</div>
+						></div>
 
 						<Dialog.Header>
-							<Dialog.Title class="mt-10 text-gray-300 sm:text-center">Favicon</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
-								Set up and publish your status page.
+								Set up and publish your uptime monitor.
 							</Dialog.Description>
 						</Dialog.Header>
 					</div>
@@ -79,7 +76,7 @@
 						</div>
 					</form>
 
-					<Button class="mt-2 cursor-pointer" variant="outline">Publish Page</Button>
+					<Button class="mt-2 cursor-pointer" variant="outline">Save</Button>
 				</Dialog.Content>
 			</Dialog.Root>
 		</div>
