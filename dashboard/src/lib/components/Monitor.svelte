@@ -5,6 +5,8 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { cn } from '$lib/utils';
 
+	import { SquareActivity, Siren, ShieldAlert, House, CalendarCheck } from 'lucide-svelte';
+
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import IconFileOrientation from '@tabler/icons-svelte/icons/file-orientation';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
@@ -39,11 +41,14 @@
 				<Dialog.Content class="bg-zinc-900">
 					<div class="flex flex-col items-center gap-2">
 						<div
-							class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"
+							class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border"
 							aria-hidden="true"
-						></div>
+						>
+							<SquareActivity class="text-white h-10 w-10" />
+						</div>
 
 						<Dialog.Header>
+							<Dialog.Title class=" text-gray-300 sm:text-center">Add Monitor</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
 								Set up and publish your uptime monitor.
 							</Dialog.Description>
