@@ -63,10 +63,11 @@
 					<form class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="signup-name">Title</Label>
+								<Label class="font-bold text-gray-300" for="title">Title</Label>
 								<Input
+									style="font-family: 'Inter Variable', Arial, sans-serif;"
 									class="border-zinc-600 text-white"
-									id="{id}-signup-name"
+									id="{id}-title"
 									placeholder="Beep"
 									type="text"
 									required
@@ -74,10 +75,11 @@
 							</div>
 
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="signup-name">Title</Label>
+								<Label class="font-bold text-gray-300" for="slug">Slug</Label>
 								<Input
+									style="font-family: 'Inter Variable', Arial, sans-serif;"
 									class="border-zinc-600 text-white"
-									id="{id}-signup-name"
+									id="{id}-slug"
 									placeholder="Beep"
 									type="text"
 									required
