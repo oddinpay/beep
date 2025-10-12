@@ -3,6 +3,7 @@
 	import Input from '$lib/components/ui/input.svelte';
 	import Label from '$lib/components/ui/label.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import { cn } from '$lib/utils';
 
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import FolderCodeIcon from '@tabler/icons-svelte/icons/folder-code';
@@ -14,7 +15,7 @@
 		<Empty.Media variant="icon">
 			<FolderCodeIcon />
 		</Empty.Media>
-		<Empty.Title class="cursor-pointer text-gray-200">Let’s Get Started</Empty.Title>
+		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
 			You haven't created a status page yet. Get started by creating your first status page.
 		</Empty.Description>
@@ -22,7 +23,7 @@
 	<Empty.Content>
 		<div class="flex gap-2">
 			<Dialog.Root>
-				<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}
+				<Dialog.Trigger class={cn("cursor-pointer", buttonVariants({ variant: 'outline' }))}
 					>Create Status Page</Dialog.Trigger
 				>
 				<Dialog.Content class="bg-zinc-800">
@@ -90,7 +91,7 @@
 			</Dialog.Root>
 		</div>
 	</Empty.Content>
-	<Button variant="link" class="text-muted-foreground" size="sm">
+	<Button variant="link" class="text-gray-400" size="sm">
 		<a href="#/">
 			Learn More <ArrowUpRightIcon class="inline" />
 		</a>
