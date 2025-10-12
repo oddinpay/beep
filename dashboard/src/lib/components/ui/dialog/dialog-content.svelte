@@ -31,7 +31,7 @@
 	>
 		{@render children?.()}
 		<DialogPrimitive.Close
-			class="group text-gray-200 focus-visible:border-ring focus-visible:ring-ring/50 absolute top-3 right-3 flex size-7 items-center justify-center rounded transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:pointer-events-none"
+			class="group cursor-pointer text-gray-200 focus-visible:border-ring focus-visible:ring-ring/50 absolute top-3 right-3 flex size-7 items-center justify-center rounded transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:pointer-events-none"
 		>
 			<XIcon size={16} class="opacity-60 transition-opacity group-hover:opacity-100" />
 			<span class="sr-only">Close</span>
