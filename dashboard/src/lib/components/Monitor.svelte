@@ -32,6 +32,13 @@
 
 	let value = $state('HTTPS');
 
+	let name = $state('');
+
+	function handleOnSubmit(e: Event) {
+		e.preventDefault();
+		console.log('Submitted form data:', { name, value });
+	}
+
 	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[0].label);
 </script>
 
@@ -68,7 +75,7 @@
 						</Dialog.Header>
 					</div>
 
-					<form class="space-y-5">
+					<form onsubmit={handleOnSubmit} class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="logo">Name</Label>
@@ -77,6 +84,7 @@
 									id="{id}-logo"
 									placeholder="oddinpay"
 									type="text"
+									bind:value={name}
 									required
 								/>
 							</div>
@@ -115,7 +123,6 @@
 								/>
 							</div>
 						</div>
-
 						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline">Save</Button>
 					</form>
 				</Dialog.Content>
