@@ -10,7 +10,6 @@
 	import { SquareActivity, Siren, ShieldAlert, House, CalendarCheck } from 'lucide-svelte';
 
 	import * as Empty from '$lib/components/ui/empty/index.js';
-	import IconFileOrientation from '@tabler/icons-svelte/icons/file-orientation';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
 
 	import { useImageUpload } from '$lib/hooks/use-image-upload.svelte';
@@ -33,13 +32,13 @@
 
 	let value = $state('HTTPS');
 
-	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label  ?? fruits[0].label);
+	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[0].label);
 </script>
 
 <Empty.Root>
 	<Empty.Header>
 		<Empty.Media variant="icon">
-			<IconFileOrientation />
+			<SquareActivity />
 		</Empty.Media>
 		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
