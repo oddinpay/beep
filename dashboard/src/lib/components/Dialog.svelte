@@ -52,7 +52,7 @@
 						</div>
 
 						<Dialog.Header>
-							<Dialog.Title class="text-gray-300 sm:text-center mt-10">Favicon</Dialog.Title>
+							<Dialog.Title class="mt-10 text-gray-300 sm:text-center">Favicon</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
 								Set up and publish your status page.
 							</Dialog.Description>
@@ -62,19 +62,23 @@
 					<form class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="signup-name">Full name</Label>
-								<Input id="signup-name" placeholder="Matt Welsh" type="text" required />
-							</div>
-							<div class="space-y-2">
-								<Label for="signup-email">Email</Label>
-								<Input id="signup-email" placeholder="hi@yourcompany.com" type="email" required />
-							</div>
-							<div class="space-y-2">
-								<Label for="signup-password">Password</Label>
+								<Label class="font-bold text-gray-300" for="signup-name">Title</Label>
 								<Input
-									id="signup-password"
-									placeholder="Enter your password"
-									type="password"
+									class="border-zinc-600 text-white"
+									id="signup-name"
+									placeholder="Beep"
+									type="text"
+									required
+								/>
+							</div>
+
+							<div class="space-y-2">
+								<Label class="font-bold text-gray-300" for="signup-slug">Slug</Label>
+								<Input
+									class="border-zinc-600 text-white"
+									id="signup-slug"
+									placeholder="Enter your slug"
+									type="text"
 									required
 								/>
 							</div>
@@ -98,7 +102,7 @@
 </Empty.Root>
 
 {#snippet Avatar()}
-	<div class="px-6 mt-10">
+	<div class="mt-10 px-6">
 		<div
 			class="relative flex size-20 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-muted shadow-xs shadow-black/10"
 		>
