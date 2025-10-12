@@ -4,6 +4,7 @@
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 	import { SquareActivity, Siren, ShieldAlert, CalendarCheck, House } from 'lucide-svelte';
 	import { Gauge } from '$lib/components/ui/gauge';
+	import Dialog from '$lib/components/Dialog.svelte';
 
 	let currentTab = 'tab-0';
 </script>
@@ -92,7 +93,7 @@
 								<p class="p-4 text-center text-xs text-white">No status page created</p>
 							</TabsContent>
 							<TabsContent value="tab-2">
-								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
+								<Dialog />	
 							</TabsContent>
 							<TabsContent value="tab-3">
 								<p class="p-4 text-center text-xs text-white">Content for Tab 3</p>
