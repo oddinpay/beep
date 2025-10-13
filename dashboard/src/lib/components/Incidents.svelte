@@ -12,24 +12,27 @@
 	const id = $props.id();
 
 	const incidents = [
-		{ class: 'text-emerald-600', label: 'Resolved', value: 's1' },
-		{ class: 'text-yellow-500', label: 'In Progress', value: 's2' },
-		{ class: 'text-gray-500', label: 'Investigating', value: 's3' },
-		{ class: 'text-white', label: 'Identified', value: 's4' },
+		{ class: 'text-emerald-600', label: 'Resolved', value: 'i1' },
+		{ class: 'text-yellow-500', label: 'In Progress', value: 'i2' },
+		{ class: 'text-gray-500', label: 'Investigating', value: 'i3' },
+		{ class: 'text-white', label: 'Identified', value: 'i4' },
 	] as const;
 
 
-	let value = $state('s4');
+	let value = $state('i4');
 
 	let name = $state('');
 
+	let note = $state('');
+
 	function handleOnSubmit(e: Event) {
 		e.preventDefault();
-		console.log('Submitted form data:', { name, value });
+		console.log('Submitted form data:', { name, value, note });
 	}
 
 
 	const selected = $derived(incidents.find((i) => i.value === value));
+
 
 </script>
 
@@ -120,7 +123,18 @@
 										{/each}
 									</Select.Content>
 								</Select.Root>
-						    </div>						
+						    </div>	
+							<div class="space-y-2">
+								<Label class="font-bold text-gray-300" for="logo">Note</Label>
+								<Input
+									class=" border-zinc-700 text-white"
+									id="{id}-note"
+									placeholder="oddinpay"
+									type="text"
+									bind:value={note}
+									required
+								/>
+							</div>
 						</div>
 						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline"
 							>Create</Button
