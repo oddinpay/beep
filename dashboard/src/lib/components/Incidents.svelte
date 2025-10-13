@@ -84,7 +84,7 @@
 								<Input
 									class=" border-zinc-700 text-white"
 									id="{id}-logo"
-									placeholder="oddinpay"
+									placeholder="Payment errors"
 									type="text"
 									bind:value={name}
 									required
