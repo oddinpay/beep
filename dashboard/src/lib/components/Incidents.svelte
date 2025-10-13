@@ -107,10 +107,10 @@
 										{/if}
 									</Select.Trigger>
 									<Select.Content
-										class="[&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:items-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
+										class="bg-zinc-800 text-white [&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:items-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
 									>
 										<Select.Group>
-											<Select.Label>Status</Select.Label>
+											<Select.Label class="text-zinc-400">Status</Select.Label>
 											{#each items as item (item.value)}
 												<Select.Item class="cursor-pointer" value={item.value}>
 													{@render status(item)}
