@@ -19,19 +19,22 @@
 
 	let profileImageBase64: string | null = null;
 
-	if (profileImageHandler.files?.length) {
-		const file = profileImageHandler.files[0];
-		const reader = new FileReader();
-		reader.onload = () => {
-			const result = reader.result;
-			if (typeof result === 'string') {
-				profileImageBase64 = result.split(',')[1];
-			}
-		};
-		reader.readAsDataURL(file);
-	} else {
-		profileImageBase64 = null;
-	}
+	$effect(() => {
+		if (profileImageHandler.files?.length) {
+			const file = profileImageHandler.files[0];
+			const reader = new FileReader();
+			reader.onload = () => {
+				const result = reader.result;
+				if (typeof result === 'string') {
+					profileImageBase64 = result.split(',')[1];
+					console.log('base64 payload inside:', profileImageBase64);
+				}
+			};
+			reader.readAsDataURL(file);
+		} else {
+			profileImageBase64 = null;
+		}
+	});
 
 	console.log('base64 payload outside:', profileImageBase64);
 
