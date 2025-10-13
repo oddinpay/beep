@@ -5,7 +5,6 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { cn } from '$lib/utils';
 	import * as Select from '$lib/components/ui/select/index.js';
-
 	import { ShieldAlert } from 'lucide-svelte';
 
 	import * as Empty from '$lib/components/ui/empty/index.js';
