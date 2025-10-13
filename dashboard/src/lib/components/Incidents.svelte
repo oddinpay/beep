@@ -15,7 +15,7 @@
 		{ class: 'text-emerald-600', label: 'Resolved', value: 's1' },
 		{ class: 'text-amber-500', label: 'In Progress', value: 's3' },
 		{ class: 'text-gray-500', label: 'Investigating', value: 's4' },
-		{ class: 'text-white', label: 'Identified', value: 's5' }
+		{ class: 'text-gray-300', label: 'Identified', value: 's5' }
 	] as const;
 
 	let value = $state('s5');
@@ -107,7 +107,7 @@
 										{/if}
 									</Select.Trigger>
 									<Select.Content
-										class="[&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:items-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0 [&_*[data-select-item]>span>svg]:text-muted-foreground/80"
+										class="[&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:items-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
 									>
 										<Select.Group>
 											<Select.Label>Status</Select.Label>
