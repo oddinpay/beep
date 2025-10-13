@@ -19,7 +19,7 @@
 		{ class: 'text-white', label: 'Identified', value: 's5' }
 	] as const;
 
-	let value = $state('s1');
+	let value = $state('s5');
 
 	let name = $state('');
 
