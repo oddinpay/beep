@@ -62,7 +62,7 @@
 						</div>
 
 						<Dialog.Header>
-							<Dialog.Title class=" text-gray-300 sm:text-center">Add New Incident</Dialog.Title>
+							<Dialog.Title class=" text-gray-300 sm:text-center">Create New Incident</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
 								Set up and publish your incident.
 							</Dialog.Description>
