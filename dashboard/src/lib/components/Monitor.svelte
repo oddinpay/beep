@@ -14,7 +14,7 @@
 
 	const id = $props.id();
 
-	const fruits = [
+	const services = [
 		{ value: 'HTTPS', label: 'HTTPS' },
 		{ value: 'HTTP', label: 'HTTP' },
 		{ value: 'TCP', label: 'TCP' },
@@ -33,7 +33,7 @@
 		console.log('Submitted form data:', { name, value });
 	}
 
-	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[0].label);
+	const triggerContent = $derived(services.find((f) => f.value === value)?.label ?? services[0].label);
 </script>
 
 <Empty.Root>
@@ -92,8 +92,8 @@
 									</Select.Trigger>
 									<Select.Content class="bg-zinc-800 text-white">
 										<Select.Group>
-											<Select.Label class="text-zinc-400">Service</Select.Label>
-											{#each fruits as fruit (fruit.value)}
+											<Select.Label class="text-zinc-400">services</Select.Label>
+											{#each services as fruit (fruit.value)}
 												<Select.Item
 													id="{id}-monitorType"
 													class="cursor-pointer  data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300"

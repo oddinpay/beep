@@ -11,7 +11,7 @@
 
 	const id = $props.id();
 
-	const items = [
+	const incidents = [
 		{ class: 'text-emerald-600', label: 'Resolved', value: 's1' },
 		{ class: 'text-yellow-500', label: 'In Progress', value: 's2' },
 		{ class: 'text-gray-500', label: 'Investigating', value: 's3' },
@@ -29,13 +29,13 @@
 	}
 
 
-	const selected = $derived(items.find((i) => i.value === value));
+	const selected = $derived(incidents.find((i) => i.value === value));
 
 </script>
 
 
-{#snippet status(item: (typeof items)[number])}
-	<span class="flex items-center gap-2">
+{#snippet status(item: (typeof incidents)[number])}
+	<span class="flex incidents-center gap-2">
 		<svg
 			width="8"
 			height="8"
@@ -68,9 +68,9 @@
 					>Create Incident</Dialog.Trigger
 				>
 				<Dialog.Content class="bg-zinc-900">
-					<div class="flex flex-col items-center gap-2">
+					<div class="flex flex-col incidents-center gap-2">
 						<div
-							class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border"
+							class="flex size-10 shrink-0 incidents-center justify-center rounded-full border border-border"
 							aria-hidden="true"
 						>
 							<ShieldAlert class="h-10 w-10 text-white" />
@@ -102,7 +102,7 @@
 									<Select.Root type="single" bind:value>
 									<Select.Trigger
 										id={id}
-										class="w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
+										class="w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200 [&>span]:flex [&>span]:incidents-center [&>span]:gap-2 [&>span_svg]:shrink-0"
 									>
 										{#if selected}
 											{@render status(selected)}
@@ -111,9 +111,9 @@
 										{/if}
 									</Select.Trigger>
 									<Select.Content
-										class="bg-zinc-800  text-white [&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:items-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
+										class="bg-zinc-800  text-white [&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:incidents-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
 									>
-										{#each items as item (item.value)}
+										{#each incidents as item (item.value)}
 											<Select.Item class="cursor-pointer data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300" value={item.value}>
 												{@render status(item)}
 											</Select.Item>
