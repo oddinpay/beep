@@ -114,13 +114,27 @@
 								</Select.Root>
 							</div>
 
-
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="slug">URL</Label>
+								{#if value === 'PING'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else if value === 'DNS'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else if value === 'REDIS'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else if value === 'SMTP'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else if value === 'TCP'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else}
+									<Label class="font-bold text-gray-300" for="slug">URL</Label>
+								{/if}
+
 								<Input
 									class="border-zinc-700 text-white"
 									id="{id}-description"
-									placeholder="https://oddinpay.com"
+									placeholder={value === 'HTTP' || value === 'HTTPS'
+										? 'https://oddinpay.com'
+										: 'IP address or domain'}
 									type="text"
 									required
 								/>
