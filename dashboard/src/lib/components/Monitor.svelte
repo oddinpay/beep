@@ -92,7 +92,7 @@
 									</Select.Trigger>
 									<Select.Content class="bg-zinc-800 text-white">
 										<Select.Group>
-											<Select.Label>Service</Select.Label>
+											<Select.Label class="text-zinc-400">Service</Select.Label>
 											{#each fruits as fruit (fruit.value)}
 												<Select.Item
 													id="{id}-monitorType"
