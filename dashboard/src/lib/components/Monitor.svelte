@@ -86,17 +86,17 @@
 								<Label class="font-bold text-gray-300" for="title">Monitor Type</Label>
 								<Select.Root type="single" name="monitorType" required bind:value>
 									<Select.Trigger
-										class="w-full border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200"
+										class="w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200"
 									>
 										{triggerContent}
 									</Select.Trigger>
-									<Select.Content>
+									<Select.Content class="bg-zinc-800 text-white">
 										<Select.Group>
 											<Select.Label>Service</Select.Label>
 											{#each fruits as fruit (fruit.value)}
 												<Select.Item
 													id="{id}-monitorType"
-													class="cursor-pointer"
+													class="cursor-pointer  data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300"
 													value={fruit.value}
 													label={fruit.label}
 												>
