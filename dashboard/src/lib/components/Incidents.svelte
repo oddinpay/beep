@@ -170,7 +170,9 @@
 								</div>
 							{/if}
 						</div>
-						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline">Save</Button>
+						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline"
+							>Create</Button
+						>
 					</form>
 				</Dialog.Content>
 			</Dialog.Root>
