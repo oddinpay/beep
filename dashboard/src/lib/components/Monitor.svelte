@@ -140,7 +140,7 @@
 								/>
 							</div>
 
-							{#if value === 'TCP'}
+							{#if value === 'TCP' || value === 'REDIS' || value === 'SMTP'}
 								<div class="space-y-2">
 									<Label class="font-bold text-gray-300" for="slug">Port</Label>
 									<Input
