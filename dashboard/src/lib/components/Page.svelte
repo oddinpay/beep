@@ -27,6 +27,7 @@
 				const result = reader.result;
 				if (typeof result === 'string') {
 					profileImageBase64 = result.split(',')[1];
+					console.log('base64 payload inside:', profileImageBase64);
 				}
 			};
 			reader.readAsDataURL(file);
