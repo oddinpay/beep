@@ -101,7 +101,7 @@
 								<Select.Root type="single" bind:value>
 									<Select.Trigger
 										id={uid}
-										class="w-full border-zinc-700 text-white [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
+										class="w-full cursor-pointer border-zinc-700 text-white [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
 									>
 										{#if selected}
 											{@render status(selected)}
@@ -113,7 +113,7 @@
 										class="[&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:items-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0 [&_*[data-select-item]>span>svg]:text-muted-foreground/80"
 									>
 										{#each items as item (item.value)}
-											<Select.Item value={item.value}>
+											<Select.Item class="cursor-pointer" value={item.value}>
 												{@render status(item)}
 											</Select.Item>
 										{/each}
