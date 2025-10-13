@@ -80,7 +80,7 @@
 					<form onsubmit={handleOnSubmit} class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Name</Label>
+								<Label class="font-bold text-gray-300" for="logo">Title</Label>
 								<Input
 									class=" border-zinc-700 text-white"
 									id="{id}-logo"
