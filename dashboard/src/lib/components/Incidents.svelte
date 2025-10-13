@@ -112,7 +112,10 @@
 										<Select.Group>
 											<Select.Label class="text-gray-300">Status</Select.Label>
 											{#each items as item (item.value)}
-												<Select.Item class="cursor-pointer" value={item.value}>
+												<Select.Item
+													class="cursor-pointer data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white"
+													value={item.value}
+												>
 													{@render status(item)}
 												</Select.Item>
 											{/each}
