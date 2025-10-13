@@ -51,14 +51,14 @@
 		</Empty.Media>
 		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
-			Get started by creating an uptime monitor, and you’ll start seeing real-time updates.
+			Get started by creating an incident, and you’ll start seeing incidents.
 		</Empty.Description>
 	</Empty.Header>
 	<Empty.Content>
 		<div class="flex gap-2">
 			<Dialog.Root>
 				<Dialog.Trigger class={cn('cursor-pointer', buttonVariants({ variant: 'outline' }))}
-					>Add Monitor</Dialog.Trigger
+					>Add Incident</Dialog.Trigger
 				>
 				<Dialog.Content class="bg-zinc-900">
 					<div class="flex flex-col items-center gap-2">
