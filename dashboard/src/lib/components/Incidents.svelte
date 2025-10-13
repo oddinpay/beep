@@ -97,7 +97,7 @@
 								<Select.Root type="single" required bind:value>
 									<Select.Trigger
 										id={uid}
-										class="[&_svg:not([class*='text-'])]:text-gray-200 w-full cursor-pointer border-zinc-700 text-white [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
+										class="[&_svg:not([class*='text-'])]:text-zinc-200 w-full cursor-pointer border-zinc-700 text-white [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
 									>
 										{#if selected}
 											{@render status(selected)}
