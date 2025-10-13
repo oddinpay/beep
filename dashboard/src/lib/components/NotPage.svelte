@@ -10,7 +10,7 @@
 		<Empty.Media variant="icon">
 			<IconFileOrientation />
 		</Empty.Media>
-		<Empty.Title class=" text-gray-200">404 Not Found</Empty.Title>
+		<Empty.Title class=" text-gray-200">Page Not Found</Empty.Title>
 		<Empty.Description class="text-gray-400">
 			The page you are looking for doesn't exist or has been moved.
 		</Empty.Description>

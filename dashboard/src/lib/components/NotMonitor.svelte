@@ -10,9 +10,9 @@
 		<Empty.Media variant="icon">
 			<SquareActivity />
 		</Empty.Media>
-		<Empty.Title class=" text-gray-200">404 Not Found</Empty.Title>
+		<Empty.Title class=" text-gray-200">Monitor Not Found</Empty.Title>
 		<Empty.Description class="text-gray-400">
-			The page you are looking for doesn't exist or has been moved.
+			The monitor you are looking for doesn't exist or has been moved.
 		</Empty.Description>
 	</Empty.Header>
 	<Button variant="link" class="text-gray-400" size="sm">
