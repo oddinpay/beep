@@ -16,7 +16,7 @@
 		{ class: 'text-emerald-600', label: 'Resolved', value: 's1' },
 		{ class: 'text-amber-500', label: 'In Progress', value: 's3' },
 		{ class: 'text-gray-500', label: 'Investigating', value: 's4' },
-		{ class: 'text-red-500', label: 'Identified', value: 's5' }
+		{ class: 'text-white', label: 'Identified', value: 's5' }
 	] as const;
 
 	let value = $state('s1');
