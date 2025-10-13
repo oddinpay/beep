@@ -17,6 +17,24 @@
 		initialImage: ''
 	});
 
+	let profileImageBase64: string | null = null;
+
+	if (profileImageHandler.files?.length) {
+		const file = profileImageHandler.files[0];
+		const reader = new FileReader();
+		reader.onload = () => {
+			const result = reader.result;
+			if (typeof result === 'string') {
+				profileImageBase64 = result.split(',')[1];
+			}
+		};
+		reader.readAsDataURL(file);
+	} else {
+		profileImageBase64 = null;
+	}
+
+	console.log('base64 payload outside:', profileImageBase64);
+
 	const id = $props.id();
 </script>
 
@@ -40,7 +58,6 @@
 					<div class="flex flex-col items-center gap-2">
 						<div
 							class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"
-							aria-hidden="true"
 						>
 							{@render Avatar()}
 						</div>
