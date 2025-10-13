@@ -4,47 +4,37 @@
 	import Label from '$lib/components/ui/label.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { cn } from '$lib/utils';
+
 	import * as Select from '$lib/components/ui/select/index.js';
+
 	import { ShieldAlert } from 'lucide-svelte';
 
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
 
-	const items = [
-		{ class: 'text-emerald-600', label: 'Resolved', value: 's1' },
-		{ class: 'text-amber-500', label: 'In Progress', value: 's3' },
-		{ class: 'text-gray-500', label: 'Investigating', value: 's4' },
-		{ class: 'text-white', label: 'Identified', value: 's5' }
-	] as const;
+	const id = $props.id();
 
-	let value = $state('s5');
+	const fruits = [
+		{ value: 'HTTPS', label: 'HTTPS' },
+		{ value: 'HTTP', label: 'HTTP' },
+		{ value: 'TCP', label: 'TCP' },
+		{ value: 'DNS', label: 'DNS' },
+		{ value: 'REDIS', label: 'REDIS' },
+		{ value: 'SMTP', label: 'SMTP' },
+		{ value: 'PING', label: 'PING' }
+	];
+
+	let value = $state('HTTPS');
 
 	let name = $state('');
-
-	const selected = $derived(items.find((i) => i.value === value));
-
-	const uid = $props.id();
 
 	function handleOnSubmit(e: Event) {
 		e.preventDefault();
 		console.log('Submitted form data:', { name, value });
 	}
-</script>
 
-{#snippet status(item: (typeof items)[number])}
-	<span class="flex items-center gap-2">
-		<svg
-			fill="currentColor"
-			viewBox="0 0 8 8"
-			xmlns="http://www.w3.org/2000/svg"
-			class={item.class}
-			aria-hidden="true"
-		>
-			<circle cx="4" cy="4" r="4" />
-		</svg>
-		<span class="truncate">{item.label}</span>
-	</span>
-{/snippet}
+	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[0].label);
+</script>
 
 <Empty.Root>
 	<Empty.Header>
@@ -53,7 +43,7 @@
 		</Empty.Media>
 		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
-			Get started by creating an incident, and you’ll start seeing updates.
+			Get started by creating an Incident, and you’ll see real-time updates.
 		</Empty.Description>
 	</Empty.Header>
 	<Empty.Content>
@@ -82,40 +72,35 @@
 					<form onsubmit={handleOnSubmit} class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Title</Label>
+								<Label class="font-bold text-gray-300" for="logo">Name</Label>
 								<Input
 									class=" border-zinc-700 text-white"
-									id="{uid}-logo"
-									placeholder="Payment errors"
+									id="{id}-logo"
+									placeholder="oddinpay"
 									type="text"
 									bind:value={name}
 									required
 								/>
 							</div>
 							<div class="space-y-2">
-								<Label for="{uid}-title" class="font-bold text-gray-300">Status</Label>
-								<Select.Root type="single" required bind:value>
+								<Label class="font-bold text-gray-300" for="title">Monitor Type</Label>
+								<Select.Root type="single" name="monitorType" required bind:value>
 									<Select.Trigger
-										id={uid}
-										class="[&_svg:not([class*='text-'])]:text-zinc-200 w-full cursor-pointer border-zinc-700 text-white [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
+										class="w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200"
 									>
-										{#if selected}
-											{@render status(selected)}
-										{:else}
-											Select a status
-										{/if}
+										{triggerContent}
 									</Select.Trigger>
-									<Select.Content
-										class="bg-zinc-800 text-white [&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]:hover]:bg-zinc-700 [&_*[data-select-item]:hover]:text-white [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:items-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
-									>
+									<Select.Content class="bg-zinc-800 text-white">
 										<Select.Group>
-											<Select.Label class="text-gray-300">Status</Select.Label>
-											{#each items as item (item.value)}
+											<Select.Label>Service</Select.Label>
+											{#each fruits as fruit (fruit.value)}
 												<Select.Item
-													class="cursor-pointer data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300"
-													value={item.value}
+													id="{id}-monitorType"
+													class="cursor-pointer  data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300"
+													value={fruit.value}
+													label={fruit.label}
 												>
-													{@render status(item)}
+													{fruit.label}
 												</Select.Item>
 											{/each}
 										</Select.Group>
@@ -124,11 +109,23 @@
 							</div>
 
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="slug">Note</Label>
+								{#if value === 'PING'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else if value === 'DNS'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else if value === 'REDIS'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else if value === 'SMTP'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else if value === 'TCP'}
+									<Label class="font-bold text-gray-300" for="slug">Host</Label>
+								{:else}
+									<Label class="font-bold text-gray-300" for="slug">URL</Label>
+								{/if}
 
 								<Input
 									class="border-zinc-700 text-white"
-									id="{uid}-description"
+									id="{id}-description"
 									placeholder={value === 'HTTP' || value === 'HTTPS'
 										? 'https://oddinpay.com'
 										: 'IP address or domain'}
@@ -136,6 +133,42 @@
 									required
 								/>
 							</div>
+
+							{#if value === 'TCP' || value === 'REDIS' || value === 'SMTP'}
+								<div class="space-y-2">
+									<Label class="font-bold text-gray-300" for="slug">Port</Label>
+									<Input
+										class="border-zinc-700 text-white"
+										id="{id}-description"
+										placeholder="443"
+										type="number"
+										required
+									/>
+								</div>
+							{/if}
+							{#if value === 'REDIS' || value === 'SMTP'}
+								<div class="space-y-2">
+									<Label class="font-bold text-gray-300" for="slug">Username</Label>
+									<Input
+										class="border-zinc-700 text-white"
+										id="{id}-description"
+										placeholder="sachinsenal"
+										type="text"
+										required
+									/>
+								</div>
+
+								<div class="space-y-2">
+									<Label class="font-bold text-gray-300" for="slug">Password</Label>
+									<Input
+										class="border-zinc-700 text-white"
+										id="{id}-description"
+										placeholder="supersecret"
+										type="text"
+										required
+									/>
+								</div>
+							{/if}
 						</div>
 						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline">Save</Button>
 					</form>
