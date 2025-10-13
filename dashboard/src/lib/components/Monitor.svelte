@@ -33,7 +33,7 @@
 		console.log('Submitted form data:', { name, value });
 	}
 
-	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[2].label);
+	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[0].label);
 </script>
 
 <Empty.Root>
