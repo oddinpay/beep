@@ -19,7 +19,7 @@
 	] as const;
 
 
-	let value = $state('s1');
+	let value = $state('s4');
 
 	let name = $state('');
 
