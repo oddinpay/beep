@@ -27,7 +27,9 @@
 		{ value: 'HTTP', label: 'HTTP' },
 		{ value: 'TCP', label: 'TCP' },
 		{ value: 'DNS', label: 'DNS' },
-		{ value: 'REDIS', label: 'REDIS' }
+		{ value: 'REDIS', label: 'REDIS' },
+		{ value: 'SMTP', label: 'SMTP' },
+		{ value: 'PING', label: 'PING' }
 	];
 
 	let value = $state('HTTPS');
@@ -117,11 +119,24 @@
 								<Input
 									class="border-zinc-700 text-white"
 									id="{id}-description"
-									placeholder="Status page"
+									placeholder="https://oddinpay.com"
 									type="text"
 									required
 								/>
 							</div>
+
+							{#if value === 'TCP'}
+								<div class="space-y-2">
+									<Label class="font-bold text-gray-300" for="slug">Port</Label>
+									<Input
+										class="border-zinc-700 text-white"
+										id="{id}-description"
+										placeholder="443"
+										type="number"
+										required
+									/>
+								</div>
+							{/if}
 						</div>
 						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline">Save</Button>
 					</form>
