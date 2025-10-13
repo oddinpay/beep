@@ -98,7 +98,7 @@
 									</Select.Trigger>
 									<Select.Content>
 										<Select.Group>
-											<Select.Label>Protocol</Select.Label>
+											<Select.Label>Service</Select.Label>
 											{#each fruits as fruit (fruit.value)}
 												<Select.Item
 													id="{id}-monitorType"
