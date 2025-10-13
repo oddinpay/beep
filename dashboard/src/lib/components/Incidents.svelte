@@ -7,7 +7,7 @@
 
 	import * as Select from '$lib/components/ui/select/index.js';
 
-	import { ShieldAlert} from 'lucide-svelte';
+	import { ShieldAlert } from 'lucide-svelte';
 
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
@@ -72,7 +72,7 @@
 						<Dialog.Header>
 							<Dialog.Title class=" text-gray-300 sm:text-center">Add New Incident</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
-								Set up and publish your uptime incident.
+								Set up and publish your incident.
 							</Dialog.Description>
 						</Dialog.Header>
 					</div>

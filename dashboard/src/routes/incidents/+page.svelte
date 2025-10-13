@@ -3,6 +3,7 @@
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 	import { SquareActivity, Siren, ShieldAlert, House, CalendarCheck } from 'lucide-svelte';
 	import Header from '$lib/components/Header.svelte';
+	import Incidents from '$lib/components/Incidents.svelte';
 
 	let currentTab = 'tab-2';
 </script>
@@ -94,7 +95,7 @@
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-2">
-								<p class="p-4 text-center text-xs text-white">No status page created</p>
+								<Incidents />
 							</TabsContent>
 							<TabsContent value="tab-3">
 								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
