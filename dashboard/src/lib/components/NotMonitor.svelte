@@ -15,7 +15,6 @@
 			The page you are looking for doesn't exist or has been moved.
 		</Empty.Description>
 	</Empty.Header>
-	<Empty.Content></Empty.Content>
 	<Button variant="link" class="text-gray-400" size="sm">
 		<a href="#/">
 			Learn More <ArrowUpRightIcon class="inline" />
