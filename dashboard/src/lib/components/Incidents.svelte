@@ -15,9 +15,8 @@
 		{ class: 'text-emerald-600', label: 'Resolved', value: 'i1' },
 		{ class: 'text-yellow-500', label: 'In Progress', value: 'i2' },
 		{ class: 'text-gray-500', label: 'Investigating', value: 'i3' },
-		{ class: 'text-white', label: 'Identified', value: 'i4' },
+		{ class: 'text-white', label: 'Identified', value: 'i4' }
 	] as const;
-
 
 	let value = $state('i4');
 
@@ -30,14 +29,11 @@
 		console.log('Submitted form data:', { name, value, note });
 	}
 
-
 	const selected = $derived(incidents.find((i) => i.value === value));
-
 </script>
 
-
 {#snippet status(item: (typeof incidents)[number])}
-	<span class="flex incidents-center gap-2">
+	<span class="incidents-center flex gap-2">
 		<svg
 			width="8"
 			height="8"
@@ -70,9 +66,9 @@
 					>Create Incident</Dialog.Trigger
 				>
 				<Dialog.Content class="bg-zinc-900">
-					<div class="flex flex-col incidents-center gap-2">
+					<div class="flex flex-col items-center gap-2">
 						<div
-							class="flex size-10 shrink-0 incidents-center justify-center rounded-full border border-border"
+							class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border"
 							aria-hidden="true"
 						>
 							<ShieldAlert class="h-10 w-10 text-white" />
@@ -89,11 +85,11 @@
 					<form onsubmit={handleOnSubmit} class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Name</Label>
+								<Label class="font-bold text-gray-300" for="logo">Title</Label>
 								<Input
 									class=" border-zinc-700 text-white"
 									id="{id}-logo"
-									placeholder="oddinpay"
+									placeholder="Payment Errors"
 									type="text"
 									bind:value={name}
 									required
@@ -101,10 +97,10 @@
 							</div>
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="{id}-title">Status</Label>
-									<Select.Root type="single" bind:value>
+								<Select.Root type="single" bind:value>
 									<Select.Trigger
-										id={id}
-										class="w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200 [&>span]:flex [&>span]:incidents-center [&>span]:gap-2 [&>span_svg]:shrink-0"
+										{id}
+										class="[&>span]:incidents-center w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200 [&>span]:flex [&>span]:gap-2 [&>span_svg]:shrink-0"
 									>
 										{#if selected}
 											{@render status(selected)}
@@ -113,22 +109,25 @@
 										{/if}
 									</Select.Trigger>
 									<Select.Content
-										class="bg-zinc-800  text-white [&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:incidents-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
+										class="[&_*[data-select-item]>span]:incidents-center  bg-zinc-800 text-white [&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
 									>
 										{#each incidents as item (item.value)}
-											<Select.Item class="cursor-pointer data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300" value={item.value}>
+											<Select.Item
+												class="cursor-pointer data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300"
+												value={item.value}
+											>
 												{@render status(item)}
 											</Select.Item>
 										{/each}
 									</Select.Content>
 								</Select.Root>
-						    </div>	
+							</div>
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="logo">Note</Label>
 								<Input
 									class=" border-zinc-700 text-white"
 									id="{id}-note"
-									placeholder="oddinpay"
+									placeholder="Investigating the issue"
 									type="text"
 									bind:value={note}
 									required
