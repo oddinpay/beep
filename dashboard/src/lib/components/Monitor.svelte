@@ -152,6 +152,29 @@
 									/>
 								</div>
 							{/if}
+							{#if value === 'REDIS' || value === 'SMTP'}
+								<div class="space-y-2">
+									<Label class="font-bold text-gray-300" for="slug">Username</Label>
+									<Input
+										class="border-zinc-700 text-white"
+										id="{id}-description"
+										placeholder="sachinsenal"
+										type="text"
+										required
+									/>
+								</div>
+
+								<div class="space-y-2">
+									<Label class="font-bold text-gray-300" for="slug">Password</Label>
+									<Input
+										class="border-zinc-700 text-white"
+										id="{id}-description"
+										placeholder="supersecret"
+										type="text"
+										required
+									/>
+								</div>
+							{/if}
 						</div>
 						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline">Save</Button>
 					</form>
