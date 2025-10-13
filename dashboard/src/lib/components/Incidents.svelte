@@ -122,19 +122,7 @@
 							</div>
 
 							<div class="space-y-2">
-								{#if value === 'PING'}
-									<Label class="font-bold text-gray-300" for="slug">Host</Label>
-								{:else if value === 'DNS'}
-									<Label class="font-bold text-gray-300" for="slug">Host</Label>
-								{:else if value === 'REDIS'}
-									<Label class="font-bold text-gray-300" for="slug">Host</Label>
-								{:else if value === 'SMTP'}
-									<Label class="font-bold text-gray-300" for="slug">Host</Label>
-								{:else if value === 'TCP'}
-									<Label class="font-bold text-gray-300" for="slug">Host</Label>
-								{:else}
-									<Label class="font-bold text-gray-300" for="slug">URL</Label>
-								{/if}
+								<Label class="font-bold text-gray-300" for="slug">Note</Label>
 
 								<Input
 									class="border-zinc-700 text-white"
@@ -146,19 +134,6 @@
 									required
 								/>
 							</div>
-
-							{#if value === 'TCP' || value === 'REDIS' || value === 'SMTP'}
-								<div class="space-y-2">
-									<Label class="font-bold text-gray-300" for="slug">Port</Label>
-									<Input
-										class="border-zinc-700 text-white"
-										id="{uid}-description"
-										placeholder="443"
-										type="number"
-										required
-									/>
-								</div>
-							{/if}
 						</div>
 						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline">Save</Button>
 					</form>
