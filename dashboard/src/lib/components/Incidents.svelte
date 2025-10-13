@@ -97,7 +97,7 @@
 								<Select.Root type="single" required bind:value>
 									<Select.Trigger
 										id={uid}
-										class="w-full cursor-pointer border-zinc-700 text-white [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
+										class="[&_svg:not([class*='text-'])]:text-gray-200 w-full cursor-pointer border-zinc-700 text-white [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
 									>
 										{#if selected}
 											{@render status(selected)}
@@ -112,7 +112,7 @@
 											<Select.Label class="text-gray-300">Status</Select.Label>
 											{#each items as item (item.value)}
 												<Select.Item
-													class="cursor-pointer data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white"
+													class="cursor-pointer data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300"
 													value={item.value}
 												>
 													{@render status(item)}
