@@ -12,14 +12,6 @@
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
 
-	import { useImageUpload } from '$lib/hooks/use-image-upload.svelte';
-
-	import ImagePlus from '@lucide/svelte/icons/image-plus';
-
-	const profileImageHandler = useImageUpload({
-		initialImage: ''
-	});
-
 	const id = $props.id();
 
 	const fruits = [
@@ -41,7 +33,7 @@
 		console.log('Submitted form data:', { name, value });
 	}
 
-	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[0].label);
+	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[2].label);
 </script>
 
 <Empty.Root>
@@ -188,39 +180,3 @@
 		</a>
 	</Button>
 </Empty.Root>
-
-{#snippet Avatar()}
-	<label class="mt-10 cursor-pointer px-6" aria-label="Upload profile picture">
-		<div
-			class="relative flex size-20 items-center justify-center overflow-hidden rounded-full border-4 border-zinc-600 bg-zinc-700 shadow-xs shadow-black/10"
-		>
-			{#if profileImageHandler.previewUrl}
-				<img
-					src={profileImageHandler.previewUrl}
-					class="size-full object-cover"
-					width={80}
-					height={80}
-					alt="Profile avatar"
-				/>
-			{/if}
-			<button
-				type="button"
-				class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-zinc-800 text-white backdrop-blur-sm transition-[color,box-shadow,background-color,backdrop-filter] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 {profileImageHandler.previewUrl
-					? 'hidden hover:flex'
-					: 'flex'} hover:opacity-50"
-				onclick={profileImageHandler.handleThumbnailClick}
-				aria-label="Change profile picture"
-			>
-				<ImagePlus size={16} aria-hidden="true" />
-			</button>
-			<input
-				type="file"
-				bind:this={profileImageHandler.fileInput}
-				bind:files={profileImageHandler.files}
-				class="hidden"
-				accept="image/*"
-				aria-label="Upload profile picture"
-			/>
-		</div>
-	</label>
-{/snippet}

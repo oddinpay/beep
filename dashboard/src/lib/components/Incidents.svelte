@@ -12,36 +12,25 @@
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
 
-	import { useImageUpload } from '$lib/hooks/use-image-upload.svelte';
+	const items = [
+		{ class: 'text-emerald-600', label: 'Resolved', value: 's1' },
+		{ class: 'text-amber-500', label: 'In Progress', value: 's3' },
+		{ class: 'text-gray-500', label: 'Investigating', value: 's4' },
+		{ class: 'text-red-500', label: 'Identified', value: 's5' }
+	] as const;
 
-	import ImagePlus from '@lucide/svelte/icons/image-plus';
+	let value = $state('s1');
 
-	const profileImageHandler = useImageUpload({
-		initialImage: ''
-	});
-
-	const id = $props.id();
-
-	const fruits = [
-		{ value: 'HTTPS', label: 'HTTPS' },
-		{ value: 'HTTP', label: 'HTTP' },
-		{ value: 'TCP', label: 'TCP' },
-		{ value: 'DNS', label: 'DNS' },
-		{ value: 'REDIS', label: 'REDIS' },
-		{ value: 'SMTP', label: 'SMTP' },
-		{ value: 'PING', label: 'PING' }
-	];
-
-	let value = $state('HTTPS');
+	const selected = $derived(items.find((i) => i.value === value)?.label ?? items[0].label);
 
 	let name = $state('');
+
+	const uid = $props.id();
 
 	function handleOnSubmit(e: Event) {
 		e.preventDefault();
 		console.log('Submitted form data:', { name, value });
 	}
-
-	const triggerContent = $derived(fruits.find((f) => f.value === value)?.label ?? fruits[0].label);
 </script>
 
 <Empty.Root>
@@ -91,14 +80,14 @@
 								/>
 							</div>
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="title">Monitor Type</Label>
+								<Label class="font-bold text-gray-300" for="title">Status</Label>
 								<Select.Root type="single" name="monitorType" required bind:value>
 									<Select.Trigger class="w-full border-zinc-700 text-white">
 										{triggerContent}
 									</Select.Trigger>
 									<Select.Content>
 										<Select.Group>
-											<Select.Label>Service</Select.Label>
+											<Select.Label>Status</Select.Label>
 											{#each fruits as fruit (fruit.value)}
 												<Select.Item
 													id="{id}-monitorType"
@@ -189,38 +178,19 @@
 	</Button>
 </Empty.Root>
 
-{#snippet Avatar()}
-	<label class="mt-10 cursor-pointer px-6" aria-label="Upload profile picture">
-		<div
-			class="relative flex size-20 items-center justify-center overflow-hidden rounded-full border-4 border-zinc-600 bg-zinc-700 shadow-xs shadow-black/10"
+{#snippet status(item: (typeof fruits)[number])}
+	<span class="flex items-center gap-2">
+		<svg
+			width="8"
+			height="8"
+			fill="currentColor"
+			viewBox="0 0 8 8"
+			xmlns="http://www.w3.org/2000/svg"
+			class={item.class}
+			aria-hidden="true"
 		>
-			{#if profileImageHandler.previewUrl}
-				<img
-					src={profileImageHandler.previewUrl}
-					class="size-full object-cover"
-					width={80}
-					height={80}
-					alt="Profile avatar"
-				/>
-			{/if}
-			<button
-				type="button"
-				class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-zinc-800 text-white backdrop-blur-sm transition-[color,box-shadow,background-color,backdrop-filter] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 {profileImageHandler.previewUrl
-					? 'hidden hover:flex'
-					: 'flex'} hover:opacity-50"
-				onclick={profileImageHandler.handleThumbnailClick}
-				aria-label="Change profile picture"
-			>
-				<ImagePlus size={16} aria-hidden="true" />
-			</button>
-			<input
-				type="file"
-				bind:this={profileImageHandler.fileInput}
-				bind:files={profileImageHandler.files}
-				class="hidden"
-				accept="image/*"
-				aria-label="Upload profile picture"
-			/>
-		</div>
-	</label>
+			<circle cx="4" cy="4" r="4" />
+		</svg>
+		<span class="truncate">{item.label}</span>
+	</span>
 {/snippet}
