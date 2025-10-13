@@ -51,7 +51,7 @@
 		</Empty.Media>
 		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
-			Get started by creating an incident, and you’ll start seeing incidents.
+			Get started by creating an incident, and you’ll start seeing updates.
 		</Empty.Description>
 	</Empty.Header>
 	<Empty.Content>
