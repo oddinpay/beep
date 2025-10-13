@@ -98,7 +98,7 @@
 							</div>
 							<div class="space-y-2">
 								<Label for="{uid}-title" class="font-bold text-gray-300">Status</Label>
-								<Select.Root type="single" bind:value>
+								<Select.Root type="single" required bind:value>
 									<Select.Trigger
 										id={uid}
 										class="w-full cursor-pointer border-zinc-700 text-white [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
