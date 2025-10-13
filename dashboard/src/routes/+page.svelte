@@ -5,6 +5,7 @@
 	import { SquareActivity, Siren, ShieldAlert, CalendarCheck, House } from 'lucide-svelte';
 	import { Gauge } from '$lib/components/ui/gauge';
 	import Page from '$lib/components/Page.svelte';
+	import NotPage from '$lib/components/NotPage.svelte';
 	let currentTab = 'tab-0';
 </script>
 
@@ -83,7 +84,7 @@
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-1">
-								<p class="p-4 text-center text-xs text-white">No status page created</p>
+								<NotPage />
 							</TabsContent>
 							<TabsContent value="tab-2">
 								<Page />
