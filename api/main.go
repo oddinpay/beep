@@ -94,6 +94,7 @@ var defaultReqs = func() []HttpRequest {
 		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
 		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
+		{Name: "PING",	     Protocol: "icmp", 	   Host: "app.local"},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))

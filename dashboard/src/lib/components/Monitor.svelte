@@ -114,6 +114,7 @@
 								</Select.Root>
 							</div>
 
+
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="slug">URL</Label>
 								<Input
