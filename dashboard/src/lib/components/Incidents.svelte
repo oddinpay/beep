@@ -97,7 +97,7 @@
 								/>
 							</div>
 							<div class="space-y-2">
-								<Label for={uid}>Status select</Label>
+								<Label for="{uid}-title" class="font-bold text-gray-300">Monitor Type</Label>
 								<Select.Root type="single" bind:value>
 									<Select.Trigger
 										id={uid}
