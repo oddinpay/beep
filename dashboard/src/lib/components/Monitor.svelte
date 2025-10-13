@@ -85,7 +85,9 @@
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="title">Monitor Type</Label>
 								<Select.Root type="single" name="monitorType" required bind:value>
-									<Select.Trigger class="w-full border-zinc-700 text-white">
+									<Select.Trigger
+										class="w-full border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200"
+									>
 										{triggerContent}
 									</Select.Trigger>
 									<Select.Content>
