@@ -5,6 +5,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import { Gauge } from '$lib/components/ui/gauge';
 	import Monitor from '$lib/components/Monitor.svelte';
+	import NotMonitor from '$lib/components/NotMonitor.svelte';
 
 	let currentTab = 'tab-1';
 </script>
@@ -84,7 +85,7 @@
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-1">
-								<p class="p-4 text-center text-xs text-white">No status page created yet</p>
+								<NotMonitor />
 							</TabsContent>
 							<TabsContent value="tab-2">
 								<Monitor />
