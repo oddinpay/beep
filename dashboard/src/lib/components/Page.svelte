@@ -27,7 +27,6 @@
 				const result = reader.result;
 				if (typeof result === 'string') {
 					profileImageBase64 = result.split(',')[1];
-					console.log('base64 payload inside:', profileImageBase64);
 				}
 			};
 			reader.readAsDataURL(file);
@@ -35,8 +34,6 @@
 			profileImageBase64 = null;
 		}
 	});
-
-	console.log('base64 payload outside:', profileImageBase64);
 
 	const id = $props.id();
 </script>
