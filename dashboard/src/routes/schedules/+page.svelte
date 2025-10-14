@@ -4,6 +4,7 @@
 	import { SquareActivity, Siren, ShieldAlert, House, CalendarCheck } from 'lucide-svelte';
 	import Header from '$lib/components/Header.svelte';
 	import Schedules from '$lib/components/Schedules.svelte';
+	import NotSchedules from '$lib/components/NotSchedules.svelte';
 	let currentTab = 'tab-4';
 </script>
 
@@ -91,10 +92,10 @@
 								<Schedules />
 							</TabsContent>
 							<TabsContent value="tab-5">
-								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
+								<NotSchedules />
 							</TabsContent>
 							<TabsContent value="tab-6">
-								<p class="p-4 text-center text-xs text-white">Content for Tab 3</p>
+								<NotSchedules />
 							</TabsContent>
 						</Tabs>
 					</TabsContent>
