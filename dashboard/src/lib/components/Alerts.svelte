@@ -20,6 +20,16 @@
 		{ class: 'text-white', label: 'Identified', value: 'i4' }
 	] as const;
 
+	const services = [
+		{ value: 'HTTPS', label: 'HTTPS' },
+		{ value: 'HTTP', label: 'HTTP' },
+		{ value: 'TCP', label: 'TCP' },
+		{ value: 'DNS', label: 'DNS' },
+		{ value: 'REDIS', label: 'REDIS' },
+		{ value: 'SMTP', label: 'SMTP' },
+		{ value: 'PING', label: 'PING' }
+	];
+
 	let value = $state('i4');
 
 	let name = $state('');
@@ -32,6 +42,10 @@
 	}
 
 	const selected = $derived(incidents.find((i) => i.value === value));
+
+	const triggerContent = $derived(
+		services.find((f) => f.value === value)?.label ?? services[0].label
+	);
 </script>
 
 {#snippet status(item: (typeof incidents)[number])}
@@ -87,10 +101,10 @@
 					<form onsubmit={handleOnSubmit} class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Title</Label>
+								<Label class="font-bold text-gray-300" for="{id}-title">Title</Label>
 								<Input
 									class=" border-zinc-700 text-white"
-									id="{id}-logo"
+									id="{id}-title"
 									placeholder="Service Disruption"
 									type="text"
 									bind:value={name}
@@ -99,15 +113,30 @@
 							</div>
 
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Service Name</Label>
-								<Input
-									class=" border-zinc-700 text-white"
-									id="{id}-logo"
-									placeholder="HTTP"
-									type="text"
-									bind:value={name}
-									required
-								/>
+								<Label class="font-bold text-gray-300" for="{id}-logo">Service Name</Label>
+
+								<Select.Root type="single" name="monitorType" required bind:value>
+									<Select.Trigger
+										class="w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200"
+									>
+										{triggerContent}
+									</Select.Trigger>
+									<Select.Content class="bg-zinc-800 text-white">
+										<Select.Group>
+											<Select.Label class="text-zinc-400">services</Select.Label>
+											{#each services as type (type.value)}
+												<Select.Item
+													id="{id}-monitorType"
+													class="cursor-pointer  data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300"
+													value={type.value}
+													label={type.label}
+												>
+													{type.label}
+												</Select.Item>
+											{/each}
+										</Select.Group>
+									</Select.Content>
+								</Select.Root>
 							</div>
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="{id}-title">Status</Label>

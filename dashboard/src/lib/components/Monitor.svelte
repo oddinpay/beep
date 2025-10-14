@@ -33,7 +33,9 @@
 		console.log('Submitted form data:', { name, value });
 	}
 
-	const triggerContent = $derived(services.find((f) => f.value === value)?.label ?? services[0].label);
+	const triggerContent = $derived(
+		services.find((f) => f.value === value)?.label ?? services[0].label
+	);
 </script>
 
 <Empty.Root>
@@ -93,14 +95,14 @@
 									<Select.Content class="bg-zinc-800 text-white">
 										<Select.Group>
 											<Select.Label class="text-zinc-400">services</Select.Label>
-											{#each services as fruit (fruit.value)}
+											{#each services as type (type.value)}
 												<Select.Item
 													id="{id}-monitorType"
 													class="cursor-pointer  data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white [&_svg:not([class*='text-'])]:text-gray-300"
-													value={fruit.value}
-													label={fruit.label}
+													value={type.value}
+													label={type.label}
 												>
-													{fruit.label}
+													{type.label}
 												</Select.Item>
 											{/each}
 										</Select.Group>
