@@ -86,6 +86,12 @@
 								>
 									Integrations
 								</TabsTrigger>
+								<TabsTrigger
+									value="tab-6"
+									class="relative cursor-pointer after:absolute  after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5  hover:text-white hover:after:bg-white data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-white data-[state=active]:hover:text-white"
+								>
+									Subscribers
+								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-3">
 								<Alerts />
