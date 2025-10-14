@@ -13,6 +13,8 @@
 		event.preventDefault();
 		console.log('API URL submitted:', apiUrl);
 	}
+
+	let status = $state('ok');
 </script>
 
 <Empty.Root>
@@ -23,7 +25,12 @@
 		<Empty.Description class="text-gray-400">
 			<div class="*:not-first:mt-4">
 				<Badge variant="outline" class="gap-1.5">
-					<span class="size-1.5 rounded-full bg-red-500" aria-hidden="true"></span>
+					<span
+						class={`size-1.5 rounded-full ${
+							status === 'ok' ? 'bg-green-500' : status === 'warn' ? 'bg-yellow-500' : 'bg-red-500'
+						}`}
+						aria-hidden="true"
+					></span>
 					<Label class="text-md font-medium text-gray-300" for={uid}>Connect API Instance</Label>
 				</Badge>
 				<form class="flex gap-2" onsubmit={handleSubmit}>
