@@ -2,15 +2,18 @@
 	import Input from '$lib/components/ui/input.svelte';
 	import Label from '$lib/components/ui/label.svelte';
 	import * as Empty from '$lib/components/ui/empty/index.js';
-	import IconFileOrientation from '@tabler/icons-svelte/icons/file-orientation';
+	import IconPlugConnected from '@tabler/icons-svelte/icons/plug-connected';
 
 	const uid = $props.id();
 </script>
 
 <Empty.Root>
 	<Empty.Header>
+		<Empty.Media variant="icon">
+			<IconPlugConnected />
+		</Empty.Media>
 		<Empty.Description class="text-gray-400">
-			<div class=" *:not-first:mt-2">
+			<div class="*:not-first:mt-2">
 				<Label class="text-gray-300" for={uid}>Connect API Instance</Label>
 				<div class="flex rounded-lg shadow-xs shadow-black/5">
 					<span
