@@ -2,7 +2,7 @@
 	import Button from '$lib/components/ui/button.svelte';
 
 	import LogOutIcon from '@lucide/svelte/icons/log-out';
-	import { Box, Unplug, BookOpenText } from 'lucide-svelte';
+	import { Unplug, BookOpenText } from 'lucide-svelte';
 	import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
 	import {
 		DropdownMenu,
