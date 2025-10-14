@@ -14,7 +14,7 @@
 		console.log('API URL submitted:', apiUrl);
 	}
 
-	let status = $state('ok');
+	let status = $state('error');
 </script>
 
 <Empty.Root>
