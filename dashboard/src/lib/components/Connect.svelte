@@ -24,7 +24,7 @@
 		</Empty.Media>
 		<Empty.Description class="text-gray-400">
 			<div class="*:not-first:mt-4">
-				<Badge variant="outline" class="gap-1.5">
+				<Badge variant="outline" class="border-zinc-700 gap-1.5">
 					<span
 						class={`size-1.5 rounded-full ${
 							status === 'ok' ? 'bg-green-500' : status === 'warn' ? 'bg-yellow-500' : 'bg-red-500'
