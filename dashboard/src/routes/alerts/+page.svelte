@@ -102,6 +102,9 @@
 							<TabsContent value="tab-5">
 								<p class="p-4 text-center text-xs text-white">Content for Tab</p>
 							</TabsContent>
+							<TabsContent value="tab-6">
+								<p class="p-4 text-center text-xs text-white">Content for Tab 6</p>
+							</TabsContent>
 						</Tabs>
 					</TabsContent>
 				</div>
