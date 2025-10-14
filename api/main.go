@@ -1234,8 +1234,12 @@ func ResetHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-
-
+func CreatePage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != MethodPost {
+		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
+		return
+	}
+}
 
 // -------------------- MAIN --------------------
 
