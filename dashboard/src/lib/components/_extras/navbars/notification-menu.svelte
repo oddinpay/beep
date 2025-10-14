@@ -94,7 +94,7 @@
 			</Button>
 		{/snippet}
 	</PopoverTrigger>
-	<PopoverContent class="w-80 p-1">
+	<PopoverContent class="w-80 bg-zinc-700 p-1 text-white">
 		<div class="flex items-baseline justify-between gap-4 px-3 py-2">
 			<div class="text-sm font-semibold">Notifications</div>
 			{#if unreadCount > 0}
@@ -108,23 +108,23 @@
 		</div>
 		<div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-border"></div>
 		{#each notifications as notification (notification.id)}
-			<div class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent">
+			<div class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-zinc-600">
 				<div class="relative flex items-start pe-3">
 					<div class="flex-1 space-y-1">
 						<button
-							class="cursor-pointer text-left text-foreground/80 after:absolute after:inset-0"
+							class="cursor-pointer text-left text-zinc-100 after:absolute after:inset-0"
 							onclick={() => handleNotificationClick(notification.id)}
 						>
-							<span class="font-medium text-foreground hover:underline">
+							<span class="font-medium text-zinc-100 hover:underline">
 								{notification.user}
 							</span>
 							{notification.action}
-							<span class="font-medium text-foreground hover:underline">
+							<span class="font-medium text-zinc-100 hover:underline">
 								{notification.target}
 							</span>
 							.
 						</button>
-						<div class="text-xs text-muted-foreground">
+						<div class="text-xs text-zinc-400">
 							{notification.timestamp}
 						</div>
 					</div>
