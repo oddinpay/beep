@@ -97,10 +97,10 @@
 								<Alerts />
 							</TabsContent>
 							<TabsContent value="tab-4">
-								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
+								<p class="p-4 text-center text-xs text-white">Content for Tab 4</p>
 							</TabsContent>
 							<TabsContent value="tab-5">
-								<p class="p-4 text-center text-xs text-white">Content for Tab</p>
+								<p class="p-4 text-center text-xs text-white">Content for Tab 5</p>
 							</TabsContent>
 							<TabsContent value="tab-6">
 								<p class="p-4 text-center text-xs text-white">Content for Tab 6</p>
