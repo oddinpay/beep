@@ -8,6 +8,9 @@
 	import { ShieldAlert } from 'lucide-svelte';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
+	import Textarea from '$lib/components/ui/textarea.svelte';
+
+	import { useCharacterLimit } from '$lib/hooks/use-character-limit.svelte';
 
 	const id = $props.id();
 
@@ -30,6 +33,11 @@
 	}
 
 	const selected = $derived(incidents.find((i) => i.value === value));
+
+	const bioLimit = useCharacterLimit(
+		180,
+		'Hey, I am Margaret, a web developer who loves turning ideas into amazing websites!'
+	);
 </script>
 
 {#snippet status(item: (typeof incidents)[number])}
@@ -123,15 +131,27 @@
 								</Select.Root>
 							</div>
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Note</Label>
-								<Input
-									class=" border-zinc-700 text-white"
-									id="{id}-note"
-									placeholder="Investigating the issue"
-									type="text"
-									bind:value={note}
-									required
-								/>
+								<div class="*:not-first:mt-2">
+									<Label class="font-bold text-gray-300" for="{id}-note">Note</Label>
+									<Textarea
+										id="{id}-bio"
+										class=" border-zinc-700 text-white"
+										bind:value={bioLimit.value}
+										maxlength={bioLimit.maxLength}
+										placeholder="Write a few sentences about yourself"
+										aria-describedby="{id}-left-textarea"
+										required
+									/>
+									<p
+										id="{id}-left-textarea"
+										class="mt-2 text-right text-xs text-muted-foreground"
+										role="status"
+										aria-live="polite"
+									>
+										<span class="tabular-nums">{bioLimit.maxLength - bioLimit.characterCount}</span>
+										characters left
+									</p>
+								</div>
 							</div>
 						</div>
 						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline"
