@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import Connect from '$lib/components/Connect.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 	import { Unplug, House } from 'lucide-svelte';
@@ -56,7 +57,7 @@
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="tab-5">
-								<p class="p-4 text-center text-xs text-white">No status page created</p>
+								<Connect />
 							</TabsContent>
 							<TabsContent value="tab-6">
 								<p class="p-4 text-center text-xs text-white">Content for Tab 2</p>
