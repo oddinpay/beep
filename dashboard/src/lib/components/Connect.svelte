@@ -24,7 +24,7 @@
 			<div class="*:not-first:mt-4">
 				<Badge variant="outline" class="gap-1.5">
 					<span class="size-1.5 rounded-full bg-red-500" aria-hidden="true"></span>
-					<Label class="text-md font-medium text-gray-300" for={uid}>Backend API Instance</Label>
+					<Label class="text-md font-medium text-gray-300" for={uid}>Connect API Instance</Label>
 				</Badge>
 				<form class="flex gap-2" onsubmit={handleSubmit}>
 					<Input
