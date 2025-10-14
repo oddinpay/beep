@@ -51,7 +51,7 @@
 </script>
 
 {#snippet status(item: (typeof incidents)[number])}
-	<span class="incidents-center flex gap-2">
+	<span class="flex items-center gap-2">
 		<svg
 			width="8"
 			height="8"
@@ -145,7 +145,7 @@
 								<Select.Root type="single" bind:value>
 									<Select.Trigger
 										{id}
-										class="[&>span]:incidents-center w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200 [&>span]:flex [&>span]:gap-2 [&>span_svg]:shrink-0"
+										class="w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0"
 									>
 										{#if selected}
 											{@render status(selected)}
@@ -154,7 +154,7 @@
 										{/if}
 									</Select.Trigger>
 									<Select.Content
-										class="[&_*[data-select-item]>span]:incidents-center  bg-zinc-800 text-white [&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
+										class="bg-zinc-800  text-white [&_*[data-select-item]]:ps-2 [&_*[data-select-item]]:pe-8 [&_*[data-select-item]>span]:start-auto [&_*[data-select-item]>span]:end-2 [&_*[data-select-item]>span]:flex [&_*[data-select-item]>span]:items-center [&_*[data-select-item]>span]:gap-2 [&_*[data-select-item]>span>svg]:shrink-0"
 									>
 										{#each incidents as item (item.value)}
 											<Select.Item
