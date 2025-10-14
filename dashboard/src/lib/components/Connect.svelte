@@ -46,7 +46,13 @@
 						type="submit"
 						class="inline-flex cursor-pointer items-center rounded-lg border border-input bg-background px-4 text-sm font-medium text-foreground ring-offset-background transition-shadow hover:bg-accent hover:text-foreground focus:z-10 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
 					>
-						Save
+						{status === 'ok'
+							? 'Connected'
+							: apiUrl === ''
+								? 'Connect'
+								: status === 'warn'
+									? 'Connecting...'
+									: 'Connect'}
 					</button>
 				</form>
 			</div>
