@@ -114,7 +114,7 @@
 					<TabsContent value="tab-1" class="h-auto min-h-[150px]">
 						<p class="text-base font-semibold text-zinc-200">Down</p>
 						<Gauge
-							colors={{ primary: 'stroke-red-400', secondary: 'stroke-red-200' }}
+							colors={{ primary: 'stroke-red-600', secondary: 'stroke-red-200' }}
 							class="text-white"
 							show_value
 							size="lg"
