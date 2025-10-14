@@ -99,7 +99,7 @@
 					<TabsContent value="tab-1" class="h-auto min-h-[150px]">
 						<p class="text-base font-semibold text-zinc-200">Up</p>
 						<Gauge
-							colors={{ primary: 'stroke-green-700', secondary: 'stroke-green-300' }}
+							colors={{ primary: 'stroke-green-400', secondary: 'stroke-green-200' }}
 							class="text-white"
 							show_value
 							size="lg"
@@ -114,7 +114,7 @@
 					<TabsContent value="tab-1" class="h-auto min-h-[150px]">
 						<p class="text-base font-semibold text-zinc-200">Down</p>
 						<Gauge
-							colors={{ primary: 'stroke-red-700', secondary: 'stroke-red-300' }}
+							colors={{ primary: 'stroke-red-400', secondary: 'stroke-red-200' }}
 							class="text-white"
 							show_value
 							size="lg"

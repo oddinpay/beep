@@ -113,7 +113,7 @@
 					<TabsContent value="tab-0" class="h-auto min-h-[150px]">
 						<p class="text-base font-semibold text-amber-200">Total Incidents</p>
 						<Gauge
-							colors={{ primary: 'stroke-amber-700', secondary: 'stroke-amber-200' }}
+							colors={{ primary: 'stroke-amber-400', secondary: 'stroke-amber-200' }}
 							class="text-white"
 							show_value
 							size="lg"
