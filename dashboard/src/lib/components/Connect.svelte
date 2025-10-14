@@ -37,8 +37,8 @@
 					<Input
 						id={uid}
 						name="apiUrl"
-						class="flex-1 min-w-60 border-zinc-700 text-white"
-						placeholder="API URL"
+						class="min-w-50 flex-1 border-zinc-700 text-white"
+						placeholder="e.g. http://localhost:8080"
 						type="text"
 						bind:value={apiUrl}
 					/>
