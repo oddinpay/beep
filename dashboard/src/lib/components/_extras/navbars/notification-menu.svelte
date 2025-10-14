@@ -106,7 +106,7 @@
 				</button>
 			{/if}
 		</div>
-		<div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-border"></div>
+		<div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-zinc-600"></div>
 		{#each notifications as notification (notification.id)}
 			<div class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-zinc-600">
 				<div class="relative flex items-start pe-3">
