@@ -5,6 +5,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import Incidents from '$lib/components/Incidents.svelte';
 	import NotIncidents from '$lib/components/NotIncidents.svelte';
+	import { Gauge } from '$lib/components/ui/gauge';
 
 	let currentTab = 'tab-2';
 </script>
@@ -123,6 +124,13 @@
 				>
 					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
 						<p class="text-base font-semibold text-zinc-200">Total Incidents</p>
+						<Gauge
+							colors={{ primary: 'stroke-yellow-700', secondary: 'stroke-yellow-200' }}
+							class="text-white"
+							show_value
+							size="lg"
+							value={100}
+						/>
 					</TabsContent>
 				</div>
 			</div>
