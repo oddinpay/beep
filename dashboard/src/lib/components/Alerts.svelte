@@ -32,19 +32,21 @@
 
 	let value = $state('i4');
 
+	let types = $state('HTTPS');
+
 	let name = $state('');
 
 	const bioLimit = useCharacterLimit(180, '');
 
 	function handleOnSubmit(e: Event) {
 		e.preventDefault();
-		console.log('Submitted form data:', { name, value, note: bioLimit.value });
+		console.log('Submitted form data:', { name, value, types, note: bioLimit.value });
 	}
 
 	const selected = $derived(incidents.find((i) => i.value === value));
 
 	const triggerContent = $derived(
-		services.find((f) => f.value === value)?.label ?? services[0].label
+		services.find((f) => f.value === types)?.label ?? services[0].label
 	);
 </script>
 
@@ -115,7 +117,7 @@
 							<div class="space-y-2">
 								<Label class="font-bold text-gray-300" for="{id}-logo">Service Name</Label>
 
-								<Select.Root type="single" name="monitorType" required bind:value>
+								<Select.Root type="single" name="monitorType" required bind:value={types}>
 									<Select.Trigger
 										class="w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200"
 									>
