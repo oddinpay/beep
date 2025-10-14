@@ -105,7 +105,7 @@
 								<NotIncidents />
 							</TabsContent>
 							<TabsContent value="tab-5">
-								<p class="p-4 text-center text-xs text-white">Content for Tab 4</p>
+								<NotIncidents />
 							</TabsContent>
 						</Tabs>
 					</TabsContent>
