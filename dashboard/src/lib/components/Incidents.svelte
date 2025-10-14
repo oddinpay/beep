@@ -25,19 +25,14 @@
 
 	let name = $state('');
 
-	let note = $state('');
+	const bioLimit = useCharacterLimit(180, '');
 
 	function handleOnSubmit(e: Event) {
 		e.preventDefault();
-		console.log('Submitted form data:', { name, value, note });
+		console.log('Submitted form data:', { name, value, bio: bioLimit.value });
 	}
 
 	const selected = $derived(incidents.find((i) => i.value === value));
-
-	const bioLimit = useCharacterLimit(
-		180,
-		'Hey, I am Margaret, a web developer who loves turning ideas into amazing websites!'
-	);
 </script>
 
 {#snippet status(item: (typeof incidents)[number])}
@@ -138,7 +133,7 @@
 										class=" border-zinc-700 text-white"
 										bind:value={bioLimit.value}
 										maxlength={bioLimit.maxLength}
-										placeholder="Write a few sentences about yourself"
+										placeholder="Write a few sentences about incident..."
 										aria-describedby="{id}-left-textarea"
 										required
 									/>
