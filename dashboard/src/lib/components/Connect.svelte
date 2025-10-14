@@ -31,7 +31,7 @@
 						}`}
 						aria-hidden="true"
 					></span>
-					<Label class="text-md font-medium text-gray-300" for={uid}>Connect Backend</Label>
+					<Label class="text-md font-medium text-gray-300" for={uid}>Backend Connection</Label>
 				</Badge>
 				<form class="flex gap-2" onsubmit={handleSubmit}>
 					<Input
