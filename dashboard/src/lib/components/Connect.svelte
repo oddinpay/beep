@@ -24,7 +24,7 @@
 		</Empty.Media>
 		<Empty.Description class="text-gray-400">
 			<div class="*:not-first:mt-4">
-				<Badge variant="outline" class="border-zinc-700 gap-1.5">
+				<Badge variant="outline" class="gap-1.5  border-zinc-700">
 					<span
 						class={`size-1.5 rounded-full ${
 							status === 'ok' ? 'bg-green-500' : status === 'warn' ? 'bg-yellow-500' : 'bg-red-500'
@@ -44,9 +44,9 @@
 					/>
 					<button
 						type="submit"
-						class="inline-flex cursor-pointer items-center rounded-lg border border-input bg-background px-3 text-sm font-medium text-foreground ring-offset-background transition-shadow hover:bg-accent hover:text-foreground focus:z-10 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+						class="inline-flex cursor-pointer items-center rounded-lg border border-input bg-background px-4 text-sm font-medium text-foreground ring-offset-background transition-shadow hover:bg-accent hover:text-foreground focus:z-10 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
 					>
-						Connect
+						Save
 					</button>
 				</form>
 			</div>
