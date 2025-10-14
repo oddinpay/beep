@@ -124,7 +124,7 @@
 							</span>
 							.
 						</button>
-						<div class="text-xs text-zinc-400">
+						<div class="text-xs text-zinc-300">
 							{notification.timestamp}
 						</div>
 					</div>
