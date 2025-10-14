@@ -74,7 +74,7 @@
 		</Empty.Media>
 		<Empty.Title class=" text-gray-200">Let’s Get Started</Empty.Title>
 		<Empty.Description class="text-gray-400">
-			Get started by sending an alert, and you’ll receive real-time updates.
+			Get started by creating a schedule, and you’ll receive real-time updates.
 		</Empty.Description>
 	</Empty.Header>
 	<Empty.Content>
