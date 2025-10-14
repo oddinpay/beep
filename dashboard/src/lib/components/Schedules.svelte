@@ -95,7 +95,7 @@
 						<Dialog.Header>
 							<Dialog.Title class=" text-gray-300 sm:text-center">Create New Schedule</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
-								Create a new schedule to inform your customers.
+								Create a schedule to inform future events.
 							</Dialog.Description>
 						</Dialog.Header>
 					</div>
