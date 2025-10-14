@@ -144,7 +144,7 @@
 	<svg
 		width="6"
 		height="6"
-		fill="lightgreen"
+		fill="#86efac"
 		viewBox="0 0 6 6"
 		xmlns="http://www.w3.org/2000/svg"
 		class={className}
