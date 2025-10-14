@@ -31,7 +31,7 @@
 						}`}
 						aria-hidden="true"
 					></span>
-					<Label class="text-md font-medium text-gray-300" for={uid}>Connect API Instance</Label>
+					<Label class="text-md font-medium text-gray-300" for={uid}>Connect Instance</Label>
 				</Badge>
 				<form class="flex gap-2" onsubmit={handleSubmit}>
 					<Input
