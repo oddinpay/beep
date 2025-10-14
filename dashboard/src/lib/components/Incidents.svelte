@@ -88,7 +88,7 @@
 					<form onsubmit={handleOnSubmit} class="space-y-5">
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Title</Label>
+								<Label class="font-bold text-gray-300" for="{id}-logo">Title</Label>
 								<Input
 									class=" border-zinc-700 text-white"
 									id="{id}-logo"
@@ -102,7 +102,7 @@
 								<Label class="font-bold text-gray-300" for="{id}-title">Status</Label>
 								<Select.Root type="single" bind:value>
 									<Select.Trigger
-										{id}
+										id="{id}-title"
 										class="[&>span]:incidents-center w-full cursor-pointer border-zinc-700 text-white [&_svg:not([class*='text-'])]:text-zinc-200 [&>span]:flex [&>span]:gap-2 [&>span_svg]:shrink-0"
 									>
 										{#if selected}
@@ -129,7 +129,7 @@
 								<div class="*:not-first:mt-2">
 									<Label class="font-bold text-gray-300" for="{id}-note">Note</Label>
 									<Textarea
-										id="{id}-bio"
+										id="{id}-note"
 										class=" border-zinc-700 text-white"
 										bind:value={bioLimit.value}
 										maxlength={bioLimit.maxLength}
