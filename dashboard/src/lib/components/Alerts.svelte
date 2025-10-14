@@ -8,6 +8,8 @@
 	import { Siren } from 'lucide-svelte';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import ArrowUpRightIcon from '@lucide/svelte/icons/arrow-up-right';
+	import { useCharacterLimit } from '$lib/hooks/use-character-limit.svelte';
+	import Textarea from '$lib/components/ui/textarea.svelte';
 
 	const id = $props.id();
 
@@ -22,11 +24,11 @@
 
 	let name = $state('');
 
-	let note = $state('');
+	const bioLimit = useCharacterLimit(180, '');
 
 	function handleOnSubmit(e: Event) {
 		e.preventDefault();
-		console.log('Submitted form data:', { name, value, note });
+		console.log('Submitted form data:', { name, value, note: bioLimit.value });
 	}
 
 	const selected = $derived(incidents.find((i) => i.value === value));
@@ -134,16 +136,29 @@
 									</Select.Content>
 								</Select.Root>
 							</div>
+
 							<div class="space-y-2">
-								<Label class="font-bold text-gray-300" for="logo">Note</Label>
-								<Input
-									class=" border-zinc-700 text-white"
-									id="{id}-note"
-									placeholder="Investigating the issue"
-									type="text"
-									bind:value={note}
-									required
-								/>
+								<div class="*:not-first:mt-2">
+									<Label class="font-bold text-gray-300" for="{id}-note">Note</Label>
+									<Textarea
+										id="{id}-note"
+										class=" border-zinc-700 text-white"
+										bind:value={bioLimit.value}
+										maxlength={bioLimit.maxLength}
+										placeholder="Write a few sentences about incident..."
+										aria-describedby="{id}-left-textarea"
+										required
+									/>
+									<p
+										id="{id}-left-textarea"
+										class="mt-2 text-right text-xs text-muted-foreground"
+										role="status"
+										aria-live="polite"
+									>
+										<span class="tabular-nums">{bioLimit.maxLength - bioLimit.characterCount}</span>
+										characters left
+									</p>
+								</div>
 							</div>
 						</div>
 						<Button class="mt-2 w-full cursor-pointer" type="submit" variant="outline"
