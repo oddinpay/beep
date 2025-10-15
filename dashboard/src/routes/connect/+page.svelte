@@ -8,15 +8,16 @@
 	let currentTab = 'tab-5';
 </script>
 
-<div class="flex min-h-screen items-start justify-center bg-black py-10">
-	<div class="w-full max-w-7xl">
-		<div class="w-full bg-black">
-			<div class="mx-auto w-full max-w-7xl px-4 py-10">
-				<Header />
-			</div>
+<div class="flex min-h-screen items-start justify-center overflow-hidden bg-black">
+	<div class="fixed mx-auto w-full max-w-7xl py-4">
+		<div class="px-4 py-4">
+			<Header />
 		</div>
-		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
-			<TabsList class="flex w-full gap-2 bg-transparent p-4 md:w-80 md:flex-col">
+		<Tabs
+			value={currentTab}
+			class="flex max-h-[calc(100dvh-3rem)]  w-full flex-col gap-8 md:flex-row"
+		>
+			<TabsList class="sticky top-6 flex w-80 flex-col gap-2 self-start bg-transparent p-4">
 				<TabsTrigger
 					value="tab-5"
 					onclick={() => window.history.pushState({}, '', '/connect')}
@@ -34,9 +35,9 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
+			<div class="grid w-full grid-cols-1 gap-4 overflow-y-auto px-10 pb-20 md:grid-cols-2">
 				<div
-					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(50dvh-3rem)] md:overflow-y-hidden"
+					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:min-h-[480px] md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-5" class="h-auto min-h-[300px]">
 						<Tabs value="tab-5" class=" items-center">
