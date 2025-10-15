@@ -9,7 +9,7 @@
 	let currentTab = 'tab-0';
 </script>
 
-<div class="flex min-h-screen items-start justify-center bg-black py-4">
+<div class="flex min-h-screen items-start overflow-hidden justify-center bg-black py-4">
 	<div class="w-full max-w-7xl">
 		<div class="mx-auto w-full max-w-7xl px-4 py-4">
 			<Header />
@@ -17,7 +17,7 @@
 
 		<Tabs value={currentTab} class="flex w-full flex-col max-h-[calc(100dvh-3rem)] gap-8 md:flex-row">
 			<TabsList
-				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6 md:w-80 md:flex-col md:overflow-y-hidden"
+				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6 md:w-80 md:flex-col "
 			>
 				<TabsTrigger
 					value="tab-0"
