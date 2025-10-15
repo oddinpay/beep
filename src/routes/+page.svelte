@@ -290,8 +290,8 @@
 
     
     if (computed  !== computed) {
-      // statusStore.set([computed]);
       // && currentStoredStatus
+      // statusStore.set([computed]);
       return computed;
     }
 
