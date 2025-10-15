@@ -94,7 +94,7 @@ var defaultReqs = func() []HttpRequest {
 	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "jack", Password: "jackSecret"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
-		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
+		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mai.me.com:587"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
 		{Name: "PING",	     Protocol: "icmp", 	   Host: "app.local"},
 	}
