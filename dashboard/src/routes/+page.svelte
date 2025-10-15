@@ -9,16 +9,17 @@
 	let currentTab = 'tab-0';
 </script>
 
-<div class="flex min-h-screen items-start overflow-hidden justify-center  bg-black">
-	<div class="mx-auto fixed px-4 py-4 w-full max-w-7xl">
+<div class="flex min-h-screen items-start justify-center overflow-hidden bg-black">
+	<div class="fixed mx-auto w-full max-w-7xl py-4">
 		<div class="px-4 py-4">
 			<Header />
 		</div>
 
-		<Tabs value={currentTab} class="flex w-full flex-col max-h-[calc(100dvh-3rem)] gap-8 md:flex-row">
-			<TabsList
-				class="flex gap-2 self-start bg-transparent p-4 sticky top-6 w-80 flex-col "
-			>
+		<Tabs
+			value={currentTab}
+			class="flex max-h-[calc(100dvh-3rem)]  w-full flex-col gap-8 md:flex-row"
+		>
+			<TabsList class="sticky top-6 flex w-80 flex-col gap-2 self-start bg-transparent p-4 ">
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
@@ -60,7 +61,7 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div class="grid w-full overflow-y-auto grid-cols-1 pb-20 gap-4 px-10 md:grid-cols-2">
+			<div class="grid w-full grid-cols-1 gap-4 overflow-y-auto px-10 pb-20 md:grid-cols-2">
 				<div
 					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:min-h-[480px] md:overflow-y-hidden"
 				>
