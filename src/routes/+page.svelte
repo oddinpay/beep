@@ -89,7 +89,7 @@
   
   let probeMap =  $state<ProbeMap>({});
   
-  const statusStore = localStore<StatusType[]>('status', []);
+  // const statusStore = localStore<StatusType[]>('status', []);
 
 
   // --- utils ---
@@ -278,23 +278,25 @@
 
     
     if (browser && allStatuses.length === 0) {
-      const stored = statusStore.get();
+      // const stored = statusStore.get();
       // statusStore.set([]);
-      return stored ? stored[0] : undefined;
+      // return stored ? stored[0] : undefined;
     }
 
 
     const computed = pickStatus(allStatuses);
-    const storedStatuses = statusStore.get() ?? [];
-    const currentStoredStatus = storedStatuses[0];
+    // const storedStatuses = statusStore.get() ?? [];
+    // const currentStoredStatus = storedStatuses[0];
 
     
-    if (computed && currentStoredStatus !== computed) {
+    if (computed  !== computed) {
+      // && currentStoredStatus
       // statusStore.set([computed]);
       return computed;
     }
 
-    return computed ?? currentStoredStatus;
+    // ?? currentStoredStatus
+    return computed;
  
   });
 
