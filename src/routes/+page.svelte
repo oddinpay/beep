@@ -11,7 +11,7 @@
     TabsTrigger,
   } from "$lib/components/ui/tabs";
   import { source } from "sveltekit-sse";
-  // import { localStore } from '$lib/storage';
+  import { localStore } from '$lib/storage';
   import { onMount } from 'svelte';
   import { browser } from "$app/environment";
   import timer from '$lib/timer';
@@ -89,7 +89,7 @@
   
   let probeMap =  $state<ProbeMap>({});
   
-  // const statusStore = localStore<StatusType[]>('status', []);
+  const statusStore = localStore<StatusType[]>('status', []);
 
 
   // --- utils ---
@@ -278,25 +278,23 @@
 
     
     if (browser && allStatuses.length === 0) {
-      // const stored = statusStore.get();
+      const stored = statusStore.get();
       // statusStore.set([]);
-      // return stored ? stored[0] : undefined;
+      return stored ? stored[0] : undefined;
     }
 
 
     const computed = pickStatus(allStatuses);
-    // const storedStatuses = statusStore.get() ?? [];
-    // const currentStoredStatus = storedStatuses[0];
+    const storedStatuses = statusStore.get() ?? [];
+    const currentStoredStatus = storedStatuses[0];
 
     
-    if (computed  !== computed) {
-      // && currentStoredStatus
+    if (computed && currentStoredStatus !== computed) {
       // statusStore.set([computed]);
       return computed;
     }
 
-    // ?? currentStoredStatus
-    return computed;
+    return computed ?? currentStoredStatus;
  
   });
 
@@ -1144,7 +1142,7 @@
                               {#each monitors as status}
                                 <div class="status-card">
                                   <div style="display: flex; align-items: center; gap: 10px;">
-                                    {#if overallStatus === 'up'}
+                                    {#if status.status === 'up'}
                                       <svg
                                         class="w-10 h-10 inline-block"
                                         xmlns="http://www.w3.org/2000/svg"
@@ -1157,7 +1155,7 @@
                                           clip-rule="evenodd"
                                         />
                                       </svg>
-                                    {:else if overallStatus === 'warn'}
+                                    {:else if status.status === 'warn'}
                                       <svg
                                         class="w-10 h-10 inline-block"
                                         xmlns="http://www.w3.org/2000/svg"
@@ -1168,7 +1166,7 @@
                                           d="M10 2c4.42 0 8 3.58 8 8s-3.58 8-8 8s-8-3.58-8-8s3.58-8 8-8m1.13 9.38l.35-6.46H8.52l.35 6.46zm-.09 3.36c.24-.23.37-.55.37-.96c0-.42-.12-.74-.36-.97s-.59-.35-1.06-.35s-.82.12-1.07.35s-.37.55-.37.97c0 .41.13.73.38.96c.26.23.61.34 1.06.34s.8-.11 1.05-.34"
                                         />
                                       </svg>
-                                    {:else if overallStatus === 'down'}
+                                    {:else if status.status === 'down'}
                                         <svg
                                           class="w-10 h-10 inline-block"
                                           xmlns="http://www.w3.org/2000/svg"
