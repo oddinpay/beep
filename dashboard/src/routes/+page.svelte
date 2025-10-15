@@ -10,7 +10,7 @@
 </script>
 
 <div class="flex min-h-screen items-start overflow-hidden justify-center  bg-black">
-	<div class=" mx-auto fixed px-4 py-4 w-full max-w-7xl">
+	<div class="mx-auto fixed px-4 py-4 w-full max-w-7xl">
 		<div class="px-4 py-4">
 			<Header />
 		</div>
