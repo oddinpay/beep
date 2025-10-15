@@ -60,7 +60,7 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div class="grid w-[1100px] overflow-y-auto grid-cols-1 gap-4 px-10 md:grid-cols-2">
+			<div class="grid w-full overflow-y-auto grid-cols-1 gap-4 px-10 md:grid-cols-2">
 				<div
 					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:min-h-[480px] md:overflow-y-hidden"
 				>
