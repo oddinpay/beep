@@ -95,6 +95,7 @@ var defaultReqs = func() []HttpRequest {
 		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "google.com"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "youtube.com"},
+		{Name: "DNS",        Protocol: "dns", 	   Host: "facebook.com"},
 		{Name: "PING",	     Protocol: "icmp", 	   Host: "app.local"},
 	}
 
