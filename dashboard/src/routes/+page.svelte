@@ -17,7 +17,7 @@
 
 		<Tabs value={currentTab} class="flex w-full flex-col max-h-[calc(100dvh-3rem)] gap-8 md:flex-row">
 			<TabsList
-				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6 md:w-80 md:flex-col "
+				class="flex gap-2 self-start bg-transparent p-4 sticky top-6 w-80 flex-col "
 			>
 				<TabsTrigger
 					value="tab-0"
