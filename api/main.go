@@ -962,159 +962,63 @@ func (s *SlidingSLA) Reset() {
 
 // -------------------- SSE HANDLER --------------------
 
-func sendPayload(conn *sse.Conn, ctx context.Context, reqs []HttpRequest, name string, payload StatusPayload) {
-	sortIndex := -1
-	for i, q := range reqs {
-		if q.Name == name {
-			sortIndex = i
-			break
-		}
-	}
-	out := map[string]any{
-		"index":   sortIndex,
-		"payload": payload,
-	}
-	if err := conn.SendData(ctx, out); err != nil {
-		log.Printf("⚠️ SSE send error [%s]: %v", name, err)
-	}
-}
 
+var (
+	probeManagerOnce sync.Once
+	probeUpdates     = make(chan map[string]StatusPayload, 100) // broadcast bus
+)
 
+// Starts global probe manager once
+func startProbeManager() {
+	probeManagerOnce.Do(func() {
+		log.Println("🚀 Starting global probe manager...")
 
-func StatusHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != MethodPost && r.Method != MethodGet {
-		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
-		return
-	}
+		for _, target := range defaultReqs {
+			t := target
 
-	// Set SSE headers
-	w.Header().Set(HeaderCacheControl, "no-cache")
-	w.Header().Set(HeaderConnection, "keep-alive")
-	w.Header().Set(HeaderContentType, ContentTypeEventStream)
-
-	reqs := defaultReqs
-
-	// Upgrade to SSE connection
-	conn, err := sse.Upgrade(r.Context(), w)
-	if err != nil {
-		http.Error(w, err.Error(), StatusInternalServerError)
-		return
-	}
-	defer conn.Close()
-
-	// Initialize SLA trackers safely
-	slaTrackers.Lock()
-	for _, t := range reqs {
-		if _, ok := slaTrackers.m[t.Name]; !ok {
-			slaTrackers.m[t.Name] = NewSlidingSLA(1.0)
-		}
-	}
-	slaTrackers.Unlock()
-
-	readPayload := func(ctx context.Context, key string) (*StatusPayload, error) {
-		// Try BigCache first
-		if fs != nil {
-			if cached, err := fs.Get(key); err == nil {
-				var p StatusPayload
-				if jsonErr := json.Unmarshal(cached, &p); jsonErr == nil {
-					return &p, nil
-				}
+			interval := t.Interval
+			if interval <= 0 {
+				interval = 1 * time.Second
 			}
-		}
 
-		// Try Redis next
-		if redisClient != nil {
-			val, err := redisClient.Do(ctx, redisClient.B().Get().Key(key).Build()).ToString()
-			if err == nil && val != "" {
-				var p StatusPayload
-				if jsonErr := json.Unmarshal([]byte(val), &p); jsonErr == nil {
-					return &p, nil
-				}
+			var probeFn func(HttpRequest) ProbeResult
+			switch strings.ToLower(strings.TrimSpace(t.Protocol)) {
+			case "tcp":
+				probeFn = probeTCP
+			case "http", "https":
+				probeFn = probeHTTP
+			case "dns":
+				probeFn = probeDNS
+			case "udp":
+				probeFn = probeUDP
+			case "smtp":
+				probeFn = probeSMTP
+			case "redis":
+				probeFn = ProbeRedis
+			case "postgres":
+				probeFn = ProbePostgres
+			case "icmp":
+				probeFn = ProbeICMP
+			default:
+				log.Printf("⚠️ Unsupported protocol: %s", t.Protocol)
+				continue
 			}
-		}
-		return nil, errors.New("cache miss")
-	}
 
-	writePayload := func(ctx context.Context, reqName string, payload StatusPayload) {
-		data, _ := json.Marshal(payload)
-		dateKey := fmt.Sprintf("probe:%s:%s", reqName, time.Now().Format("2006-01-02"))
+			go func(req HttpRequest, fn func(HttpRequest) ProbeResult, iv time.Duration) {
+				ticker := time.NewTicker(iv)
+				defer ticker.Stop()
 
-		// Redis first
-		if redisClient != nil {
-			if err := redisClient.Do(
-				ctx,
-				redisClient.B().Set().
-					Key(dateKey).
-					Value(string(data)).
-					Ex(90 * 24 * time.Hour).
-					Build(),
-			).Error(); err != nil {
-				log.Printf("⚠️ Redis save error [%s]: %v", dateKey, err)
-			}
-		}
-
-		// BigCache fallback
-		if fs != nil {
-			if err := fs.Set(dateKey, data); err != nil {
-				log.Printf("⚠️ BigCache save error [%s]: %v", dateKey, err)
-			}
-		}
-	}
-
-	for _, target := range reqs {
-		interval := target.Interval
-		if interval <= 0 {
-			interval = 1 * time.Second
-		}
-
-		var probeFn func(HttpRequest) ProbeResult
-		switch strings.ToLower(strings.TrimSpace(target.Protocol)) {
-		case "tcp":
-			probeFn = probeTCP
-		case "http", "https":
-			probeFn = probeHTTP
-		case "dns":
-			probeFn = probeDNS
-		case "udp":
-			probeFn = probeUDP
-		case "smtp":
-			probeFn = probeSMTP
-		case "redis":
-			probeFn = ProbeRedis
-		case "postgres":
-			probeFn = ProbePostgres
-		case "icmp":
-			probeFn = ProbeICMP
-		default:
-			log.Printf("⚠️ Unsupported protocol: %s", target.Protocol)
-			continue
-		}
-
-		go func(req HttpRequest, fn func(HttpRequest) ProbeResult, iv time.Duration) {
-			ticker := time.NewTicker(iv)
-			defer ticker.Stop()
-
-			for {
-				select {
-				case <-r.Context().Done():
-					return
-				case <-ticker.C:
+				for range ticker.C {
 					ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
-					defer cancel()
 
-					dateKey := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
-
-					// Try cached payload
-					if payload, err := readPayload(ctx, dateKey); err == nil {
-						sendPayload(conn, r.Context(), reqs, req.Name, *payload)
-					}
-
-					// Execute probe
 					res := fn(req)
 
-					// Update SLA
 					slaTrackers.Lock()
 					tracker := slaTrackers.m[req.Name]
+					if tracker == nil {
+						tracker = NewSlidingSLA(1.0)
+						slaTrackers.m[req.Name] = tracker
+					}
 					slaTrackers.Unlock()
 
 					isDown := len(res.State) == 0 || strings.ToLower(res.State[0]) != "up"
@@ -1125,14 +1029,121 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 						SLA:   tracker.Snapshot(),
 					}
 
-					writePayload(ctx, req.Name, payload)
-					sendPayload(conn, r.Context(), reqs, req.Name, payload)
+					// Write to Redis / BigCache
+					data, _ := json.Marshal(payload)
+					key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
+					if redisClient != nil {
+						_ = redisClient.Do(
+							ctx,
+							redisClient.B().Set().
+								Key(key).
+								Value(string(data)).
+								Ex(90 * 24 * time.Hour).
+								Build(),
+						)
+					}
+					if fs != nil {
+						_ = fs.Set(key, data)
+					}
+
+					// Broadcast update
+					select {
+					case probeUpdates <- map[string]StatusPayload{req.Name: payload}:
+					default: // avoid blocking if no listener
+					}
+
+					cancel()
 				}
-			}
-		}(target, probeFn, interval)
+			}(t, probeFn, interval)
+		}
+	})
+}
+
+
+
+func StatusHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != MethodPost && r.Method != MethodGet {
+		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
+		return
 	}
 
-	<-r.Context().Done()
+	// SSE headers
+	w.Header().Set(HeaderCacheControl, "no-cache")
+	w.Header().Set(HeaderConnection, "keep-alive")
+	w.Header().Set(HeaderContentType, ContentTypeEventStream)
+
+	// Start probe manager if not already running
+	startProbeManager()
+
+	conn, err := sse.Upgrade(r.Context(), w)
+	if err != nil {
+		http.Error(w, err.Error(), StatusInternalServerError)
+		return
+	}
+	defer conn.Close()
+
+	ctx := r.Context()
+
+	// Send cached data immediately
+	for i, req := range defaultReqs {
+		key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
+		if payload, err := loadPayload(ctx, key); err == nil {
+			out := map[string]any{
+				"index":   i,
+				"payload": *payload,
+			}
+			_ = conn.SendData(ctx, out)
+		}
+	}
+
+	// Stream live updates from global channel
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case update := <-probeUpdates:
+			for name, payload := range update {
+				idx := -1
+				for i, r := range defaultReqs {
+					if r.Name == name {
+						idx = i
+						break
+					}
+				}
+				out := map[string]any{
+					"index":   idx,
+					"payload": payload,
+				}
+				if err := conn.SendData(ctx, out); err != nil {
+					if !errors.Is(err, context.Canceled) {
+						log.Printf("⚠️ SSE send error [%s]: %v", name, err)
+					}
+					return
+				}
+			}
+		}
+	}
+}
+
+func loadPayload(ctx context.Context, key string) (*StatusPayload, error) {
+	if fs != nil {
+		if cached, err := fs.Get(key); err == nil {
+			var p StatusPayload
+			if jsonErr := json.Unmarshal(cached, &p); jsonErr == nil {
+				return &p, nil
+			}
+		}
+	}
+	if redisClient != nil {
+		val, err := redisClient.Do(ctx, redisClient.B().Get().Key(key).Build()).ToString()
+		if err == nil && val != "" {
+			var p StatusPayload
+			if jsonErr := json.Unmarshal([]byte(val), &p); jsonErr == nil {
+				return &p, nil
+			}
+		}
+	}
+	return nil, errors.New("cache miss")
 }
 
 
