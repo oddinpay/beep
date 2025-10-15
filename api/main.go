@@ -962,6 +962,25 @@ func (s *SlidingSLA) Reset() {
 
 // -------------------- SSE HANDLER --------------------
 
+func sendPayload(conn *sse.Conn, ctx context.Context, reqs []HttpRequest, name string, payload StatusPayload) {
+	sortIndex := -1
+	for i, q := range reqs {
+		if q.Name == name {
+			sortIndex = i
+			break
+		}
+	}
+	out := map[string]any{
+		"index":   sortIndex,
+		"payload": payload,
+	}
+	if err := conn.SendData(ctx, out); err != nil {
+		log.Printf("⚠️ SSE send error [%s]: %v", name, err)
+	}
+}
+
+
+
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != MethodPost && r.Method != MethodGet {
 		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
@@ -973,7 +992,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(HeaderConnection, "keep-alive")
 	w.Header().Set(HeaderContentType, ContentTypeEventStream)
 
-	// List of probes
 	reqs := defaultReqs
 
 	// Upgrade to SSE connection
@@ -982,8 +1000,9 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), StatusInternalServerError)
 		return
 	}
+	defer conn.Close()
 
-	// Initialize SLA trackers
+	// Initialize SLA trackers safely
 	slaTrackers.Lock()
 	for _, t := range reqs {
 		if _, ok := slaTrackers.m[t.Name]; !ok {
@@ -992,9 +1011,8 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	slaTrackers.Unlock()
 
-	// --- Helpers for cache IO ---
 	readPayload := func(ctx context.Context, key string) (*StatusPayload, error) {
-		// Fast path: BigCache
+		// Try BigCache first
 		if fs != nil {
 			if cached, err := fs.Get(key); err == nil {
 				var p StatusPayload
@@ -1003,7 +1021,8 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		// Fallback: Redis
+
+		// Try Redis next
 		if redisClient != nil {
 			val, err := redisClient.Do(ctx, redisClient.B().Get().Key(key).Build()).ToString()
 			if err == nil && val != "" {
@@ -1016,29 +1035,25 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		return nil, errors.New("cache miss")
 	}
 
-
-	writePayload := func(reqName string, payload StatusPayload) {
+	writePayload := func(ctx context.Context, reqName string, payload StatusPayload) {
 		data, _ := json.Marshal(payload)
 		dateKey := fmt.Sprintf("probe:%s:%s", reqName, time.Now().Format("2006-01-02"))
 
-		// Save in Redis with 90d expiry
+		// Redis first
 		if redisClient != nil {
-		    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-    		defer cancel()
-			err := redisClient.Do(
+			if err := redisClient.Do(
 				ctx,
 				redisClient.B().Set().
 					Key(dateKey).
 					Value(string(data)).
 					Ex(90 * 24 * time.Hour).
 					Build(),
-			).Error()
-			if err != nil {
+			).Error(); err != nil {
 				log.Printf("⚠️ Redis save error [%s]: %v", dateKey, err)
 			}
 		}
 
-		// Fallback to BigCache
+		// BigCache fallback
 		if fs != nil {
 			if err := fs.Set(dateKey, data); err != nil {
 				log.Printf("⚠️ BigCache save error [%s]: %v", dateKey, err)
@@ -1046,37 +1061,36 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// --- Launch probes ---
-	for _, t := range reqs {
-		target := t
+	for _, target := range reqs {
 		interval := target.Interval
 		if interval <= 0 {
 			interval = 1 * time.Second
 		}
 
-		var fn func(HttpRequest) ProbeResult
+		var probeFn func(HttpRequest) ProbeResult
 		switch strings.ToLower(strings.TrimSpace(target.Protocol)) {
 		case "tcp":
-			fn = probeTCP
+			probeFn = probeTCP
 		case "http", "https":
-			fn = probeHTTP
+			probeFn = probeHTTP
 		case "dns":
-			fn = probeDNS
+			probeFn = probeDNS
 		case "udp":
-			fn = probeUDP
+			probeFn = probeUDP
 		case "smtp":
-			fn = probeSMTP
+			probeFn = probeSMTP
 		case "redis":
-			fn = ProbeRedis
+			probeFn = ProbeRedis
 		case "postgres":
-			fn = ProbePostgres
+			probeFn = ProbePostgres
 		case "icmp":
-			fn = ProbeICMP
+			probeFn = ProbeICMP
 		default:
+			log.Printf("⚠️ Unsupported protocol: %s", target.Protocol)
 			continue
 		}
 
-		go func(req HttpRequest, pfn func(HttpRequest) ProbeResult, iv time.Duration) {
+		go func(req HttpRequest, fn func(HttpRequest) ProbeResult, iv time.Duration) {
 			ticker := time.NewTicker(iv)
 			defer ticker.Stop()
 
@@ -1084,52 +1098,26 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 				select {
 				case <-r.Context().Done():
 					return
-
 				case <-ticker.C:
-					// Daily key
-					dateKey := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
 					ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+					defer cancel()
 
-					// ---- READ from cache ----
+					dateKey := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
+
+					// Try cached payload
 					if payload, err := readPayload(ctx, dateKey); err == nil {
-						{
-							// Send cached payload with the same sort index as later probes
-							sortIndex := -1
-							for i, q := range reqs {
-								if q.Name == req.Name {
-									sortIndex = i
-									break
-								}
-							}
-							out := map[string]any{
-								"index":   sortIndex,
-								"payload": *payload,
-							}
-
-							_ = conn.SendData(r.Context(), out )
-						}
+						sendPayload(conn, r.Context(), reqs, req.Name, *payload)
 					}
 
-					// ---- Response ----
-					res := pfn(req)
-				
+					// Execute probe
+					res := fn(req)
 
 					// Update SLA
 					slaTrackers.Lock()
 					tracker := slaTrackers.m[req.Name]
 					slaTrackers.Unlock()
 
-					isDown := true
-				
-					if len(res.State) > 0 {	
-						for index, state := range res.State {
-							if index == 0 && state == "up" {
-								isDown = false
-								break
-							}
-							
-					}}
-
+					isDown := len(res.State) == 0 || strings.ToLower(res.State[0]) != "up"
 					tracker.Tick(isDown)
 
 					payload := StatusPayload{
@@ -1137,33 +1125,16 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 						SLA:   tracker.Snapshot(),
 					}
 
-					// ---- WRITE to cache ----
-					writePayload(req.Name, payload)
-
-					// ---- STREAM new data ----
-	
-					sortIndex := -1
-					for i, q := range reqs {
-						if q.Name == req.Name {
-							sortIndex = i
-							break
-						}
-					}
-
-					out := map[string]any{
-						"index":   sortIndex,
-						"payload": payload,
-					}
-					_ = conn.SendData(r.Context(), out)
-
-					cancel()
+					writePayload(ctx, req.Name, payload)
+					sendPayload(conn, r.Context(), reqs, req.Name, payload)
 				}
 			}
-		}(target, fn, interval)
+		}(target, probeFn, interval)
 	}
 
 	<-r.Context().Done()
 }
+
 
 
 // -------------------- RESTREQUEST HANDLER --------------------
