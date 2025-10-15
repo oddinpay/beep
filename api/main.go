@@ -92,10 +92,9 @@ var slaTrackers = struct {
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
 	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "jack", Password: "jackSecret"},
-		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
-		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
-		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mai.me.com:587"},
-		{Name: "DNS",        Protocol: "dns", 	   Host: "app.local"},
+		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
+		{Name: "DNS",        Protocol: "dns", 	   Host: "google.com"},
+		{Name: "DNS",        Protocol: "dns", 	   Host: "youtube.com"},
 		{Name: "PING",	     Protocol: "icmp", 	   Host: "app.local"},
 	}
 
