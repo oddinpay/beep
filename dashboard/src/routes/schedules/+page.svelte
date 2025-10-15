@@ -62,7 +62,7 @@
 
 			<div class="grid w-full grid-cols-1 gap-4 overflow-y-auto px-10 pb-20 md:grid-cols-2">
 				<div
-					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(50dvh-3rem)] md:overflow-y-hidden"
+					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:min-h-[480px] md:overflow-y-hidden"
 				>
 					<TabsContent value="tab-4" class="h-auto min-h-[300px]">
 						<Tabs value="tab-4" class=" items-center">
