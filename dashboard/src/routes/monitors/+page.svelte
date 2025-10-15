@@ -10,17 +10,17 @@
 	let currentTab = 'tab-1';
 </script>
 
-<div class="flex min-h-screen items-start justify-center bg-black py-4">
-	<div class="w-full max-w-7xl">
-		<div class="mx-auto w-full max-w-7xl px-4 py-4">
+<div class="flex min-h-screen items-start justify-center overflow-hidden bg-black">
+	<div class="fixed mx-auto w-full max-w-7xl py-4">
+		<div class="px-4 py-4">
 			<Header />
 		</div>
 
-		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
-			<TabsList
-				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6
-				       md:max-h-[calc(100dvh-3rem)] md:w-80 md:flex-col md:overflow-y-hidden"
-			>
+		<Tabs
+			value={currentTab}
+			class="flex max-h-[calc(100dvh-3rem)]  w-full flex-col gap-8 md:flex-row"
+		>
+			<TabsList class="sticky top-6 flex w-80 flex-col gap-2 self-start bg-transparent p-4 ">
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
