@@ -15,10 +15,9 @@
 			<Header />
 		</div>
 
-		<Tabs value={currentTab} class="flex w-full flex-col gap-8 md:flex-row">
+		<Tabs value={currentTab} class="flex w-full flex-col max-h-[calc(100dvh-3rem)] gap-8 md:flex-row">
 			<TabsList
-				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6
-				       md:max-h-[calc(100dvh-3rem)] md:w-80 md:flex-col md:overflow-y-hidden"
+				class="flex w-full gap-2 self-start bg-transparent p-4 md:sticky md:top-6 md:w-80 md:flex-col md:overflow-y-hidden"
 			>
 				<TabsTrigger
 					value="tab-0"
@@ -61,7 +60,7 @@
 				</TabsTrigger>
 			</TabsList>
 
-			<div class="grid w-[1100px] grid-cols-1 gap-4 px-10 md:grid-cols-2">
+			<div class="grid w-[1100px] overflow-y-auto grid-cols-1 gap-4 px-10 md:grid-cols-2">
 				<div
 					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:h-[calc(50dvh-3rem)] md:overflow-y-hidden"
 				>
