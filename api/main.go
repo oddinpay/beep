@@ -70,6 +70,8 @@ const (
 var(
 	redisClient valkey.Client
 	fs *bigcache.BigCache
+	probeManagerOnce sync.Once
+	probeUpdates     = make(chan map[string]StatusPayload, 100) 
 ) 
 
 
@@ -962,11 +964,6 @@ func (s *SlidingSLA) Reset() {
 
 // -------------------- SSE HANDLER --------------------
 
-
-var (
-	probeManagerOnce sync.Once
-	probeUpdates     = make(chan map[string]StatusPayload, 100) // broadcast bus
-)
 
 // Starts global probe manager once
 func startProbeManager() {
