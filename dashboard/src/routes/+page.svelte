@@ -10,10 +10,8 @@
 </script>
 
 <div class="flex min-h-screen items-start overflow-hidden justify-center bg-black py-4">
-	<div class="w-full max-w-7xl">
-		<div class="mx-auto w-full max-w-7xl px-4 py-4">
+	<div class=" mx-auto fixed px-4 py-4 w-full max-w-7xl">
 			<Header />
-		</div>
 
 		<Tabs value={currentTab} class="flex w-full flex-col max-h-[calc(100dvh-3rem)] gap-8 md:flex-row">
 			<TabsList
