@@ -18,7 +18,7 @@
 
 - Incident management – From detection to resolution, all in one place.
 
-- Alerting options – supports Email and RSS/Atom.
+- Alerting options – supports Email and RSS/Atom Feed.
 
 - Realtime API
 
