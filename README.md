@@ -18,6 +18,8 @@
 
 - Incident management – From detection to resolution, all in one place.
 
-- Alerting options – supports Email, RSS, and Real Time API.
+- Alerting options – supports Email and RSS/Atom.
+
+- Realtime API
 
 - Lightweight – requires only 1 GB RAM to run.
