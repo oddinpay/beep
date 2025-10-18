@@ -58,7 +58,7 @@
   }
 
 
-  const json = source("https://app1.local/v1/sse").select("").json<ApiData>();
+  const json = source("http://127.0.0.1:8976/v1/sse").select("").json<ApiData>();
 
   json.subscribe((msg: any) => {
     const probe = msg?.payload?.probe;

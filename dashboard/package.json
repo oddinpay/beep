@@ -50,6 +50,7 @@
 		"@sveltejs/enhanced-img": "^0.8.4",
 		"@tabler/icons-svelte": "^3.35.0",
 		"bits-ui": "^2.11.4",
-		"lucide-svelte": "^0.545.0"
+		"lucide-svelte": "^0.545.0",
+		"unplugin-icons": "^22.4.2"
 	}
 }
