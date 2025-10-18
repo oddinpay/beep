@@ -91,7 +91,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "", Password: ""},
+		{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "", Password: ""},
 		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "google.com"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "youtube.com"},
@@ -99,16 +99,19 @@ var defaultReqs = func() []HttpRequest {
 		{Name: "PING",	     Protocol: "icmp", 	   Host: "app.local"},
 	}
 
-	out := make([]HttpRequest, 0, len(raw))
+	const multiplier = 1
+	out := make([]HttpRequest, 0, len(raw)*multiplier)
 	counts := make(map[string]int)
 
-	for _, r := range raw {
-		name := r.Name
-		counts[name]++
-		if counts[name] > 1 {
-			r.Name = fmt.Sprintf("%s-%d", name, counts[name])
+	for range multiplier {
+		for _, r := range raw {
+			name := r.Name
+			counts[name]++
+			if counts[name] > 1 {
+				r.Name = fmt.Sprintf("%s-%d", name, counts[name])
+			}
+			out = append(out, r)
 		}
-		out = append(out, r)
 	}
 	return out
 }()
