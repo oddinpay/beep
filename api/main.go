@@ -91,7 +91,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "jack", Password: "jackSecret"},
+	   	{Name: "REDIS",      Protocol: "redis",    Host: "localhost:6379", Username: "", Password: ""},
 		{Name: "SMTP",	     Protocol: "smtp", 	   Host: "smtp.mail.me.com:587"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "google.com"},
 		{Name: "DNS",        Protocol: "dns", 	   Host: "youtube.com"},
@@ -176,8 +176,8 @@ func initRedis() {
 	var err error
 	redisClient, err = valkey.NewClient(valkey.ClientOption{
 		InitAddress: []string{"localhost:6379"},
-		Username:    "jack",
-		Password:    "jackSecret",
+		Username:    "",
+		Password:    "",
 	})
 	if err != nil {
 		log.Printf("⚠️ Redis unavailable, continuing without cache: %v", err)
