@@ -99,25 +99,25 @@
 			if (f.valid) {
 				await new Promise((r) => setTimeout(r, 500));
 				console.log('Form data:', f.data);
+				if (profileImageHandler.files?.length) {
+					const file = profileImageHandler.files[0];
+					const reader = new FileReader();
+					reader.onload = () => {
+						const result = reader.result;
+						if (typeof result === 'string') {
+							profileImageBase64 = result.split(',')[1];
+							console.log('base64 payload inside:', profileImageBase64);
+						}
+					};
+					reader.readAsDataURL(file);
+				} else {
+					profileImageBase64 = null;
+				}
 				open = false;
 				toast.success(`You submitted ${JSON.stringify(f.data, null, 2)}`);
 			} else {
 				open = false;
 				toast.error('Something went wrong. Please try again.');
-			}
-			if (profileImageHandler.files?.length) {
-				const file = profileImageHandler.files[0];
-				const reader = new FileReader();
-				reader.onload = () => {
-					const result = reader.result;
-					if (typeof result === 'string') {
-						profileImageBase64 = result.split(',')[1];
-						console.log('base64 payload inside:', profileImageBase64);
-					}
-				};
-				reader.readAsDataURL(file);
-			} else {
-				profileImageBase64 = null;
 			}
 		}
 	});

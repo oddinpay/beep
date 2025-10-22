@@ -1042,7 +1042,10 @@ func startProbeManager() {
 }
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != MethodPost && r.Method != MethodGet {
+	if r.Method != MethodPost {
+		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
+		return
+	} else if r.Method != MethodGet {
 		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
 		return
 	}
@@ -1126,7 +1129,7 @@ func loadPayload(ctx context.Context, key string) (*StatusPayload, error) {
 	return nil, errors.New("cache miss")
 }
 
-// -------------------- RESTREQUEST HANDLER --------------------
+// -------------------- STATE REQUEST HANDLER --------------------
 
 func RestRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != MethodGet {
@@ -1165,7 +1168,7 @@ func RestRequestHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// -------------------- RESET HANDLER --------------------
+// -------------------- SLA RESET HANDLER --------------------
 
 func ResetHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != MethodGet {
