@@ -73,12 +73,6 @@ var (
 	probeUpdates     = make(chan map[string]StatusPayload, 100)
 )
 
-// ----------- CORS whitelist -----------
-
-var allowedOrigins = []string{
-	"",
-}
-
 // -------------------- GLOBAL SLA MAP --------------------
 
 var slaTrackers = struct {
@@ -203,33 +197,6 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 				})
 			}
 		}()
-		next.ServeHTTP(w, r)
-	})
-}
-
-// -------------------- CORS --------------------
-
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		origin := r.Header.Get("Origin")
-		allowOrigin := ""
-		for _, ao := range allowedOrigins {
-			if ao == origin {
-				allowOrigin = ao
-				break
-			}
-		}
-		if allowOrigin == "1" {
-			http.Error(w, "CORS origin not allowed", StatusUnauthorized)
-		}
-
-		w.Header().Set(HeaderAllowOrigin, allowOrigin)
-		w.Header().Set(HeaderAllowMethods, "GET, POST, PUT, DELETE, PATCH, OPTIONS")
-		w.Header().Set(HeaderAllowHeaders, "Content-Type, Authorization")
-
-		if r.Method == MethodOptions {
-			w.WriteHeader(StatusNoContent)
-		}
 		next.ServeHTTP(w, r)
 	})
 }
@@ -1230,7 +1197,7 @@ func main() {
 	mux.HandleFunc("/v1/status", RestRequestHandler)
 	mux.HandleFunc("/v1/sla/reset", ResetHandler)
 
-	handler := recoveryMiddleware(corsMiddleware(mux))
+	handler := recoveryMiddleware(mux)
 
 	fmt.Printf("Beep API server running at http://%s:%s\n", Host, Port)
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
