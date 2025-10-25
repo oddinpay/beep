@@ -1009,15 +1009,13 @@ func startProbeManager() {
 }
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != MethodPost {
-		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
-		return
-	} else if r.Method != MethodGet {
+	if r.Method != MethodPost && r.Method != MethodGet {
 		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
 		return
 	}
 
 	// SSE headers
+	w.Header().Set(HeaderAllowOrigin, "*")
 	w.Header().Set(HeaderCacheControl, "no-cache")
 	w.Header().Set(HeaderConnection, "keep-alive")
 	w.Header().Set(HeaderContentType, ContentTypeEventStream)
