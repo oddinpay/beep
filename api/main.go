@@ -1101,6 +1101,7 @@ func RestRequestHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
 	}
 
+	w.Header().Set(HeaderAllowOrigin, "*")
 	w.Header().Set(HeaderContentType, ContentTypeJSON)
 
 	var hasMonitors bool
