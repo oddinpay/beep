@@ -1,6 +1,6 @@
 # beep
 
-🚨 No BS, beautiful status page and uptime monitor. No core model, no SaaS, no fees. 100% open-source, self-hosted, and run locally.
+🚨 No BS, beautiful status page & uptime monitor. No core model, no SaaS, no fees. 100% open-source, self-hosted, and run locally.
 
 <br>
 
