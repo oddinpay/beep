@@ -66,7 +66,7 @@ var (
 	// redisClient      valkey.Client
 	fs               *bigcache.BigCache
 	probeManagerOnce sync.Once
-	probeUpdates     = make(chan map[string]StatusPayload, 100)
+	probeUpdates     = make(chan map[string]StatusPayload, 1)
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
