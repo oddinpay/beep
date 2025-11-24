@@ -57,7 +57,9 @@ const (
 	HeaderAllowHeaders = "Access-Control-Allow-Headers"
 
 	defaultTimeout = 10 * time.Second
-	minutes90d     = 90 * 24 * 60
+
+	bucketSize = 5 * time.Minute
+	buckets90d = int((90 * 24 * time.Hour) / bucketSize)
 )
 
 // ----------- DB / CACHE CONNECTIONS -----------
@@ -816,7 +818,7 @@ func NewSlidingSLA(target float64) *SlidingSLA {
 	now := time.Now().Truncate(time.Minute)
 	return &SlidingSLA{
 		Target:        target,
-		buckets:       make([]bucket, minutes90d),
+		buckets:       make([]bucket, buckets90d),
 		currentMinute: now,
 		lastUpdate:    now,
 	}
@@ -828,7 +830,7 @@ func (s *SlidingSLA) rotateTo(now time.Time) {
 		return
 	}
 	steps := int(minNow.Sub(s.currentMinute) / time.Minute)
-	if steps > minutes90d {
+	if steps > buckets90d {
 		for i := range s.buckets {
 			s.buckets[i] = bucket{}
 		}
