@@ -354,75 +354,75 @@ func probeDNS(req HttpRequest) ProbeResult {
 	}
 }
 
-func probeUDP(req HttpRequest) ProbeResult {
+// func probeUDP(req HttpRequest) ProbeResult {
 
-	raddr, err := net.ResolveUDPAddr("udp", req.Host)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    strings.ToUpper(req.Protocol),
-			Description: "Error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Down, "down", "up", "down"},
-		}
-	}
+// 	raddr, err := net.ResolveUDPAddr("udp", req.Host)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    strings.ToUpper(req.Protocol),
+// 			Description: "Error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 			State:       []string{hr.Down, "down", "up", "down"},
+// 		}
+// 	}
 
-	conn, err := net.DialUDP("udp", nil, raddr)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    strings.ToUpper(req.Protocol),
-			Description: "dial error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Down, "down", "up", "down"},
-		}
-	}
-	defer conn.Close()
-	_ = conn.SetDeadline(time.Now().Add(defaultTimeout))
+// 	conn, err := net.DialUDP("udp", nil, raddr)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    strings.ToUpper(req.Protocol),
+// 			Description: "dial error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 			State:       []string{hr.Down, "down", "up", "down"},
+// 		}
+// 	}
+// 	defer conn.Close()
+// 	_ = conn.SetDeadline(time.Now().Add(defaultTimeout))
 
-	_, err = conn.Write([]byte("ping\n"))
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    strings.ToUpper(req.Protocol),
-			Description: "write error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Down, "down", "up", "down"},
-		}
-	}
+// 	_, err = conn.Write([]byte("ping\n"))
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    strings.ToUpper(req.Protocol),
+// 			Description: "write error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 			State:       []string{hr.Down, "down", "up", "down"},
+// 		}
+// 	}
 
-	// Try read (optional)
-	buf := make([]byte, 64)
-	n, _, err := conn.ReadFromUDP(buf)
-	if err != nil {
-		// No reply → still count as UP
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    strings.ToUpper(req.Protocol),
-			Description: "write ok (no reply)",
-			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{"warn", hr.Up, "up", "down"},
-		}
-	}
+// 	// Try read (optional)
+// 	buf := make([]byte, 64)
+// 	n, _, err := conn.ReadFromUDP(buf)
+// 	if err != nil {
+// 		// No reply → still count as UP
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    strings.ToUpper(req.Protocol),
+// 			Description: "write ok (no reply)",
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 			State:       []string{"warn", hr.Up, "up", "down"},
+// 		}
+// 	}
 
-	return ProbeResult{
-		Id:          ulid.Make().String(),
-		Name:        req.Name,
-		Protocol:    strings.ToUpper(req.Protocol),
-		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
-		Timestamp:   time.Now().Format("15:04:05.000"),
-		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-		State:       []string{hr.Up, "warn"},
-	}
-}
+// 	return ProbeResult{
+// 		Id:          ulid.Make().String(),
+// 		Name:        req.Name,
+// 		Protocol:    strings.ToUpper(req.Protocol),
+// 		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
+// 		Timestamp:   time.Now().Format("15:04:05.000"),
+// 		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 		State:       []string{hr.Up, "warn"},
+// 	}
+// }
 
 // func ProbeICMP(req HttpRequest) ProbeResult {
 
@@ -937,8 +937,8 @@ func startProbeManager() {
 				probeFn = probeHTTP
 			case "dns":
 				probeFn = probeDNS
-			case "udp":
-				probeFn = probeUDP
+			// case "udp":
+			// 	probeFn = probeUDP
 			case "smtp":
 				probeFn = probeSMTP
 			// case "redis":
