@@ -76,6 +76,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
+		{Name: "HTTPS", Protocol: "https", Host: "google.com"},
 		{Name: "REDIS", Protocol: "redis", Host: "localhost:6379", Username: "", Password: ""},
 		{Name: "SMTP", Protocol: "smtp", Host: "smtp.mail.me.com:587"},
 	}
