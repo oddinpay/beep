@@ -15,6 +15,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/syumai/workers"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/oklog/ulid/v2"
 	"github.com/valkey-io/valkey-go"
@@ -1201,4 +1203,6 @@ func main() {
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
 		log.Fatal(err)
 	}
+
+	workers.Serve(nil)
 }
