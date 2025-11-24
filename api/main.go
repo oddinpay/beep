@@ -2,15 +2,12 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
-	"net/smtp"
-	"os"
 	"strings"
 	"sync"
 	"time"
@@ -477,134 +474,134 @@ func probeDNS(req HttpRequest) ProbeResult {
 // 	}
 // }
 
-func probeSMTP(req HttpRequest) ProbeResult {
+// func probeSMTP(req HttpRequest) ProbeResult {
 
-	// extract host and port (default to 25 if missing)
-	hostOnly, port, err := net.SplitHostPort(req.Host)
-	if err != nil {
-		hostOnly = req.Host
-		port = "25"
-	}
+// 	// extract host and port (default to 25 if missing)
+// 	hostOnly, port, err := net.SplitHostPort(req.Host)
+// 	if err != nil {
+// 		hostOnly = req.Host
+// 		port = "25"
+// 	}
 
-	// Use Cloudflare DNS (1.1.1.1) for resolution via a custom resolver
-	resolver := &net.Resolver{
-		PreferGo: true,
-		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-			d := net.Dialer{Timeout: defaultTimeout}
-			return d.DialContext(ctx, "udp", "1.1.1.1:53")
-		},
-	}
+// 	// Use Cloudflare DNS (1.1.1.1) for resolution via a custom resolver
+// 	resolver := &net.Resolver{
+// 		PreferGo: true,
+// 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+// 			d := net.Dialer{Timeout: defaultTimeout}
+// 			return d.DialContext(ctx, "udp", "1.1.1.1:53")
+// 		},
+// 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
-	defer cancel()
+// 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+// 	defer cancel()
 
-	ips, err := resolver.LookupIPAddr(ctx, hostOnly)
-	if err != nil || len(ips) == 0 {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    "SMTP",
-			State:       []string{hr.Down},
-			Description: "DNS lookup (Cloudflare) failed: " + fmt.Sprintf("%v", err),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	ips, err := resolver.LookupIPAddr(ctx, hostOnly)
+// 	if err != nil || len(ips) == 0 {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    "SMTP",
+// 			State:       []string{hr.Down},
+// 			Description: "DNS lookup (Cloudflare) failed: " + fmt.Sprintf("%v", err),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// pick first resolved IP and dial that IP:port
-	targetAddr := net.JoinHostPort(ips[0].IP.String(), port)
-	dialer := net.Dialer{Timeout: defaultTimeout}
-	conn, err := dialer.DialContext(ctx, "tcp", targetAddr)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    "SMTP",
-			State:       []string{hr.Down},
-			Description: "Dial failed to resolved IP: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// pick first resolved IP and dial that IP:port
+// 	targetAddr := net.JoinHostPort(ips[0].IP.String(), port)
+// 	dialer := net.Dialer{Timeout: defaultTimeout}
+// 	conn, err := dialer.DialContext(ctx, "tcp", targetAddr)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    "SMTP",
+// 			State:       []string{hr.Down},
+// 			Description: "Dial failed to resolved IP: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	c, err := smtp.NewClient(conn, hostOnly)
-	if err != nil {
-		conn.Close()
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    "SMTP",
-			State:       []string{hr.Down},
-			Description: "NewClient failed: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
-	defer c.Close()
+// 	c, err := smtp.NewClient(conn, hostOnly)
+// 	if err != nil {
+// 		conn.Close()
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    "SMTP",
+// 			State:       []string{hr.Down},
+// 			Description: "NewClient failed: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
+// 	defer c.Close()
 
-	hostname, _ := os.Hostname()
+// 	hostname, _ := os.Hostname()
 
-	if err := c.Hello(hostname); err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    "SMTP",
-			State:       []string{hr.Down},
-			Description: "EHLO failed: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	if err := c.Hello(hostname); err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    "SMTP",
+// 			State:       []string{hr.Down},
+// 			Description: "EHLO failed: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// STARTTLS upgrade
-	if ok, _ := c.Extension("STARTTLS"); ok {
-		tlsConfig := &tls.Config{ServerName: hostOnly}
-		if err = c.StartTLS(tlsConfig); err != nil {
-			return ProbeResult{
-				Id:          ulid.Make().String(),
-				Name:        req.Name,
-				Protocol:    "SMTP",
-				State:       []string{hr.Down},
-				Description: "STARTTLS failed: " + err.Error(),
-				Timestamp:   time.Now().Format("15:04:05.000"),
-			}
-		}
-	}
+// 	// STARTTLS upgrade
+// 	if ok, _ := c.Extension("STARTTLS"); ok {
+// 		tlsConfig := &tls.Config{ServerName: hostOnly}
+// 		if err = c.StartTLS(tlsConfig); err != nil {
+// 			return ProbeResult{
+// 				Id:          ulid.Make().String(),
+// 				Name:        req.Name,
+// 				Protocol:    "SMTP",
+// 				State:       []string{hr.Down},
+// 				Description: "STARTTLS failed: " + err.Error(),
+// 				Timestamp:   time.Now().Format("15:04:05.000"),
+// 			}
+// 		}
+// 	}
 
-	desc := "Connected to " + targetAddr + " (resolved via Cloudflare) without authentication"
+// 	desc := "Connected to " + targetAddr + " (resolved via Cloudflare) without authentication"
 
-	// AUTH if username/password are set
-	if strings.TrimSpace(req.Username) != "" && strings.TrimSpace(req.Password) != "" {
-		if ok, _ := c.Extension("AUTH"); !ok {
-			return ProbeResult{
-				Id:          ulid.Make().String(),
-				Name:        req.Name,
-				Protocol:    "SMTP",
-				State:       []string{hr.Down},
-				Description: "Server does not support AUTH",
-				Timestamp:   time.Now().Format("15:04:05.000"),
-			}
-		}
+// 	// AUTH if username/password are set
+// 	if strings.TrimSpace(req.Username) != "" && strings.TrimSpace(req.Password) != "" {
+// 		if ok, _ := c.Extension("AUTH"); !ok {
+// 			return ProbeResult{
+// 				Id:          ulid.Make().String(),
+// 				Name:        req.Name,
+// 				Protocol:    "SMTP",
+// 				State:       []string{hr.Down},
+// 				Description: "Server does not support AUTH",
+// 				Timestamp:   time.Now().Format("15:04:05.000"),
+// 			}
+// 		}
 
-		auth := smtp.PlainAuth("", req.Username, req.Password, hostOnly)
-		if err := c.Auth(auth); err != nil {
-			return ProbeResult{
-				Id:          ulid.Make().String(),
-				Name:        req.Name,
-				Protocol:    "SMTP",
-				State:       []string{hr.Down},
-				Description: "AUTH failed: " + err.Error(),
-				Timestamp:   time.Now().Format("15:04:05.000"),
-			}
-		}
-		desc = fmt.Sprintf("Authenticated to %s successfully (resolved via Cloudflare)", req.Host)
-	}
+// 		auth := smtp.PlainAuth("", req.Username, req.Password, hostOnly)
+// 		if err := c.Auth(auth); err != nil {
+// 			return ProbeResult{
+// 				Id:          ulid.Make().String(),
+// 				Name:        req.Name,
+// 				Protocol:    "SMTP",
+// 				State:       []string{hr.Down},
+// 				Description: "AUTH failed: " + err.Error(),
+// 				Timestamp:   time.Now().Format("15:04:05.000"),
+// 			}
+// 		}
+// 		desc = fmt.Sprintf("Authenticated to %s successfully (resolved via Cloudflare)", req.Host)
+// 	}
 
-	return ProbeResult{
-		Id:          ulid.Make().String(),
-		Name:        req.Name,
-		Protocol:    "SMTP",
-		State:       []string{hr.Up},
-		Description: desc,
-		Timestamp:   time.Now().Format("15:04:05.000"),
-	}
-}
+// 	return ProbeResult{
+// 		Id:          ulid.Make().String(),
+// 		Name:        req.Name,
+// 		Protocol:    "SMTP",
+// 		State:       []string{hr.Up},
+// 		Description: desc,
+// 		Timestamp:   time.Now().Format("15:04:05.000"),
+// 	}
+// }
 
 // func ProbeRedis(req HttpRequest) ProbeResult {
 
@@ -939,8 +936,8 @@ func startProbeManager() {
 				probeFn = probeDNS
 			// case "udp":
 			// 	probeFn = probeUDP
-			case "smtp":
-				probeFn = probeSMTP
+			// case "smtp":
+			// 	probeFn = probeSMTP
 			// case "redis":
 			// 	probeFn = ProbeRedis
 			// case "postgres":
