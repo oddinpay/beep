@@ -55,9 +55,7 @@ const (
 	HeaderAllowHeaders = "Access-Control-Allow-Headers"
 
 	defaultTimeout = 10 * time.Second
-
-	bucketSize = 5 * time.Minute
-	buckets90d = int((90 * 24 * time.Hour) / bucketSize)
+	minutes90d     = 90 * 24 * 60
 )
 
 // ----------- DB / CACHE CONNECTIONS -----------
@@ -66,7 +64,7 @@ var (
 	// redisClient      valkey.Client
 	// fs               *bigcache.BigCache
 	probeManagerOnce sync.Once
-	probeUpdates     = make(chan map[string]StatusPayload, 1)
+	probeUpdates     = make(chan map[string]StatusPayload, 100)
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -816,7 +814,7 @@ func NewSlidingSLA(target float64) *SlidingSLA {
 	now := time.Now().Truncate(time.Minute)
 	return &SlidingSLA{
 		Target:        target,
-		buckets:       make([]bucket, buckets90d),
+		buckets:       make([]bucket, minutes90d),
 		currentMinute: now,
 		lastUpdate:    now,
 	}
@@ -828,7 +826,7 @@ func (s *SlidingSLA) rotateTo(now time.Time) {
 		return
 	}
 	steps := int(minNow.Sub(s.currentMinute) / time.Minute)
-	if steps > buckets90d {
+	if steps > minutes90d {
 		for i := range s.buckets {
 			s.buckets[i] = bucket{}
 		}
@@ -1033,13 +1031,13 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	// Send cached data immediately
 	// for i, req := range defaultReqs {
 	// 	key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
-	// 	// if payload, err := loadPayload(ctx, key); err == nil {
-	// 	// 	out := map[string]any{
-	// 	// 		"index":   i,
-	// 	// 		"payload": *payload,
-	// 	// 	}
-	// 	// 	_ = conn.SendData(ctx, out)
-	// 	// }
+	// 	if payload, err := loadPayload(ctx, key); err == nil {
+	// 		out := map[string]any{
+	// 			"index":   i,
+	// 			"payload": *payload,
+	// 		}
+	// 		_ = conn.SendData(ctx, out)
+	// 	}
 	// }
 
 	// Stream live updates from global channel
