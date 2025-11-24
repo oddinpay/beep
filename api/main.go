@@ -12,11 +12,11 @@ import (
 	"sync"
 	"time"
 
+	"go.jetify.com/sse"
+
 	"github.com/syumai/workers"
 
 	"github.com/oklog/ulid/v2"
-
-	"go.jetify.com/sse"
 )
 
 const (
