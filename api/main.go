@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"github.com/syumai/workers"
-	"github.com/valkey-io/valkey-go"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/oklog/ulid/v2"
@@ -608,92 +607,92 @@ func probeSMTP(req HttpRequest) ProbeResult {
 	}
 }
 
-func ProbeRedis(req HttpRequest) ProbeResult {
+// func ProbeRedis(req HttpRequest) ProbeResult {
 
-	opt := valkey.ClientOption{
-		InitAddress: []string{req.Host},
-	}
+// 	opt := valkey.ClientOption{
+// 		InitAddress: []string{req.Host},
+// 	}
 
-	if strings.TrimSpace(req.Username) != "" {
-		opt.Username = req.Username
-	}
-	if strings.TrimSpace(req.Password) != "" {
-		opt.Password = req.Password
-	}
+// 	if strings.TrimSpace(req.Username) != "" {
+// 		opt.Username = req.Username
+// 	}
+// 	if strings.TrimSpace(req.Password) != "" {
+// 		opt.Password = req.Password
+// 	}
 
-	client, err := valkey.NewClient(opt)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			Description: "Client init error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Down, "up", "up", "up"},
-		}
-	}
-	defer client.Close()
+// 	client, err := valkey.NewClient(opt)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			Description: "Client init error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 			State:       []string{hr.Down, "up", "up", "up"},
+// 		}
+// 	}
+// 	defer client.Close()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
+// 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+// 	defer cancel()
 
-	// 1) PING
-	replyPing, err := client.Do(ctx, client.B().Ping().Build()).ToString()
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "PING error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 1) PING
+// 	replyPing, err := client.Do(ctx, client.B().Ping().Build()).ToString()
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "PING error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 2) SET key
-	replySet, err := client.Do(ctx, client.B().Set().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Value("OK").Build()).ToString()
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "SET error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 2) SET key
+// 	replySet, err := client.Do(ctx, client.B().Set().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Value("OK").Build()).ToString()
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "SET error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 3) GET key
-	val, err := client.Do(ctx, client.B().Get().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Build()).ToString()
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "GET error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 3) GET key
+// 	val, err := client.Do(ctx, client.B().Get().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Build()).ToString()
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "GET error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 4) DEL key (cleanup, ignore errors)
-	_, _ = client.Do(ctx, client.B().Del().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Build()).AsInt64()
+// 	// 4) DEL key (cleanup, ignore errors)
+// 	_, _ = client.Do(ctx, client.B().Del().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Build()).AsInt64()
 
-	// 5) Return probe result
-	desc := fmt.Sprintf("ping:%s, set:%s, get:%s", replyPing, replySet, val)
+// 	// 5) Return probe result
+// 	desc := fmt.Sprintf("ping:%s, set:%s, get:%s", replyPing, replySet, val)
 
-	return ProbeResult{
-		Id:          ulid.Make().String(),
-		Name:        req.Name,
-		Protocol:    req.Protocol,
-		Description: desc,
-		Timestamp:   time.Now().Format("15:04:05.000"),
-		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-		State:       []string{hr.Up, "warn", "up", "up"},
-	}
+// 	return ProbeResult{
+// 		Id:          ulid.Make().String(),
+// 		Name:        req.Name,
+// 		Protocol:    req.Protocol,
+// 		Description: desc,
+// 		Timestamp:   time.Now().Format("15:04:05.000"),
+// 		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 		State:       []string{hr.Up, "warn", "up", "up"},
+// 	}
 
-}
+// }
 
 func ProbePostgres(req HttpRequest) ProbeResult {
 
@@ -943,8 +942,8 @@ func startProbeManager() {
 				probeFn = probeUDP
 			case "smtp":
 				probeFn = probeSMTP
-			case "redis":
-				probeFn = ProbeRedis
+			// case "redis":
+			// 	probeFn = ProbeRedis
 			case "postgres":
 				probeFn = ProbePostgres
 			// case "icmp":
