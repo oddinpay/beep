@@ -22,7 +22,6 @@ import (
 	"github.com/valkey-io/valkey-go"
 
 	"github.com/allegro/bigcache/v3"
-	probing "github.com/prometheus-community/pro-bing"
 
 	"go.jetify.com/sse"
 )
@@ -427,58 +426,58 @@ func probeUDP(req HttpRequest) ProbeResult {
 	}
 }
 
-func ProbeICMP(req HttpRequest) ProbeResult {
+// func ProbeICMP(req HttpRequest) ProbeResult {
 
-	pinger, err := probing.NewPinger(req.Host)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    "ICMP",
-			Description: "Pinger error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Down},
-		}
-	}
-	pinger.Count = 1
-	pinger.Timeout = defaultTimeout
-	pinger.SetPrivileged(true)
+// 	pinger, err := probing.NewPinger(req.Host)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    "ICMP",
+// 			Description: "Pinger error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 			State:       []string{hr.Down},
+// 		}
+// 	}
+// 	pinger.Count = 1
+// 	pinger.Timeout = defaultTimeout
+// 	pinger.SetPrivileged(true)
 
-	err = pinger.Run()
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    "ICMP",
-			Description: "Run error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-			State:       []string{hr.Down},
-		}
-	}
-	stats := pinger.Statistics()
+// 	err = pinger.Run()
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    "ICMP",
+// 			Description: "Run error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+// 			State:       []string{hr.Down},
+// 		}
+// 	}
+// 	stats := pinger.Statistics()
 
-	if stats.PacketsRecv == 0 {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    "ICMP",
-			State:       []string{hr.Up},
-			Description: fmt.Sprintf("0/%d packets received", stats.PacketsSent),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	if stats.PacketsRecv == 0 {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    "ICMP",
+// 			State:       []string{hr.Up},
+// 			Description: fmt.Sprintf("0/%d packets received", stats.PacketsSent),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	return ProbeResult{
-		Id:          ulid.Make().String(),
-		Name:        req.Name,
-		Protocol:    "ICMP",
-		State:       []string{hr.Up},
-		Description: fmt.Sprintf("%d/%d packets received, avg rtt %.2fms", stats.PacketsRecv, stats.PacketsSent, float64(stats.AvgRtt.Microseconds())/1000.0),
-		Timestamp:   time.Now().Format("15:04:05.000"),
-	}
-}
+// 	return ProbeResult{
+// 		Id:          ulid.Make().String(),
+// 		Name:        req.Name,
+// 		Protocol:    "ICMP",
+// 		State:       []string{hr.Up},
+// 		Description: fmt.Sprintf("%d/%d packets received, avg rtt %.2fms", stats.PacketsRecv, stats.PacketsSent, float64(stats.AvgRtt.Microseconds())/1000.0),
+// 		Timestamp:   time.Now().Format("15:04:05.000"),
+// 	}
+// }
 
 func probeSMTP(req HttpRequest) ProbeResult {
 
@@ -948,8 +947,8 @@ func startProbeManager() {
 				probeFn = ProbeRedis
 			case "postgres":
 				probeFn = ProbePostgres
-			case "icmp":
-				probeFn = ProbeICMP
+			// case "icmp":
+			// 	probeFn = ProbeICMP
 			default:
 				log.Printf("⚠️ Unsupported protocol: %s", t.Protocol)
 				continue
@@ -1205,4 +1204,6 @@ func main() {
 	// }
 	//
 	workers.Serve(handler)
+
+	env.WORKER_B.Fetch(req)
 }
