@@ -15,6 +15,7 @@ import (
 	"go.jetify.com/sse"
 
 	"github.com/syumai/workers"
+	"github.com/syumai/workers/cloudflare/fetch"
 
 	"github.com/oklog/ulid/v2"
 )
@@ -221,16 +222,20 @@ func formatDurationFull(seconds int64) string {
 
 // -------------------- PROBES --------------------
 
-func probeHTTP(req HttpRequest) ProbeResult {
-	c := &http.Client{Timeout: defaultTimeout}
+func probeHTTP(re HttpRequest, req *http.Request) ProbeResult {
 
-	resp, err := c.Get(fmt.Sprintf("%s://%s", req.Protocol, req.Host))
+	c := fetch.NewClient()
+
+	r, err := fetch.NewRequest(req.Context(), http.MethodGet, fmt.Sprintf("%s://%s", re.Protocol, re.Host), nil)
+
+	resp, err := c.Do(r, nil)
+
 	if err != nil {
 		return ProbeResult{
 			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    strings.ToUpper(req.Protocol),
-			Description: fmt.Sprintf("%s - %s", req.Host, err.Error()),
+			Name:        re.Name,
+			Protocol:    strings.ToUpper(re.Protocol),
+			Description: fmt.Sprintf("%s - %s", re.Host, err.Error()),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
 			State:       []string{},
@@ -241,9 +246,9 @@ func probeHTTP(req HttpRequest) ProbeResult {
 	if resp.StatusCode < StatusOK || resp.StatusCode >= StatusBadRequest {
 		return ProbeResult{
 			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    strings.ToUpper(req.Protocol),
-			Description: fmt.Sprintf("%s - %d", req.Host, resp.StatusCode),
+			Name:        re.Name,
+			Protocol:    strings.ToUpper(re.Protocol),
+			Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
 			State:       []string{},
@@ -251,9 +256,9 @@ func probeHTTP(req HttpRequest) ProbeResult {
 	}
 	return ProbeResult{
 		Id:          ulid.Make().String(),
-		Name:        req.Name,
-		Protocol:    strings.ToUpper(req.Protocol),
-		Description: fmt.Sprintf("%s - %d", req.Host, resp.StatusCode),
+		Name:        re.Name,
+		Protocol:    strings.ToUpper(re.Protocol),
+		Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
 		Timestamp:   time.Now().Format("15:04:05.000"),
 		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
 		State:       []string{hr.Up},
@@ -923,14 +928,14 @@ func startProbeManager() {
 				interval = 1 * time.Second
 			}
 
-			var probeFn func(HttpRequest) ProbeResult
+			var probeFn func(HttpRequest, *http.Request) ProbeResult
 			switch strings.ToLower(strings.TrimSpace(t.Protocol)) {
-			case "tcp":
-				probeFn = probeTCP
+			// case "tcp":
+			// 	probeFn = probeTCP
 			case "http", "https":
 				probeFn = probeHTTP
-			case "dns":
-				probeFn = probeDNS
+			// case "dns":
+			// 	probeFn = probeDNS
 			// case "udp":
 			// 	probeFn = probeUDP
 			// case "smtp":
