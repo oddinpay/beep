@@ -222,11 +222,11 @@ func formatDurationFull(seconds int64) string {
 
 // -------------------- PROBES --------------------
 
-func probeHTTP(re HttpRequest, req *http.Request) ProbeResult {
+func probeHTTP(re HttpRequest) ProbeResult {
 
 	c := fetch.NewClient()
 
-	r, err := fetch.NewRequest(req.Context(), http.MethodGet, fmt.Sprintf("%s://%s", re.Protocol, re.Host), nil)
+	r, err := fetch.NewRequest(context.Background(), http.MethodGet, fmt.Sprintf("%s://%s", re.Protocol, re.Host), nil)
 
 	resp, err := c.Do(r, nil)
 
@@ -928,14 +928,14 @@ func startProbeManager() {
 				interval = 1 * time.Second
 			}
 
-			var probeFn func(HttpRequest, *http.Request) ProbeResult
+			var probeFn func(HttpRequest) ProbeResult
 			switch strings.ToLower(strings.TrimSpace(t.Protocol)) {
-			// case "tcp":
-			// 	probeFn = probeTCP
+			case "tcp":
+				probeFn = probeTCP
 			case "http", "https":
 				probeFn = probeHTTP
-			// case "dns":
-			// 	probeFn = probeDNS
+			case "dns":
+				probeFn = probeDNS
 			// case "udp":
 			// 	probeFn = probeUDP
 			// case "smtp":
