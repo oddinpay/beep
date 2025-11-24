@@ -17,7 +17,6 @@ import (
 
 	"github.com/syumai/workers"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/oklog/ulid/v2"
 
 	"github.com/allegro/bigcache/v3"
@@ -694,125 +693,125 @@ func probeSMTP(req HttpRequest) ProbeResult {
 
 // }
 
-func ProbePostgres(req HttpRequest) ProbeResult {
+// func ProbePostgres(req HttpRequest) ProbeResult {
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-	defer cancel()
+// 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+// 	defer cancel()
 
-	conn, err := pgx.Connect(ctx, req.Protocol+"://"+req.Host)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "Connect error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
-	defer conn.Close(ctx)
+// 	conn, err := pgx.Connect(ctx, req.Protocol+"://"+req.Host)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "Connect error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
+// 	defer conn.Close(ctx)
 
-	// 1) Ensure users table exists
-	_, err = conn.Exec(ctx, `
-		create table if not exists users (
-			id serial primary key,
-			username text not null unique,
-			age int
-		)
-	`)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "Create table error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 1) Ensure users table exists
+// 	_, err = conn.Exec(ctx, `
+// 		create table if not exists users (
+// 			id serial primary key,
+// 			username text not null unique,
+// 			age int
+// 		)
+// 	`)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "Create table error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 2) Insert user
-	_, err = conn.Exec(ctx, "insert into users (username, age) values ($1, $2) on conflict (username) do nothing", "jack", 30)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "Insert error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 2) Insert user
+// 	_, err = conn.Exec(ctx, "insert into users (username, age) values ($1, $2) on conflict (username) do nothing", "jack", 30)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "Insert error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 3) Select user
-	var age int
-	err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "Select error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 3) Select user
+// 	var age int
+// 	err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "Select error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 4) Update user
-	_, err = conn.Exec(ctx, "update users set age=$1 where username=$2", 31, "jack")
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "Update error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 4) Update user
+// 	_, err = conn.Exec(ctx, "update users set age=$1 where username=$2", 31, "jack")
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "Update error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 5) Select again
-	err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "Re-select error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 5) Select again
+// 	err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "Re-select error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 6) Delete user
-	_, err = conn.Exec(ctx, "delete from users where username=$1", "jack")
-	if err != nil {
-		return ProbeResult{
-			Id:          ulid.Make().String(),
-			Name:        req.Name,
-			Protocol:    req.Protocol,
-			State:       []string{hr.Down},
-			Description: "Delete error: " + err.Error(),
-			Timestamp:   time.Now().Format("15:04:05.000"),
-		}
-	}
+// 	// 6) Delete user
+// 	_, err = conn.Exec(ctx, "delete from users where username=$1", "jack")
+// 	if err != nil {
+// 		return ProbeResult{
+// 			Id:          ulid.Make().String(),
+// 			Name:        req.Name,
+// 			Protocol:    req.Protocol,
+// 			State:       []string{hr.Down},
+// 			Description: "Delete error: " + err.Error(),
+// 			Timestamp:   time.Now().Format("15:04:05.000"),
+// 		}
+// 	}
 
-	// 7) Verify delete
-	// err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
-	// if err != nil {
-	// 	fmt.Println("After delete → no such user (as expected)")
-	// }
+// 	// 7) Verify delete
+// 	// err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
+// 	// if err != nil {
+// 	// 	fmt.Println("After delete → no such user (as expected)")
+// 	// }
 
-	desc := fmt.Sprintf("Connection is working - Querying: age:%d:ok", age)
-	return ProbeResult{
-		Id:          ulid.Make().String(),
-		Name:        req.Name,
-		Protocol:    req.Protocol,
-		State:       []string{hr.Up},
-		Description: desc,
-		Timestamp:   time.Now().Format("15:04:05.000"),
-	}
-}
+// 	desc := fmt.Sprintf("Connection is working - Querying: age:%d:ok", age)
+// 	return ProbeResult{
+// 		Id:          ulid.Make().String(),
+// 		Name:        req.Name,
+// 		Protocol:    req.Protocol,
+// 		State:       []string{hr.Up},
+// 		Description: desc,
+// 		Timestamp:   time.Now().Format("15:04:05.000"),
+// 	}
+// }
 
 // -------------------- 90-DAY SLA --------------------
 
@@ -944,8 +943,8 @@ func startProbeManager() {
 				probeFn = probeSMTP
 			// case "redis":
 			// 	probeFn = ProbeRedis
-			case "postgres":
-				probeFn = ProbePostgres
+			// case "postgres":
+			// 	probeFn = ProbePostgres
 			// case "icmp":
 			// 	probeFn = ProbeICMP
 			default:
