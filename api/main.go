@@ -1181,7 +1181,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	initRedis()
+	// initRedis()
 	initBigcache()
 
 	if redisClient != nil {
@@ -1200,9 +1200,9 @@ func main() {
 	handler := recoveryMiddleware(mux)
 
 	fmt.Printf("Beep API server running at http://%s:%s\n", Host, Port)
-	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
-		log.Fatal(err)
-	}
-
-	workers.Serve(nil)
+	// if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
+	// 	log.Fatal(err)
+	// }
+	//
+	workers.Serve(handler)
 }
