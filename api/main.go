@@ -16,10 +16,10 @@ import (
 	"time"
 
 	"github.com/syumai/workers"
+	"github.com/valkey-io/valkey-go"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/oklog/ulid/v2"
-	"github.com/valkey-io/valkey-go"
 
 	"github.com/allegro/bigcache/v3"
 
@@ -68,7 +68,7 @@ const (
 // ----------- DB / CACHE CONNECTIONS -----------
 
 var (
-	redisClient      valkey.Client
+	// redisClient      valkey.Client
 	fs               *bigcache.BigCache
 	probeManagerOnce sync.Once
 	probeUpdates     = make(chan map[string]StatusPayload, 100)
@@ -156,18 +156,18 @@ type SlidingSLA struct {
 
 var hr = HealthResponse{Down: "down", Up: "up"}
 
-func initRedis() {
-	var err error
-	redisClient, err = valkey.NewClient(valkey.ClientOption{
-		InitAddress: []string{"localhost:6379"},
-		Username:    "",
-		Password:    "",
-	})
-	if err != nil {
-		log.Printf("⚠️ Redis unavailable, continuing without cache: %v", err)
-		redisClient = nil
-	}
-}
+// func initRedis() {
+// 	var err error
+// 	redisClient, err = valkey.NewClient(valkey.ClientOption{
+// 		InitAddress: []string{"localhost:6379"},
+// 		Username:    "",
+// 		Password:    "",
+// 	})
+// 	if err != nil {
+// 		log.Printf("⚠️ Redis unavailable, continuing without cache: %v", err)
+// 		redisClient = nil
+// 	}
+// }
 
 func initBigcache() {
 	ctx := context.Background()
@@ -959,7 +959,9 @@ func startProbeManager() {
 				defer ticker.Stop()
 
 				for range ticker.C {
-					ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+					// ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+
+					_, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 
 					res := fn(req)
 
@@ -982,16 +984,16 @@ func startProbeManager() {
 					// Write to Redis / BigCache
 					data, _ := json.Marshal(payload)
 					key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
-					if redisClient != nil {
-						_ = redisClient.Do(
-							ctx,
-							redisClient.B().Set().
-								Key(key).
-								Value(string(data)).
-								Ex(90*24*time.Hour).
-								Build(),
-						)
-					}
+					// if redisClient != nil {
+					// 	_ = redisClient.Do(
+					// 		ctx,
+					// 		redisClient.B().Set().
+					// 			Key(key).
+					// 			Value(string(data)).
+					// 			Ex(90*24*time.Hour).
+					// 			Build(),
+					// 	)
+					// }
 					if fs != nil {
 						_ = fs.Set(key, data)
 					}
@@ -1083,15 +1085,15 @@ func loadPayload(ctx context.Context, key string) (*StatusPayload, error) {
 			}
 		}
 	}
-	if redisClient != nil {
-		val, err := redisClient.Do(ctx, redisClient.B().Get().Key(key).Build()).ToString()
-		if err == nil && val != "" {
-			var p StatusPayload
-			if jsonErr := json.Unmarshal([]byte(val), &p); jsonErr == nil {
-				return &p, nil
-			}
-		}
-	}
+	// if redisClient != nil {
+	// 	val, err := redisClient.Do(ctx, redisClient.B().Get().Key(key).Build()).ToString()
+	// 	if err == nil && val != "" {
+	// 		var p StatusPayload
+	// 		if jsonErr := json.Unmarshal([]byte(val), &p); jsonErr == nil {
+	// 			return &p, nil
+	// 		}
+	// 	}
+	// }
 	return nil, errors.New("cache miss")
 }
 
@@ -1183,9 +1185,9 @@ func main() {
 	// initRedis()
 	initBigcache()
 
-	if redisClient != nil {
-		defer redisClient.Close()
-	}
+	// if redisClient != nil {
+	// 	defer redisClient.Close()
+	// }
 
 	if fs != nil {
 		defer fs.Close()
@@ -1205,5 +1207,4 @@ func main() {
 	//
 	workers.Serve(handler)
 
-	env.WORKER_B.Fetch(req)
 }
