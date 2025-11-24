@@ -16,8 +16,6 @@ import (
 
 	"github.com/oklog/ulid/v2"
 
-	"github.com/allegro/bigcache/v3"
-
 	"go.jetify.com/sse"
 )
 
@@ -66,7 +64,7 @@ const (
 
 var (
 	// redisClient      valkey.Client
-	fs               *bigcache.BigCache
+	// fs               *bigcache.BigCache
 	probeManagerOnce sync.Once
 	probeUpdates     = make(chan map[string]StatusPayload, 1)
 )
@@ -979,8 +977,8 @@ func startProbeManager() {
 					}
 
 					// Write to Redis / BigCache
-					data, _ := json.Marshal(payload)
-					key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
+					// data, _ := json.Marshal(payload)
+					// key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
 					// if redisClient != nil {
 					// 	_ = redisClient.Do(
 					// 		ctx,
@@ -991,9 +989,9 @@ func startProbeManager() {
 					// 			Build(),
 					// 	)
 					// }
-					if fs != nil {
-						_ = fs.Set(key, data)
-					}
+					// if fs != nil {
+					// 	_ = fs.Set(key, data)
+					// }
 
 					// Broadcast update
 					select {
@@ -1033,16 +1031,16 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	// Send cached data immediately
-	for i, req := range defaultReqs {
-		key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
-		if payload, err := loadPayload(ctx, key); err == nil {
-			out := map[string]any{
-				"index":   i,
-				"payload": *payload,
-			}
-			_ = conn.SendData(ctx, out)
-		}
-	}
+	// for i, req := range defaultReqs {
+	// 	key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
+	// 	// if payload, err := loadPayload(ctx, key); err == nil {
+	// 	// 	out := map[string]any{
+	// 	// 		"index":   i,
+	// 	// 		"payload": *payload,
+	// 	// 	}
+	// 	// 	_ = conn.SendData(ctx, out)
+	// 	// }
+	// }
 
 	// Stream live updates from global channel
 	for {
@@ -1073,26 +1071,26 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func loadPayload(ctx context.Context, key string) (*StatusPayload, error) {
-	if fs != nil {
-		if cached, err := fs.Get(key); err == nil {
-			var p StatusPayload
-			if jsonErr := json.Unmarshal(cached, &p); jsonErr == nil {
-				return &p, nil
-			}
-		}
-	}
-	// if redisClient != nil {
-	// 	val, err := redisClient.Do(ctx, redisClient.B().Get().Key(key).Build()).ToString()
-	// 	if err == nil && val != "" {
-	// 		var p StatusPayload
-	// 		if jsonErr := json.Unmarshal([]byte(val), &p); jsonErr == nil {
-	// 			return &p, nil
-	// 		}
-	// 	}
-	// }
-	return nil, errors.New("cache miss")
-}
+// func loadPayload(ctx context.Context, key string) (*StatusPayload, error) {
+// 	if fs != nil {
+// 		if cached, err := fs.Get(key); err == nil {
+// 			var p StatusPayload
+// 			if jsonErr := json.Unmarshal(cached, &p); jsonErr == nil {
+// 				return &p, nil
+// 			}
+// 		}
+// 	}
+// 	// if redisClient != nil {
+// 	// 	val, err := redisClient.Do(ctx, redisClient.B().Get().Key(key).Build()).ToString()
+// 	// 	if err == nil && val != "" {
+// 	// 		var p StatusPayload
+// 	// 		if jsonErr := json.Unmarshal([]byte(val), &p); jsonErr == nil {
+// 	// 			return &p, nil
+// 	// 		}
+// 	// 	}
+// 	// }
+// 	return nil, errors.New("cache miss")
+// }
 
 // -------------------- STATE REQUEST HANDLER --------------------
 
@@ -1186,9 +1184,9 @@ func main() {
 	// 	defer redisClient.Close()
 	// }
 
-	if fs != nil {
-		defer fs.Close()
-	}
+	// if fs != nil {
+	// 	defer fs.Close()
+	// }
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/sse", StatusHandler)
