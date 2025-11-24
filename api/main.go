@@ -166,17 +166,17 @@ var hr = HealthResponse{Down: "down", Up: "up"}
 // 	}
 // }
 
-func initBigcache() {
-	ctx := context.Background()
+// func initBigcache() {
+// 	ctx := context.Background()
 
-	cache, err := bigcache.New(ctx, bigcache.DefaultConfig(5*time.Second))
-	if err != nil {
-		log.Fatalf("failed to init BigCache: %v", err)
-		fs = nil
-	}
-	fs = cache
+// 	cache, err := bigcache.New(ctx, bigcache.DefaultConfig(5*time.Second))
+// 	if err != nil {
+// 		log.Fatalf("failed to init BigCache: %v", err)
+// 		fs = nil
+// 	}
+// 	fs = cache
 
-}
+// }
 
 // -------------------- RECOVERY --------------------
 
@@ -1180,7 +1180,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	// initRedis()
-	initBigcache()
+	// initBigcache()
 
 	// if redisClient != nil {
 	// 	defer redisClient.Close()
