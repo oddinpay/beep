@@ -77,7 +77,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "HTTPS", Protocol: "https", Host: "app.home"},
+		{Name: "HTTPS", Protocol: "https", Host: "google.com"},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))

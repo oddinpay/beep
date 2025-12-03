@@ -51,7 +51,7 @@
     uptime90: string;
   }
 
-  const json = source("http://127.0.0.1:8976/v1/sse")
+  const json = source("http://127.0.0.1:8787/v1/sse")
     .select("")
     .json<ApiData>();
 
