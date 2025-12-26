@@ -2,7 +2,6 @@
 
 🚨 Beautiful status page & uptime monitor. Ready for production out of the box.
 
-<br>
 
 ## Beep
 
