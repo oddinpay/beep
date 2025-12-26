@@ -1,9 +1,9 @@
-# beep
+# Beep
 
 🚨 Beautiful status page & uptime monitor. Ready for production out of the box.
 
 
-## Beep
+## ✨ Core Functions
 
 - No configuration needed.
 - Ready for production out of the box.
