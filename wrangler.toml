@@ -1,0 +1,11 @@
+name = "beep-web"
+main = ".svelte-kit/cloudflare/_worker.js"
+compatibility_date = "2025-11-17"
+compatibility_flags = ["nodejs_compat"]
+
+workers_dev = false
+preview_urls = false
+
+[assets]
+binding = "ASSETS"
+directory = ".svelte-kit/cloudflare"
