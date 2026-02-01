@@ -1,8 +1,6 @@
 # Beep
 
-🚨 Beautiful status page & uptime monitor. **Ready for production** out of the box.
-
-Built for serverless environments like Cloudflare Workers, Beep ensures high availability and real-time monitoring for production workloads and critical services.
+🚨 Beautiful status page & uptime monitor. **Ready for production** out of the box. Built for serverless environments like Cloudflare Workers, Beep ensures high availability and real-time monitoring for production workloads and critical services.
 
 ## ✨ Core Functions
 
