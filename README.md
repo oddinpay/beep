@@ -1,8 +1,10 @@
 # Beep
 
-🚨 Beautiful status page & uptime monitor. **Ready for production out of the box.** Built for serverless environments like Cloudflare Workers, Beep ensures high availability and real-time monitoring for production workloads and critical services. **Easily deploy to Cloudflare in just one click.**
+🚨 Beautiful status page & uptime monitor. **Ready for production out of the box.** Easily deploy to Cloudflare in just one click.
 
-## ✨ Core Functions
+<br>
+
+## ✨ Key Features
 
 - No configuration needed.
 - Clean and simple UI – easy to navigate and user-friendly.
@@ -12,6 +14,8 @@
 - Real-time API **(SSE).**
 - Lightweight.
 
-<br>
+## More about Beep
+
+Built for serverless environments like Cloudflare Workers, Beep ensures high availability and real-time monitoring for production workloads and critical services.
 
 The Beep Dashboard runs locally, decoupled from the serverless environment. By communicating securely through Cloudflare D1, your admin interface remains completely private and never exposed to the public internet.
