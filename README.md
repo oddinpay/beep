@@ -11,3 +11,5 @@
 - Alerting options – supports **Email** and **RSS/Atom** feeds.
 - Real-time API **(SSE).**
 - Lightweight.
+
+The Beep Dashboard runs locally, decoupled from the serverless environment. By communicating securely through Cloudflare D1, your admin interface remains completely private and never exposed to the public internet.
