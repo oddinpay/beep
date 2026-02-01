@@ -1,12 +1,10 @@
 # Beep
 
-🚨 Beautiful status page & uptime monitor. Ready for production out of the box.
-
+🚨 Beautiful status page & uptime monitor. **Ready for production** out of the box.
 
 ## ✨ Core Functions
 
 - No configuration needed.
-- Ready for **production out of the box.**
 - Easily **deploy to cloudflare.**
 - Clean and simple UI – easy to navigate and user-friendly.
 - Supports `TCP`, `HTTPS`, `HTTP`, `DNS` and `API` checks.
@@ -14,3 +12,5 @@
 - Alerting options – supports **Email** and **RSS/Atom** feeds.
 - Real-time API **(SSE).**
 - Lightweight.
+
+## Built for serverless environments like Cloudflare Workers, Beep ensures high availability and real-time monitoring for production workloads and critical services.
