@@ -1,6 +1,6 @@
 # Beep
 
-🚨 Beautiful status page & uptime monitor. **Ready for production out of the box.** Easily deploy to Cloudflare in just one click.
+🚨 Beautiful status page & uptime monitor. **Ready for production** out of the box. **Easily deploy to Cloudflare in just one click.**
 
 ## ✨ Key Features
 
