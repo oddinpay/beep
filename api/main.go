@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"log/slog"
 	"net"
 	"net/http"
 	"strings"
@@ -13,9 +14,6 @@ import (
 	"time"
 
 	"go.jetify.com/sse"
-
-	"github.com/syumai/workers"
-	"github.com/syumai/workers/cloudflare/fetch"
 )
 
 const (
@@ -73,7 +71,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 30 * time.Second},
+		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 5 * time.Second},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))
@@ -195,11 +193,9 @@ func formatDurationFull(seconds int64) string {
 
 func probeHTTP(re HttpRequest) ProbeResult {
 
-	c := fetch.NewClient()
-
-	r, err := fetch.NewRequest(context.Background(), http.MethodGet, fmt.Sprintf("%s://%s", re.Protocol, re.Host), nil)
-
-	resp, err := c.Do(r, nil)
+	url := fmt.Sprintf("%s://%s", re.Protocol, re.Host)
+	r, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
+	resp, err := http.DefaultClient.Do(r)
 
 	if err != nil {
 		return ProbeResult{
@@ -627,6 +623,8 @@ func main() {
 
 	fmt.Printf("Beep API server running at http://%s:%s\n", Host, Port)
 
-	workers.Serve(handler)
+	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
+		slog.Error("Server failed to start", "error", err)
+	}
 
 }
