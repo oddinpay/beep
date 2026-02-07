@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"log/slog"
@@ -163,6 +162,28 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 		}()
 		next.ServeHTTP(w, r)
 	})
+}
+
+// -------------------- BROADCAST HUB --------------------
+
+type Hub struct {
+	sync.RWMutex
+	clients map[chan map[string]StatusPayload]struct{}
+}
+
+var globalHub = &Hub{
+	clients: make(map[chan map[string]StatusPayload]struct{}),
+}
+
+func (h *Hub) Broadcast(update map[string]StatusPayload) {
+	h.RLock()
+	defer h.RUnlock()
+	for clientChan := range h.clients {
+		select {
+		case clientChan <- update:
+		default:
+		}
+	}
 }
 
 func formatDurationFull(seconds int64) string {
@@ -478,10 +499,7 @@ func startProbeManager() {
 					}
 
 					// Broadcast update
-					select {
-					case probeUpdates <- map[string]StatusPayload{req.Name: payload}:
-					default:
-					}
+					globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
 
 					cancel()
 				}
@@ -512,13 +530,26 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
+	clientChan := make(chan map[string]StatusPayload, 10)
+
+	globalHub.Lock()
+	globalHub.clients[clientChan] = struct{}{}
+	globalHub.Unlock()
+
+	defer func() {
+		globalHub.Lock()
+		delete(globalHub.clients, clientChan)
+		globalHub.Unlock()
+		close(clientChan)
+	}()
+
 	ctx := r.Context()
 
 	for {
 		select {
 		case <-ctx.Done():
 			return
-		case update := <-probeUpdates:
+		case update := <-clientChan:
 			for name, payload := range update {
 				idx := -1
 				for i, r := range defaultReqs {
@@ -532,9 +563,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 					"payload": payload,
 				}
 				if err := conn.SendData(ctx, out); err != nil {
-					if !errors.Is(err, context.Canceled) {
-						log.Printf("⚠️ SSE send error [%s]: %v", name, err)
-					}
 					return
 				}
 			}
@@ -547,6 +575,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 func RestRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != MethodGet {
 		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
+		return
 	}
 
 	w.Header().Set(HeaderContentType, ContentTypeJSON)
@@ -586,6 +615,7 @@ func RestRequestHandler(w http.ResponseWriter, r *http.Request) {
 func ResetHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != MethodGet {
 		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
+		return
 	}
 
 	w.Header().Set(HeaderContentType, ContentTypeJSON)
