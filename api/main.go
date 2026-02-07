@@ -16,8 +16,6 @@ import (
 
 	"github.com/syumai/workers"
 	"github.com/syumai/workers/cloudflare/fetch"
-
-	"github.com/oklog/ulid/v2"
 )
 
 const (
@@ -205,7 +203,6 @@ func probeHTTP(re HttpRequest) ProbeResult {
 
 	if err != nil {
 		return ProbeResult{
-			Id:          ulid.Make().String(),
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %s", re.Host, err.Error()),
@@ -218,7 +215,6 @@ func probeHTTP(re HttpRequest) ProbeResult {
 
 	if resp.StatusCode < StatusOK || resp.StatusCode >= StatusBadRequest {
 		return ProbeResult{
-			Id:          ulid.Make().String(),
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -228,7 +224,6 @@ func probeHTTP(re HttpRequest) ProbeResult {
 		}
 	}
 	return ProbeResult{
-		Id:          ulid.Make().String(),
 		Name:        re.Name,
 		Protocol:    strings.ToUpper(re.Protocol),
 		Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -243,7 +238,6 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 	if err != nil {
 		return ProbeResult{
-			Id:          ulid.Make().String(),
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: err.Error(),
@@ -257,7 +251,6 @@ func probeTCP(req HttpRequest) ProbeResult {
 	_, err = conn.Write([]byte("ping\n"))
 	if err != nil {
 		return ProbeResult{
-			Id:          ulid.Make().String(),
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			State:       []string{hr.Down},
@@ -271,7 +264,6 @@ func probeTCP(req HttpRequest) ProbeResult {
 	n, err := conn.Read(buf)
 	if err != nil || n == 0 {
 		return ProbeResult{
-			Id:          ulid.Make().String(),
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			State:       []string{hr.Up},
@@ -281,7 +273,6 @@ func probeTCP(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
-		Id:          ulid.Make().String(),
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		State:       []string{hr.Up},
@@ -294,7 +285,6 @@ func probeDNS(req HttpRequest) ProbeResult {
 
 	if net.ParseIP(req.Host) != nil {
 		return ProbeResult{
-			Id:          ulid.Make().String(),
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			State:       []string{hr.Down},
@@ -306,7 +296,6 @@ func probeDNS(req HttpRequest) ProbeResult {
 	addrs, err := net.LookupHost(req.Host)
 	if err != nil {
 		return ProbeResult{
-			Id:          ulid.Make().String(),
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			State:       []string{hr.Down},
@@ -316,7 +305,6 @@ func probeDNS(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
-		Id:          ulid.Make().String(),
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("resolved %v", addrs),
@@ -391,7 +379,6 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 
 	if total <= 0 {
 		return map[string]any{
-			"id":                 ulid.Make().String(),
 			"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
 			"uptime90":           "100.000%",
 			"up_time_seconds":    formatDurationFull(0),
@@ -406,7 +393,6 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	up := total - down
 
 	return map[string]any{
-		"id":                 ulid.Make().String(),
 		"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
 		"uptime90":           fmt.Sprintf("%.3f%%", availability*100),
 		"up_time_seconds":    formatDurationFull(up),
