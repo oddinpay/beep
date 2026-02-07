@@ -349,11 +349,11 @@ func probeDNS(req HttpRequest) ProbeResult {
 // -------------------- 90-DAY SLA --------------------
 
 func NewSlidingSLA(target float64) *SlidingSLA {
-	now := time.Now().Truncate(time.Minute)
+	now := time.Now()
 	return &SlidingSLA{
 		Target:        target,
 		buckets:       make([]bucket, minutes90d),
-		currentMinute: now,
+		currentMinute: now.Truncate(time.Minute),
 		lastUpdate:    now,
 	}
 }
@@ -382,18 +382,23 @@ func (s *SlidingSLA) rotateTo(now time.Time) {
 	s.currentMinute = minNow
 }
 
-func (s *SlidingSLA) Tick(isDown bool, duration time.Duration) {
+func (s *SlidingSLA) Tick(isDown bool, _ time.Duration) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	now := time.Now()
 	s.rotateTo(now)
 
-	elapsed := int64(duration.Seconds())
+	elapsed := int64(now.Sub(s.lastUpdate).Seconds())
+	if s.lastUpdate.IsZero() || elapsed <= 0 {
+		elapsed = 10
+	}
+
 	s.buckets[s.idx].totalSec += elapsed
 	if isDown {
 		s.buckets[s.idx].downSec += elapsed
 	}
+
 	s.lastUpdate = now
 }
 
@@ -419,7 +424,14 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	}
 
 	availability := 1.0 - (float64(down) / float64(total))
-	breached := (s.Target >= 1.0 && down > 0)
+	percent := availability * 100
+
+	uptimeStr := fmt.Sprintf("%.3f%%", percent)
+	if down > 0 && uptimeStr == "100.000%" {
+		uptimeStr = "99.999%"
+	}
+
+	breached := (s.Target >= 1.0 && down > 0) || (availability < s.Target)
 	up := total - down
 
 	return map[string]any{
