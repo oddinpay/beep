@@ -616,6 +616,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	mux := http.NewServeMux()
+
 	mux.HandleFunc("/v1/sse", StatusHandler)
 	mux.HandleFunc("/v1/status", RestRequestHandler)
 	mux.HandleFunc("/v1/sla/reset", ResetHandler)
