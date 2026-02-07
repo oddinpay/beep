@@ -431,7 +431,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 
 	return map[string]any{
 		"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
-		"uptime90":           fmt.Sprintf("%.3f%%", availability*100),
+		"uptime90":           uptimeStr,
 		"up_time_seconds":    formatDurationFull(up),
 		"down_time_seconds":  formatDurationFull(down),
 		"total_time_seconds": formatDurationFull(total),
