@@ -62,8 +62,6 @@ const (
 // ----------- DB / CACHE CONNECTIONS -----------
 
 var (
-	// redisClient      valkey.Client
-	// fs               *bigcache.BigCache
 	probeManagerOnce sync.Once
 	probeUpdates     = make(chan map[string]StatusPayload, 100)
 )
@@ -77,7 +75,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "HTTPS", Protocol: "https", Host: "oddinpay.com", Interval: 30 * time.Second},
+		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 30 * time.Second},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))
@@ -148,31 +146,6 @@ type SlidingSLA struct {
 }
 
 var hr = HealthResponse{Down: "down", Up: "up"}
-
-// func initRedis() {
-// 	var err error
-// 	redisClient, err = valkey.NewClient(valkey.ClientOption{
-// 		InitAddress: []string{"localhost:6379"},
-// 		Username:    "",
-// 		Password:    "",
-// 	})
-// 	if err != nil {
-// 		log.Printf("⚠️ Redis unavailable, continuing without cache: %v", err)
-// 		redisClient = nil
-// 	}
-// }
-
-// func initBigcache() {
-// 	ctx := context.Background()
-
-// 	cache, err := bigcache.New(ctx, bigcache.DefaultConfig(5*time.Second))
-// 	if err != nil {
-// 		log.Fatalf("failed to init BigCache: %v", err)
-// 		fs = nil
-// 	}
-// 	fs = cache
-
-// }
 
 // -------------------- RECOVERY --------------------
 
@@ -353,465 +326,6 @@ func probeDNS(req HttpRequest) ProbeResult {
 	}
 }
 
-// func probeUDP(req HttpRequest) ProbeResult {
-
-// 	raddr, err := net.ResolveUDPAddr("udp", req.Host)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    strings.ToUpper(req.Protocol),
-// 			Description: "Error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 			State:       []string{hr.Down, "down", "up", "down"},
-// 		}
-// 	}
-
-// 	conn, err := net.DialUDP("udp", nil, raddr)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    strings.ToUpper(req.Protocol),
-// 			Description: "dial error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 			State:       []string{hr.Down, "down", "up", "down"},
-// 		}
-// 	}
-// 	defer conn.Close()
-// 	_ = conn.SetDeadline(time.Now().Add(defaultTimeout))
-
-// 	_, err = conn.Write([]byte("ping\n"))
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    strings.ToUpper(req.Protocol),
-// 			Description: "write error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 			State:       []string{hr.Down, "down", "up", "down"},
-// 		}
-// 	}
-
-// 	// Try read (optional)
-// 	buf := make([]byte, 64)
-// 	n, _, err := conn.ReadFromUDP(buf)
-// 	if err != nil {
-// 		// No reply → still count as UP
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    strings.ToUpper(req.Protocol),
-// 			Description: "write ok (no reply)",
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 			State:       []string{"warn", hr.Up, "up", "down"},
-// 		}
-// 	}
-
-// 	return ProbeResult{
-// 		Id:          ulid.Make().String(),
-// 		Name:        req.Name,
-// 		Protocol:    strings.ToUpper(req.Protocol),
-// 		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
-// 		Timestamp:   time.Now().Format("15:04:05.000"),
-// 		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 		State:       []string{hr.Up, "warn"},
-// 	}
-// }
-
-// func ProbeICMP(req HttpRequest) ProbeResult {
-
-// 	pinger, err := probing.NewPinger(req.Host)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    "ICMP",
-// 			Description: "Pinger error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 			State:       []string{hr.Down},
-// 		}
-// 	}
-// 	pinger.Count = 1
-// 	pinger.Timeout = defaultTimeout
-// 	pinger.SetPrivileged(true)
-
-// 	err = pinger.Run()
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    "ICMP",
-// 			Description: "Run error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 			State:       []string{hr.Down},
-// 		}
-// 	}
-// 	stats := pinger.Statistics()
-
-// 	if stats.PacketsRecv == 0 {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    "ICMP",
-// 			State:       []string{hr.Up},
-// 			Description: fmt.Sprintf("0/%d packets received", stats.PacketsSent),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	return ProbeResult{
-// 		Id:          ulid.Make().String(),
-// 		Name:        req.Name,
-// 		Protocol:    "ICMP",
-// 		State:       []string{hr.Up},
-// 		Description: fmt.Sprintf("%d/%d packets received, avg rtt %.2fms", stats.PacketsRecv, stats.PacketsSent, float64(stats.AvgRtt.Microseconds())/1000.0),
-// 		Timestamp:   time.Now().Format("15:04:05.000"),
-// 	}
-// }
-
-// func probeSMTP(req HttpRequest) ProbeResult {
-
-// 	// extract host and port (default to 25 if missing)
-// 	hostOnly, port, err := net.SplitHostPort(req.Host)
-// 	if err != nil {
-// 		hostOnly = req.Host
-// 		port = "25"
-// 	}
-
-// 	// Use Cloudflare DNS (1.1.1.1) for resolution via a custom resolver
-// 	resolver := &net.Resolver{
-// 		PreferGo: true,
-// 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-// 			d := net.Dialer{Timeout: defaultTimeout}
-// 			return d.DialContext(ctx, "udp", "1.1.1.1:53")
-// 		},
-// 	}
-
-// 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
-// 	defer cancel()
-
-// 	ips, err := resolver.LookupIPAddr(ctx, hostOnly)
-// 	if err != nil || len(ips) == 0 {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    "SMTP",
-// 			State:       []string{hr.Down},
-// 			Description: "DNS lookup (Cloudflare) failed: " + fmt.Sprintf("%v", err),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// pick first resolved IP and dial that IP:port
-// 	targetAddr := net.JoinHostPort(ips[0].IP.String(), port)
-// 	dialer := net.Dialer{Timeout: defaultTimeout}
-// 	conn, err := dialer.DialContext(ctx, "tcp", targetAddr)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    "SMTP",
-// 			State:       []string{hr.Down},
-// 			Description: "Dial failed to resolved IP: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	c, err := smtp.NewClient(conn, hostOnly)
-// 	if err != nil {
-// 		conn.Close()
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    "SMTP",
-// 			State:       []string{hr.Down},
-// 			Description: "NewClient failed: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-// 	defer c.Close()
-
-// 	hostname, _ := os.Hostname()
-
-// 	if err := c.Hello(hostname); err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    "SMTP",
-// 			State:       []string{hr.Down},
-// 			Description: "EHLO failed: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// STARTTLS upgrade
-// 	if ok, _ := c.Extension("STARTTLS"); ok {
-// 		tlsConfig := &tls.Config{ServerName: hostOnly}
-// 		if err = c.StartTLS(tlsConfig); err != nil {
-// 			return ProbeResult{
-// 				Id:          ulid.Make().String(),
-// 				Name:        req.Name,
-// 				Protocol:    "SMTP",
-// 				State:       []string{hr.Down},
-// 				Description: "STARTTLS failed: " + err.Error(),
-// 				Timestamp:   time.Now().Format("15:04:05.000"),
-// 			}
-// 		}
-// 	}
-
-// 	desc := "Connected to " + targetAddr + " (resolved via Cloudflare) without authentication"
-
-// 	// AUTH if username/password are set
-// 	if strings.TrimSpace(req.Username) != "" && strings.TrimSpace(req.Password) != "" {
-// 		if ok, _ := c.Extension("AUTH"); !ok {
-// 			return ProbeResult{
-// 				Id:          ulid.Make().String(),
-// 				Name:        req.Name,
-// 				Protocol:    "SMTP",
-// 				State:       []string{hr.Down},
-// 				Description: "Server does not support AUTH",
-// 				Timestamp:   time.Now().Format("15:04:05.000"),
-// 			}
-// 		}
-
-// 		auth := smtp.PlainAuth("", req.Username, req.Password, hostOnly)
-// 		if err := c.Auth(auth); err != nil {
-// 			return ProbeResult{
-// 				Id:          ulid.Make().String(),
-// 				Name:        req.Name,
-// 				Protocol:    "SMTP",
-// 				State:       []string{hr.Down},
-// 				Description: "AUTH failed: " + err.Error(),
-// 				Timestamp:   time.Now().Format("15:04:05.000"),
-// 			}
-// 		}
-// 		desc = fmt.Sprintf("Authenticated to %s successfully (resolved via Cloudflare)", req.Host)
-// 	}
-
-// 	return ProbeResult{
-// 		Id:          ulid.Make().String(),
-// 		Name:        req.Name,
-// 		Protocol:    "SMTP",
-// 		State:       []string{hr.Up},
-// 		Description: desc,
-// 		Timestamp:   time.Now().Format("15:04:05.000"),
-// 	}
-// }
-
-// func ProbeRedis(req HttpRequest) ProbeResult {
-
-// 	opt := valkey.ClientOption{
-// 		InitAddress: []string{req.Host},
-// 	}
-
-// 	if strings.TrimSpace(req.Username) != "" {
-// 		opt.Username = req.Username
-// 	}
-// 	if strings.TrimSpace(req.Password) != "" {
-// 		opt.Password = req.Password
-// 	}
-
-// 	client, err := valkey.NewClient(opt)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			Description: "Client init error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 			State:       []string{hr.Down, "up", "up", "up"},
-// 		}
-// 	}
-// 	defer client.Close()
-
-// 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-// 	defer cancel()
-
-// 	// 1) PING
-// 	replyPing, err := client.Do(ctx, client.B().Ping().Build()).ToString()
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "PING error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 2) SET key
-// 	replySet, err := client.Do(ctx, client.B().Set().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Value("OK").Build()).ToString()
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "SET error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 3) GET key
-// 	val, err := client.Do(ctx, client.B().Get().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Build()).ToString()
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "GET error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 4) DEL key (cleanup, ignore errors)
-// 	_, _ = client.Do(ctx, client.B().Del().Key("c9289d4f-8ff8-412c-bf3a-9d59a9776979").Build()).AsInt64()
-
-// 	// 5) Return probe result
-// 	desc := fmt.Sprintf("ping:%s, set:%s, get:%s", replyPing, replySet, val)
-
-// 	return ProbeResult{
-// 		Id:          ulid.Make().String(),
-// 		Name:        req.Name,
-// 		Protocol:    req.Protocol,
-// 		Description: desc,
-// 		Timestamp:   time.Now().Format("15:04:05.000"),
-// 		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
-// 		State:       []string{hr.Up, "warn", "up", "up"},
-// 	}
-
-// }
-
-// func ProbePostgres(req HttpRequest) ProbeResult {
-
-// 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-// 	defer cancel()
-
-// 	conn, err := pgx.Connect(ctx, req.Protocol+"://"+req.Host)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "Connect error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-// 	defer conn.Close(ctx)
-
-// 	// 1) Ensure users table exists
-// 	_, err = conn.Exec(ctx, `
-// 		create table if not exists users (
-// 			id serial primary key,
-// 			username text not null unique,
-// 			age int
-// 		)
-// 	`)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "Create table error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 2) Insert user
-// 	_, err = conn.Exec(ctx, "insert into users (username, age) values ($1, $2) on conflict (username) do nothing", "jack", 30)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "Insert error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 3) Select user
-// 	var age int
-// 	err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "Select error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 4) Update user
-// 	_, err = conn.Exec(ctx, "update users set age=$1 where username=$2", 31, "jack")
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "Update error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 5) Select again
-// 	err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "Re-select error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 6) Delete user
-// 	_, err = conn.Exec(ctx, "delete from users where username=$1", "jack")
-// 	if err != nil {
-// 		return ProbeResult{
-// 			Id:          ulid.Make().String(),
-// 			Name:        req.Name,
-// 			Protocol:    req.Protocol,
-// 			State:       []string{hr.Down},
-// 			Description: "Delete error: " + err.Error(),
-// 			Timestamp:   time.Now().Format("15:04:05.000"),
-// 		}
-// 	}
-
-// 	// 7) Verify delete
-// 	// err = conn.QueryRow(ctx, "select age from users where username=$1", "jack").Scan(&age)
-// 	// if err != nil {
-// 	// 	fmt.Println("After delete → no such user (as expected)")
-// 	// }
-
-// 	desc := fmt.Sprintf("Connection is working - Querying: age:%d:ok", age)
-// 	return ProbeResult{
-// 		Id:          ulid.Make().String(),
-// 		Name:        req.Name,
-// 		Protocol:    req.Protocol,
-// 		State:       []string{hr.Up},
-// 		Description: desc,
-// 		Timestamp:   time.Now().Format("15:04:05.000"),
-// 	}
-// }
-
 // -------------------- 90-DAY SLA --------------------
 
 func NewSlidingSLA(target float64) *SlidingSLA {
@@ -978,27 +492,10 @@ func startProbeManager() {
 						SLA:   tracker.Snapshot(),
 					}
 
-					// Write to Redis / BigCache
-					// data, _ := json.Marshal(payload)
-					// key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
-					// if redisClient != nil {
-					// 	_ = redisClient.Do(
-					// 		ctx,
-					// 		redisClient.B().Set().
-					// 			Key(key).
-					// 			Value(string(data)).
-					// 			Ex(90*24*time.Hour).
-					// 			Build(),
-					// 	)
-					// }
-					// if fs != nil {
-					// 	_ = fs.Set(key, data)
-					// }
-
 					// Broadcast update
 					select {
 					case probeUpdates <- map[string]StatusPayload{req.Name: payload}:
-					default: // avoid blocking if no listener
+					default:
 					}
 
 					cancel()
@@ -1032,19 +529,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 
-	// Send cached data immediately
-	// for i, req := range defaultReqs {
-	// 	key := fmt.Sprintf("probe:%s:%s", req.Name, time.Now().Format("2006-01-02"))
-	// 	if payload, err := loadPayload(ctx, key); err == nil {
-	// 		out := map[string]any{
-	// 			"index":   i,
-	// 			"payload": *payload,
-	// 		}
-	// 		_ = conn.SendData(ctx, out)
-	// 	}
-	// }
-
-	// Stream live updates from global channel
 	for {
 		select {
 		case <-ctx.Done():
@@ -1072,27 +556,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
-// func loadPayload(ctx context.Context, key string) (*StatusPayload, error) {
-// 	if fs != nil {
-// 		if cached, err := fs.Get(key); err == nil {
-// 			var p StatusPayload
-// 			if jsonErr := json.Unmarshal(cached, &p); jsonErr == nil {
-// 				return &p, nil
-// 			}
-// 		}
-// 	}
-// 	// if redisClient != nil {
-// 	// 	val, err := redisClient.Do(ctx, redisClient.B().Get().Key(key).Build()).ToString()
-// 	// 	if err == nil && val != "" {
-// 	// 		var p StatusPayload
-// 	// 		if jsonErr := json.Unmarshal([]byte(val), &p); jsonErr == nil {
-// 	// 			return &p, nil
-// 	// 		}
-// 	// 	}
-// 	// }
-// 	return nil, errors.New("cache miss")
-// }
 
 // -------------------- STATE REQUEST HANDLER --------------------
 
@@ -1179,17 +642,6 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	// initRedis()
-	// initBigcache()
-
-	// if redisClient != nil {
-	// 	defer redisClient.Close()
-	// }
-
-	// if fs != nil {
-	// 	defer fs.Close()
-	// }
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/sse", StatusHandler)
 	mux.HandleFunc("/v1/status", RestRequestHandler)
@@ -1198,10 +650,7 @@ func main() {
 	handler := recoveryMiddleware(mux)
 
 	fmt.Printf("Beep API server running at http://%s:%s\n", Host, Port)
-	// if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
-	// 	log.Fatal(err)
-	// }
-	//
+
 	workers.Serve(handler)
 
 }
