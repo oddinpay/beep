@@ -233,7 +233,9 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	defer cancel()
 
 	r, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-
+	if err != nil {
+		slog.Error("Failed to create HTTP request", "error", err)
+	}
 	r.Header.Set("User-Agent", "beep_01kgwc0fggeze9075f1tk43bdf/1.0")
 
 	resp, err := http.DefaultClient.Do(r)
