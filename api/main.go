@@ -58,7 +58,6 @@ const (
 
 var (
 	probeManagerOnce sync.Once
-	probeUpdates     = make(chan map[string]StatusPayload, 100)
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
 )
 
