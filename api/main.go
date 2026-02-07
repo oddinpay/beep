@@ -60,6 +60,7 @@ const (
 var (
 	probeManagerOnce sync.Once
 	probeUpdates     = make(chan map[string]StatusPayload, 100)
+	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -190,10 +191,14 @@ func formatDurationFull(seconds int64) string {
 }
 
 func getRecentDates() []string {
-	dates := make([]string, 90)
-	now := time.Now()
-	for i := range 90 {
-		dates[i] = now.AddDate(0, 0, -i).Format("02/01/2006")
+	todayUTC := time.Now().UTC().Truncate(24 * time.Hour)
+	daysSinceStart := int(todayUTC.Sub(monitorStartTime).Hours()/24) + 1
+
+	count := min(daysSinceStart, 90)
+
+	dates := make([]string, count)
+	for i := range count {
+		dates[i] = todayUTC.AddDate(0, 0, -i).Format("02/01/2006")
 	}
 	return dates
 }
