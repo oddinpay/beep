@@ -228,10 +228,15 @@ func (h *Hub) Broadcast(update map[string]StatusPayload) {
 func probeHTTP(re HttpRequest) ProbeResult {
 
 	url := fmt.Sprintf("%s://%s", re.Protocol, re.Host)
-	r, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
-	r.Header.Set("User-Agent", "beep_01kgwc0fggeze9075f1tk43bdf/1.0")
-	resp, err := http.DefaultClient.Do(r)
 
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	defer cancel()
+
+	r, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+
+	r.Header.Set("User-Agent", "beep_01kgwc0fggeze9075f1tk43bdf/1.0")
+
+	resp, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return ProbeResult{
 			Name:        re.Name,
