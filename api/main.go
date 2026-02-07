@@ -541,7 +541,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	clientChan := make(chan map[string]StatusPayload, 10)
+	clientChan := make(chan map[string]StatusPayload, 50)
 
 	globalHub.Lock()
 	globalHub.clients[clientChan] = struct{}{}
@@ -551,7 +551,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		globalHub.Lock()
 		delete(globalHub.clients, clientChan)
 		globalHub.Unlock()
-		close(clientChan)
 	}()
 
 	ctx := r.Context()
