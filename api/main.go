@@ -381,23 +381,18 @@ func (s *SlidingSLA) rotateTo(now time.Time) {
 	s.currentMinute = minNow
 }
 
-func (s *SlidingSLA) Tick(isDown bool, _ time.Duration) {
+func (s *SlidingSLA) Tick(isDown bool, interval time.Duration) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	now := time.Now()
 	s.rotateTo(now)
 
-	elapsed := int64(now.Sub(s.lastUpdate).Seconds())
-	if s.lastUpdate.IsZero() || elapsed <= 0 {
-		elapsed = 10
-	}
-
-	s.buckets[s.idx].totalSec += elapsed
+	inc := int64(interval.Seconds())
+	s.buckets[s.idx].totalSec += inc
 	if isDown {
-		s.buckets[s.idx].downSec += elapsed
+		s.buckets[s.idx].downSec += inc
 	}
-
 	s.lastUpdate = now
 }
 
