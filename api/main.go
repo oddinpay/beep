@@ -189,6 +189,15 @@ func formatDurationFull(seconds int64) string {
 	return strings.Join(parts, " ")
 }
 
+func getRecentDates() []string {
+	dates := make([]string, 90)
+	now := time.Now()
+	for i := range 90 {
+		dates[i] = now.AddDate(0, 0, -i).Format("02/01/2006")
+	}
+	return dates
+}
+
 // -------------------- PROBES --------------------
 
 func probeHTTP(re HttpRequest) ProbeResult {
@@ -204,7 +213,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %s", re.Host, err.Error()),
 			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+			Date:        getRecentDates(),
 			State:       []string{},
 		}
 	}
@@ -216,7 +225,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
 			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+			Date:        getRecentDates(),
 			State:       []string{},
 		}
 	}
@@ -225,7 +234,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 		Protocol:    strings.ToUpper(re.Protocol),
 		Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
 		Timestamp:   time.Now().Format("15:04:05.000"),
-		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+		Date:        getRecentDates(),
 		State:       []string{hr.Up},
 	}
 }
@@ -239,7 +248,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
-			Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+			Date:        getRecentDates(),
 			State:       []string{hr.Down, "up", "up", "up"},
 		}
 	}
@@ -306,7 +315,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("resolved %v", addrs),
 		Timestamp:   time.Now().Format("15:04:05.000"),
-		Date:        []string{time.Now().Format("02/01/2006"), "29/09/2025", "26/09/2025", "25/09/2025"},
+		Date:        getRecentDates(),
 		State:       []string{hr.Up, "warn", "up", "up"},
 	}
 }
@@ -347,21 +356,19 @@ func (s *SlidingSLA) rotateTo(now time.Time) {
 	s.currentMinute = minNow
 }
 
-// 🔹 Tick now uses real elapsed wall time
-func (s *SlidingSLA) Tick(isDown bool) {
+func (s *SlidingSLA) Tick(isDown bool, duration time.Duration) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	now := time.Now()
 	s.rotateTo(now)
 
-	elapsed := max(int64(now.Sub(s.lastUpdate).Seconds()), 0)
-	s.lastUpdate = now
-
+	elapsed := int64(duration.Seconds())
 	s.buckets[s.idx].totalSec += elapsed
 	if isDown {
 		s.buckets[s.idx].downSec += elapsed
 	}
+	s.lastUpdate = now
 }
 
 func (s *SlidingSLA) Snapshot() map[string]any {
@@ -458,7 +465,7 @@ func startProbeManager() {
 					slaTrackers.Unlock()
 
 					isDown := len(res.State) == 0 || strings.ToLower(res.State[0]) != "up"
-					tracker.Tick(isDown)
+					tracker.Tick(isDown, interval)
 
 					payload := StatusPayload{
 						Probe: res,
