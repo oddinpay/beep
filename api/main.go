@@ -450,16 +450,6 @@ func startProbeManager() {
 				probeFn = probeHTTP
 			case "dns":
 				probeFn = probeDNS
-			// case "udp":
-			// 	probeFn = probeUDP
-			// case "smtp":
-			// 	probeFn = probeSMTP
-			// case "redis":
-			// 	probeFn = ProbeRedis
-			// case "postgres":
-			// 	probeFn = ProbePostgres
-			// case "icmp":
-			// 	probeFn = ProbeICMP
 			default:
 				log.Printf("⚠️ Unsupported protocol: %s", t.Protocol)
 				continue
