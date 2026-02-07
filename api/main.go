@@ -163,28 +163,6 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// -------------------- BROADCAST HUB --------------------
-
-type Hub struct {
-	sync.RWMutex
-	clients map[chan map[string]StatusPayload]struct{}
-}
-
-var globalHub = &Hub{
-	clients: make(map[chan map[string]StatusPayload]struct{}),
-}
-
-func (h *Hub) Broadcast(update map[string]StatusPayload) {
-	h.RLock()
-	defer h.RUnlock()
-	for clientChan := range h.clients {
-		select {
-		case clientChan <- update:
-		default:
-		}
-	}
-}
-
 func formatDurationFull(seconds int64) string {
 	days := seconds / 86400
 	seconds %= 86400
@@ -221,6 +199,28 @@ func getRecentDates() []string {
 		dates[i] = todayUTC.AddDate(0, 0, -i).Format("02/01/2006")
 	}
 	return dates
+}
+
+// -------------------- BROADCAST HUB --------------------
+
+type Hub struct {
+	sync.RWMutex
+	clients map[chan map[string]StatusPayload]struct{}
+}
+
+var globalHub = &Hub{
+	clients: make(map[chan map[string]StatusPayload]struct{}),
+}
+
+func (h *Hub) Broadcast(update map[string]StatusPayload) {
+	h.RLock()
+	defer h.RUnlock()
+	for clientChan := range h.clients {
+		select {
+		case clientChan <- update:
+		default:
+		}
+	}
 }
 
 // -------------------- PROBES --------------------
