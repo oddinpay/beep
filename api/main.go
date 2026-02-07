@@ -195,6 +195,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 
 	url := fmt.Sprintf("%s://%s", re.Protocol, re.Host)
 	r, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
+	r.Header.Set("User-Agent", "beep_01kgwc0fggeze9075f1tk43bdf/1.0")
 	resp, err := http.DefaultClient.Do(r)
 
 	if err != nil {
