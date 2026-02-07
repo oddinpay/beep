@@ -388,7 +388,8 @@ func (s *SlidingSLA) Tick(isDown bool, interval time.Duration) {
 	now := time.Now()
 	s.rotateTo(now)
 
-	inc := int64(interval.Seconds())
+	inc := int64(interval.Round(time.Second).Seconds())
+
 	s.buckets[s.idx].totalSec += inc
 	if isDown {
 		s.buckets[s.idx].downSec += inc
