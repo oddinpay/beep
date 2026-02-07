@@ -1,0 +1,12 @@
+name = "beep-api"
+main = "./build/worker.mjs"
+compatibility_date = "2025-11-17"
+
+[build]
+command = "pnpm build"
+
+[triggers]
+crons = ["* * * * *"]
+
+[observability]
+enabled = false
