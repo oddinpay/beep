@@ -459,7 +459,6 @@ func (s *SlidingSLA) Reset() {
 
 // -------------------- SSE HANDLER --------------------
 
-// Starts global probe manager once
 func startProbeManager() {
 	probeManagerOnce.Do(func() {
 		log.Println("🚀 Starting global probe manager...")
