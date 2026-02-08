@@ -708,6 +708,8 @@ func publishToNATS(name string, payload StatusPayload) {
 		Subjects: []string{subject},
 		Storage:  jetstream.FileStorage,
 		MaxBytes: 1024 * 1024 * 50,
+		MaxMsgs:  10,
+		Discard:  jetstream.DiscardNew,
 	})
 
 	data, _ := json.Marshal(payload)
@@ -715,6 +717,7 @@ func publishToNATS(name string, payload StatusPayload) {
 	ack, err := js.Publish(ctx, subject, data)
 	if err != nil {
 		slog.Error("Publish failed", "error", err)
+		return
 	}
 
 	fmt.Printf("Appended to %s | Seq: %d\n", ack.Stream, ack.Sequence)
