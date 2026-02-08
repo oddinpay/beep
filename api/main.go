@@ -735,7 +735,6 @@ func publishToNATS(name string, payload StatusPayload) {
 }
 
 // -------------------- MAIN --------------------
-
 func main() {
 
 	startProbeManager()
