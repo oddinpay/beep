@@ -732,7 +732,6 @@ func publishToNATS(name string, payload StatusPayload) {
 	for msg := range msgs.Messages() {
 		fmt.Printf("Received a JetStream message: %s\n", string(msg.Data()))
 	}
-
 }
 
 // -------------------- MAIN --------------------
