@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/nats-io/nats.go"
+	"github.com/nats-io/nats.go/jetstream"
 
 	"go.jetify.com/sse"
 )
@@ -64,6 +65,7 @@ var (
 	seed             = os.Getenv("NATS_SEED")
 	serverURL        = os.Getenv("NATS_URL")
 	probeManagerOnce sync.Once
+
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
 	nc               = func() *nats.Conn {
 		c, err := nats.Connect(serverURL, nats.UserJWTAndSeed(jwt, seed))
@@ -502,6 +504,7 @@ func startProbeManager() {
 			}
 
 			go func(req HttpRequest, fn func(HttpRequest) ProbeResult, iv time.Duration) {
+
 				ticker := time.NewTicker(iv)
 				defer ticker.Stop()
 
@@ -527,6 +530,8 @@ func startProbeManager() {
 						Probe: res,
 						SLA:   tracker.Snapshot(),
 					}
+
+					publishToNATS(req.Name, payload)
 
 					// Broadcast update
 					globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
@@ -682,9 +687,59 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func publishToNATS(name string, payload StatusPayload) {
+	if nc.Status() != nats.CONNECTED {
+		slog.Error("NATS not connected")
+	}
+
+	js, err := jetstream.New(nc)
+	if err != nil {
+		slog.Error("JetStream context error", "error", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	streamName := "STATUS"
+	subject := fmt.Sprintf("STATUS.%s", name)
+
+	s, _ := js.CreateStream(ctx, jetstream.StreamConfig{
+		Name:     streamName,
+		Subjects: []string{subject},
+		Storage:  jetstream.FileStorage,
+		MaxBytes: 1024 * 1024 * 50,
+	})
+
+	data, _ := json.Marshal(payload)
+
+	ack, err := js.Publish(ctx, subject, data)
+	if err != nil {
+		slog.Error("Publish failed", "error", err)
+	}
+
+	fmt.Printf("Appended to %s | Seq: %d\n", ack.Stream, ack.Sequence)
+
+	c, _ := s.CreateOrUpdateConsumer(ctx, jetstream.ConsumerConfig{
+		Durable:   "CONS",
+		AckPolicy: jetstream.AckExplicitPolicy,
+	})
+
+	msgs, err := c.FetchNoWait(2)
+	if err != nil {
+		slog.Error("Fetch failed", "error", err)
+	}
+
+	for msg := range msgs.Messages() {
+		fmt.Printf("Received a JetStream message: %s\n", string(msg.Data()))
+	}
+
+}
+
 // -------------------- MAIN --------------------
 
 func main() {
+
+	startProbeManager()
 
 	mux := http.NewServeMux()
 
@@ -693,13 +748,6 @@ func main() {
 	mux.HandleFunc("/v1/sla/reset", ResetHandler)
 
 	handler := recoveryMiddleware(mux)
-
-	if nc.Status() != nats.CONNECTED {
-		slog.Error("Failed to connect to NATS server", "status", nc.Status().String())
-		return
-	}
-
-	fmt.Println("Connected to NATS server:", nc.Status().String())
 
 	fmt.Printf("Beep API server running at http://%s:%s\n", Host, Port)
 
