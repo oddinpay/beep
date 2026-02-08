@@ -8,9 +8,12 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/nats-io/nats.go"
 
 	"go.jetify.com/sse"
 )
@@ -57,8 +60,11 @@ const (
 // ----------- DB / CACHE CONNECTIONS -----------
 
 var (
+	jwt              = os.Getenv("NATS_JWT")
+	seed             = os.Getenv("NATS_SEED")
 	probeManagerOnce sync.Once
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
+	nc, _            = nats.Connect(os.Getenv("NATS_URL"), nats.UserJWTAndSeed(jwt, seed))
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
