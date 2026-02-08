@@ -717,24 +717,28 @@ func publishToNATS(name string, payload StatusPayload) {
 	ack, err := js.Publish(ctx, subject, data)
 	if err != nil {
 		slog.Error("Publish failed", "error", err)
+
+		c, _ := s.CreateOrUpdateConsumer(ctx, jetstream.ConsumerConfig{
+			Durable:   "CONS",
+			AckPolicy: jetstream.AckExplicitPolicy,
+		})
+
+		msgs, err := c.Fetch(10)
+		if err != nil {
+			slog.Error("Fetch failed", "error", err)
+		}
+
+		for msg := range msgs.Messages() {
+			fmt.Printf("Received a JetStream message: %s\n", string(msg.Data()))
+		}
+
+		js.DeleteStream(ctx, "STATUS")
+
 		return
 	}
 
 	fmt.Printf("Appended to %s | Seq: %d\n", ack.Stream, ack.Sequence)
 
-	c, _ := s.CreateOrUpdateConsumer(ctx, jetstream.ConsumerConfig{
-		Durable:   "CONS",
-		AckPolicy: jetstream.AckExplicitPolicy,
-	})
-
-	msgs, err := c.FetchNoWait(2)
-	if err != nil {
-		slog.Error("Fetch failed", "error", err)
-	}
-
-	for msg := range msgs.Messages() {
-		fmt.Printf("Received a JetStream message: %s\n", string(msg.Data()))
-	}
 }
 
 // -------------------- MAIN --------------------
