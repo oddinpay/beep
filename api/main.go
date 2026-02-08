@@ -62,9 +62,17 @@ const (
 var (
 	jwt              = os.Getenv("NATS_JWT")
 	seed             = os.Getenv("NATS_SEED")
+	serverURL        = os.Getenv("NATS_URL")
 	probeManagerOnce sync.Once
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
-	nc, _            = nats.Connect(os.Getenv("NATS_URL"), nats.UserJWTAndSeed(jwt, seed))
+	nc               = func() *nats.Conn {
+		c, err := nats.Connect(serverURL, nats.UserJWTAndSeed(jwt, seed))
+		if err != nil {
+			slog.Error("Failed to connect to NATS server", "error", err)
+			os.Exit(1)
+		}
+		return c
+	}()
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -685,6 +693,13 @@ func main() {
 	mux.HandleFunc("/v1/sla/reset", ResetHandler)
 
 	handler := recoveryMiddleware(mux)
+
+	if nc.Status() != nats.CONNECTED {
+		slog.Error("Failed to connect to NATS server", "status", nc.Status().String())
+		return
+	}
+
+	fmt.Println("Connected to NATS server:", nc.Status().String())
 
 	fmt.Printf("Beep API server running at http://%s:%s\n", Host, Port)
 
