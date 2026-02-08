@@ -50,7 +50,7 @@ const (
 	HeaderAllowMethods = "Access-Control-Allow-Methods"
 	HeaderAllowHeaders = "Access-Control-Allow-Headers"
 
-	defaultTimeout = 10 * time.Second
+	defaultTimeout = 20 * time.Second
 	minutes90d     = 90 * 24 * 60
 )
 
