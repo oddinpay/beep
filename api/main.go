@@ -70,7 +70,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))
@@ -321,6 +321,9 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 func probeDNS(req HttpRequest) ProbeResult {
 
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	defer cancel()
+
 	if net.ParseIP(req.Host) != nil {
 		return ProbeResult{
 			Name:        req.Name,
@@ -331,7 +334,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 		}
 	}
 
-	addrs, err := net.LookupHost(req.Host)
+	addrs, err := net.DefaultResolver.LookupHost(ctx, req.Host)
 	if err != nil {
 		return ProbeResult{
 			Name:        req.Name,
@@ -348,7 +351,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 		Description: fmt.Sprintf("resolved %v", addrs),
 		Timestamp:   time.Now().Format("15:04:05.000"),
 		Date:        getRecentDates(),
-		State:       []string{hr.Up, "warn", "up", "up"},
+		State:       []string{hr.Up},
 	}
 }
 
