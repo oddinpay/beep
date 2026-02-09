@@ -87,6 +87,7 @@ var slaTrackers = struct {
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
 		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))
@@ -252,7 +253,14 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	if err != nil {
 		slog.Error("Failed to create HTTP request", "error", err)
 	}
-	r.Header.Set("User-Agent", "beep_01kgwc0fggeze9075f1tk43bdf/1.0")
+
+	userAgent := os.Getenv("USER_AGENT")
+
+	if userAgent == "" {
+		userAgent = "beep_01kgwc0fggeze9075f1tk43bdf/1.0"
+	}
+
+	r.Header.Set("User-Agent", userAgent)
 
 	resp, err := http.DefaultClient.Do(r)
 	if err != nil {
@@ -262,7 +270,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 			Description: fmt.Sprintf("%s - %s", re.Host, err.Error()),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date:        getRecentDates(),
-			State:       []string{},
+			State:       []string{hr.Down},
 		}
 	}
 	defer resp.Body.Close()
@@ -274,7 +282,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 			Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date:        getRecentDates(),
-			State:       []string{},
+			State:       []string{hr.Down},
 		}
 	}
 	return ProbeResult{
@@ -480,7 +488,7 @@ func (s *SlidingSLA) Reset() {
 
 func startProbeManager() {
 	probeManagerOnce.Do(func() {
-		log.Println("🚀 Starting global probe manager...")
+		log.Println("Starting global probe manager...")
 
 		for _, target := range defaultReqs {
 			t := target
@@ -690,54 +698,56 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 func publishToNATS(name string, payload StatusPayload) {
 	if nc.Status() != nats.CONNECTED {
 		slog.Error("NATS not connected")
+		return
 	}
 
 	js, err := jetstream.New(nc)
 	if err != nil {
 		slog.Error("JetStream context error", "error", err)
+		return
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	streamName := "STATUS"
 	subject := fmt.Sprintf("STATUS.%s", name)
 
-	s, _ := js.CreateStream(ctx, jetstream.StreamConfig{
+	s, err := js.CreateStream(ctx, jetstream.StreamConfig{
 		Name:     streamName,
-		Subjects: []string{subject},
+		Subjects: []string{"STATUS.*"},
 		Storage:  jetstream.FileStorage,
 		MaxBytes: 1024 * 1024 * 50,
-		MaxMsgs:  10,
-		Discard:  jetstream.DiscardNew,
 	})
+
+	if err != nil {
+		slog.Error("Failed to create/get stream", "error", err)
+		return
+	}
 
 	data, _ := json.Marshal(payload)
 
 	ack, err := js.Publish(ctx, subject, data)
+
 	if err != nil {
-		slog.Error("Publish failed", "error", err)
-
-		c, _ := s.CreateOrUpdateConsumer(ctx, jetstream.ConsumerConfig{
-			Durable:   "CONS",
-			AckPolicy: jetstream.AckExplicitPolicy,
-		})
-
-		msgs, err := c.Fetch(10)
-		if err != nil {
-			slog.Error("Fetch failed", "error", err)
-		}
-
-		for msg := range msgs.Messages() {
-			fmt.Printf("Received a JetStream message: %s\n", string(msg.Data()))
-		}
-
-		js.DeleteStream(ctx, "STATUS")
-
+		slog.Error("Failed to publish message", "error", err)
 		return
 	}
 
 	fmt.Printf("Appended to %s | Seq: %d\n", ack.Stream, ack.Sequence)
+
+	// c, _ := s.CreateOrUpdateConsumer(ctx, jetstream.ConsumerConfig{
+	// 	Durable:   "CONS",
+	// 	AckPolicy: jetstream.AckExplicitPolicy,
+	// })
+
+	info, err := s.Info(ctx)
+	if err != nil {
+		slog.Error("Failed to get stream info", "error", err)
+	}
+
+	fmt.Println("Total messages:", info.State.Msgs)
+	fmt.Println("Total bytes:", info.State.Bytes)
 
 }
 
