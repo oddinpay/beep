@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"log/slog"
 	"net"
@@ -725,9 +728,32 @@ func publishToNATS(name string, payload StatusPayload) {
 		return
 	}
 
-	data, _ := json.Marshal(payload)
+	data, err := json.Marshal(payload)
 
-	ack, err := js.Publish(ctx, subject, data)
+	fmt.Println("Original size:", len(data))
+
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Original JSON size:", len(jsonData))
+
+	var compressed bytes.Buffer
+	gz := gzip.NewWriter(&compressed)
+
+	_, err = gz.Write(jsonData)
+	if err != nil {
+		panic(err)
+	}
+
+	err = gz.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Compressed size:", compressed.Len())
+
+	ack, err := js.Publish(ctx, subject, compressed.Bytes())
 
 	if err != nil {
 		slog.Error("Failed to publish message", "error", err)
@@ -736,14 +762,46 @@ func publishToNATS(name string, payload StatusPayload) {
 
 	fmt.Printf("Appended to %s | Seq: %d\n", ack.Stream, ack.Sequence)
 
-	// c, _ := s.CreateOrUpdateConsumer(ctx, jetstream.ConsumerConfig{
-	// 	Durable:   "CONS",
-	// 	AckPolicy: jetstream.AckExplicitPolicy,
-	// })
+	c, _ := s.CreateOrUpdateConsumer(ctx, jetstream.ConsumerConfig{
+		Durable:   "CONS",
+		AckPolicy: jetstream.AckExplicitPolicy,
+	})
 
 	info, err := s.Info(ctx)
 	if err != nil {
 		slog.Error("Failed to get stream info", "error", err)
+		return
+	}
+
+	msgs, err := c.Fetch(2)
+	if err != nil {
+		slog.Error("Fetch failed", "error", err)
+		return
+	}
+
+	for msg := range msgs.Messages() {
+		msgd := msg.Data()
+
+		var decompressed []byte
+
+		rdata, err := gzip.NewReader(bytes.NewReader(msgd))
+		if err != nil {
+			slog.Warn("Failed to create gzip reader, using raw data", "error", err)
+			decompressed = msgd
+		} else {
+			decompressed, err = io.ReadAll(rdata)
+			rdata.Close()
+			if err != nil {
+				slog.Error("Failed to read decompressed data", "error", err)
+				decompressed = nil
+			}
+		}
+
+		if decompressed != nil {
+			fmt.Printf("Received a JetStream message: %s\n", decompressed)
+		}
+
+		msg.Ack()
 	}
 
 	fmt.Println("Total messages:", info.State.Msgs)

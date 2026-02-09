@@ -3,6 +3,7 @@ module main
 go 1.25.1
 
 require (
+	github.com/andybalholm/brotli v1.2.0
 	github.com/nats-io/nats.go v1.48.0
 	go.jetify.com/sse v0.1.0
 )
