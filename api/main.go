@@ -722,9 +722,7 @@ func publishToNATS(name string, payload StatusPayload) {
 		return
 	}
 
-	// todayUTC := time.Now().UTC().Format("02/01/2006")
-
-	todayUTC := "12/02/2026"
+	todayUTC := time.Now().UTC().Format("02/01/2006")
 
 	for attempt := range 3 {
 		currentMetrics := map[string]any{
