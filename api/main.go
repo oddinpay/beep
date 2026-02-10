@@ -308,7 +308,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 			Description: err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date:        getRecentDates(),
-			State:       []string{hr.Down, "up", "up", "up"},
+			State:       []string{hr.Down},
 		}
 	}
 	defer conn.Close()
