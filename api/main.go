@@ -801,8 +801,6 @@ func publishToNATS(name string, payload StatusPayload, s *SlidingSLA) {
 			return
 		}
 
-		fmt.Println(string(jsonData))
-
 		var buf bytes.Buffer
 		gz := gzip.NewWriter(&buf)
 		gz.Write(jsonData)
@@ -818,8 +816,6 @@ func publishToNATS(name string, payload StatusPayload, s *SlidingSLA) {
 
 		if updateErr == nil {
 			slog.Info("Published status to NATS KV", "name", name)
-			data := readFromNATS(name)
-			fmt.Println("Read back data:", string(data))
 			return
 		}
 
@@ -903,14 +899,13 @@ func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 	history := readFromNATS(name)
 
-	respJSON, err := json.MarshalIndent(history, "", "  ")
-	if err != nil {
+	if history == nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(respJSON)
+	_, _ = w.Write([]byte(history))
 
 }
 
