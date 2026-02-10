@@ -68,7 +68,6 @@ var (
 	seed             = os.Getenv("NATS_SEED")
 	serverURL        = os.Getenv("NATS_URL")
 	probeManagerOnce sync.Once
-
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
 	nc               = func() *nats.Conn {
 		c, err := nats.Connect(serverURL, nats.UserJWTAndSeed(jwt, seed))
@@ -78,7 +77,6 @@ var (
 		}
 		return c
 	}()
-
 	hr = HealthResponse{Down: "down", Up: "up"}
 )
 
