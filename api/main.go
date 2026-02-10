@@ -810,7 +810,7 @@ func publishToNATS(name string, payload StatusPayload) {
 		}
 
 		if updateErr == nil {
-			fmt.Printf("State persisted for %s\n", name)
+			slog.Info("Published status to NATS KV", "name", name)
 			readFromNATS(name)
 			return
 		}
