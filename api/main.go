@@ -67,6 +67,7 @@ var (
 	jwt              = os.Getenv("NATS_JWT")
 	seed             = os.Getenv("NATS_SEED")
 	serverURL        = os.Getenv("NATS_URL")
+	userAgent        = os.Getenv("USER_AGENT")
 	probeManagerOnce sync.Once
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
 	nc               = func() *nats.Conn {
@@ -254,8 +255,6 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	if err != nil {
 		slog.Error("Failed to create HTTP request", "error", err)
 	}
-
-	userAgent := os.Getenv("USER_AGENT")
 
 	if userAgent == "" {
 		userAgent = "beep_01kgwc0fggeze9075f1tk43bdf/1.0"
