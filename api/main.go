@@ -542,7 +542,7 @@ func startProbeManager() {
 						SLA:   tracker.Snapshot(),
 					}
 
-					publishToNATS(req.Name, payload)
+					publishToNATS(req.Name, payload, tracker)
 
 					// Broadcast update
 					globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
@@ -698,7 +698,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func publishToNATS(name string, payload StatusPayload) {
+func publishToNATS(name string, payload StatusPayload, s *SlidingSLA) {
 	if nc.Status() != nats.CONNECTED {
 		slog.Error("NATS not connected")
 		return
@@ -726,11 +726,12 @@ func publishToNATS(name string, payload StatusPayload) {
 
 	for attempt := range 3 {
 		currentMetrics := map[string]any{
-			"uptime90":           payload.SLA["uptime90"],
+			"sla_breached":       payload.SLA["sla_breached"],
+			"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
 			"total_time_seconds": payload.SLA["total_time_seconds"],
 			"up_time_seconds":    payload.SLA["up_time_seconds"],
 			"down_time_seconds":  payload.SLA["down_time_seconds"],
-			"sla_breached":       payload.SLA["sla_breached"],
+			"uptime90":           payload.SLA["uptime90"],
 		}
 
 		entry, getErr := kv.Get(ctx, name)
