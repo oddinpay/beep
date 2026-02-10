@@ -722,18 +722,6 @@ func publishToNATS(name string, payload StatusPayload) {
 		return
 	}
 
-	toSeconds := func(v any) any {
-		s, ok := v.(string)
-		if !ok {
-			return v
-		}
-		d, err := time.ParseDuration(s)
-		if err != nil {
-			return v
-		}
-		return int(d.Seconds())
-	}
-
 	// todayUTC := time.Now().UTC().Format("02/01/2006")
 
 	todayUTC := "12/02/2026"
@@ -741,9 +729,9 @@ func publishToNATS(name string, payload StatusPayload) {
 	for attempt := range 3 {
 		currentMetrics := map[string]any{
 			"uptime90":           payload.SLA["uptime90"],
-			"total_time_seconds": toSeconds(payload.SLA["total_time_seconds"]),
-			"up_time_seconds":    toSeconds(payload.SLA["up_time_seconds"]),
-			"down_time_seconds":  toSeconds(payload.SLA["down_time_seconds"]),
+			"total_time_seconds": payload.SLA["total_time_seconds"],
+			"up_time_seconds":    payload.SLA["up_time_seconds"],
+			"down_time_seconds":  payload.SLA["down_time_seconds"],
 			"sla_breached":       payload.SLA["sla_breached"],
 		}
 
