@@ -778,7 +778,16 @@ func publishToNATS(name string, payload StatusPayload) {
 			payload.SLA["history"] = capSlice(h, 90)
 		}
 
+		idx := -1
+		for i, r := range defaultReqs {
+			if r.Name == name {
+				idx = i
+				break
+			}
+		}
+
 		wrappedPayload := map[string]any{
+			"index": idx,
 			"payload": map[string]any{
 				"probe": payload.Probe,
 				"sla":   payload.SLA,
@@ -871,6 +880,7 @@ func readFromNATS(name string) {
 		return
 	}
 
+	idx, _ := wrapped["index"].(float64)
 	payloadData, ok := wrapped["payload"]
 	if !ok {
 		slog.Warn("No 'payload' field found in KV entry", "key", name)
@@ -883,7 +893,7 @@ func readFromNATS(name string) {
 		return
 	}
 
-	fmt.Printf("\n--- NATS Data for: %s ---\n%s\n--------------------------\n", name, string(prettyJSON))
+	fmt.Printf("\n--- NATS Data [Index: %d] for: %s ---\n%s\n--------------------------\n", int(idx), name, string(prettyJSON))
 
 }
 
