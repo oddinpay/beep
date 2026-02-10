@@ -552,10 +552,6 @@ func startProbeManager() {
 }
 
 func Sse(w http.ResponseWriter, r *http.Request) {
-	if r.Method != MethodPost && r.Method != MethodGet {
-		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
-		return
-	}
 
 	// SSE headers
 	w.Header().Set(HeaderAllowOrigin, "*")
@@ -615,10 +611,6 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 // -------------------- STATE REQUEST HANDLER --------------------
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != MethodGet {
-		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
-		return
-	}
 
 	w.Header().Set(HeaderContentType, ContentTypeJSON)
 
@@ -886,11 +878,6 @@ func readFromNATS(name string) []byte {
 }
 
 func HistoryHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != MethodGet {
-		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
-		return
-	}
-
 	w.Header().Set(HeaderContentType, ContentTypeJSON)
 
 	name := r.URL.Query().Get("protocol")
@@ -913,9 +900,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/v1/sse", Sse)
-	mux.HandleFunc("/v1/status", StatusHandler)
-	mux.HandleFunc("/v1/status/history", HistoryHandler)
+	mux.HandleFunc("GET /v1/sse", Sse)
+	mux.HandleFunc("GET /v1/status", StatusHandler)
+	mux.HandleFunc("GET /v1/status/history", HistoryHandler)
 	// mux.HandleFunc("/v1/sla/reset", ResetHandler)
 
 	handler := recoveryMiddleware(mux)
