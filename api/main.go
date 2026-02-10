@@ -778,11 +778,20 @@ func publishToNATS(name string, payload StatusPayload) {
 			payload.SLA["history"] = capSlice(h, 90)
 		}
 
-		jsonData, err := json.Marshal(payload)
+		wrappedPayload := map[string]any{
+			"payload": map[string]any{
+				"probe": payload.Probe,
+				"sla":   payload.SLA,
+			},
+		}
+
+		jsonData, err := json.Marshal(wrappedPayload)
 		if err != nil {
 			slog.Error("Marshal error", "error", err)
 			return
 		}
+
+		fmt.Println(string(jsonData))
 
 		var buf bytes.Buffer
 		gz := gzip.NewWriter(&buf)
@@ -856,19 +865,26 @@ func readFromNATS(name string) {
 		return
 	}
 
-	var payload StatusPayload
-	if err := json.Unmarshal(decompressed, &payload); err != nil {
+	var wrapped map[string]any
+	if err := json.Unmarshal(decompressed, &wrapped); err != nil {
 		slog.Error("Unmarshal failed", "error", err)
 		return
 	}
 
-	prettyJSON, err := json.MarshalIndent(payload, "", "    ")
+	payloadData, ok := wrapped["payload"]
+	if !ok {
+		slog.Warn("No 'payload' field found in KV entry", "key", name)
+		payloadData = map[string]any{}
+	}
+
+	prettyJSON, err := json.MarshalIndent(payloadData, "", "    ")
 	if err != nil {
 		slog.Error("Failed to generate pretty JSON", "error", err)
 		return
 	}
 
 	fmt.Printf("\n--- NATS Data for: %s ---\n%s\n--------------------------\n", name, string(prettyJSON))
+
 }
 
 // -------------------- MAIN --------------------
