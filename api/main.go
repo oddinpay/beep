@@ -90,7 +90,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "DNS2", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 	}
 
@@ -880,7 +880,7 @@ func readFromNATS(name string) []byte {
 func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(HeaderContentType, ContentTypeJSON)
 
-	name := r.URL.Query().Get("protocol")
+	name := r.URL.Query().Get("name")
 	history := readFromNATS(name)
 
 	if history == nil {
