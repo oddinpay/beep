@@ -817,7 +817,8 @@ func publishToNATS(name string, payload StatusPayload) {
 
 		if updateErr == nil {
 			slog.Info("Published status to NATS KV", "name", name)
-			readFromNATS(name)
+			data := readFromNATS(name)
+			fmt.Println("Read back data:", string(data))
 			return
 		}
 
@@ -833,16 +834,16 @@ func capSlice[T any](s []T, max int) []T {
 	return s
 }
 
-func readFromNATS(name string) {
+func readFromNATS(name string) []byte {
 	if nc.Status() != nats.CONNECTED {
 		slog.Error("NATS not connected")
-		return
+		return nil
 	}
 
 	js, err := jetstream.New(nc)
 	if err != nil {
 		slog.Error("JetStream context error", "error", err)
-		return
+		return nil
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -851,49 +852,50 @@ func readFromNATS(name string) {
 	kv, err := js.KeyValue(ctx, "BEEP_STATUS")
 	if err != nil {
 		slog.Error("Failed to access KV bucket", "error", err)
-		return
+		return nil
 	}
 
 	entry, err := kv.Get(ctx, name)
 	if err != nil {
 		slog.Error("Failed to get entry", "key", name, "error", err)
-		return
+		return nil
 	}
 
 	// Decompress
 	reader, err := gzip.NewReader(bytes.NewReader(entry.Value()))
 	if err != nil {
 		slog.Error("Gzip reader error", "error", err)
-		return
+		return nil
 	}
 	defer reader.Close()
 
 	decompressed, err := io.ReadAll(reader)
 	if err != nil {
 		slog.Error("Decompression failed", "error", err)
-		return
+		return nil
 	}
 
 	var wrapped map[string]any
 	if err := json.Unmarshal(decompressed, &wrapped); err != nil {
 		slog.Error("Unmarshal failed", "error", err)
-		return
+		return nil
 	}
 
-	idx, _ := wrapped["index"].(float64)
-	payloadData, ok := wrapped["payload"]
-	if !ok {
-		slog.Warn("No 'payload' field found in KV entry", "key", name)
-		payloadData = map[string]any{}
-	}
-
-	prettyJSON, err := json.MarshalIndent(payloadData, "", "    ")
+	wrappedData, err := json.Marshal(wrapped)
 	if err != nil {
-		slog.Error("Failed to generate pretty JSON", "error", err)
-		return
+		slog.Error("Marshal failed", "error", err)
+		return nil
 	}
 
-	fmt.Printf("\n--- NATS Data [Index: %d] for: %s ---\n%s\n--------------------------\n", int(idx), name, string(prettyJSON))
+	return wrappedData
+
+}
+
+func HistoryHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != MethodGet {
+		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
+		return
+	}
 
 }
 
@@ -906,7 +908,8 @@ func main() {
 
 	mux.HandleFunc("/v1/sse", StatusHandler)
 	mux.HandleFunc("/v1/status", RestRequestHandler)
-	mux.HandleFunc("/v1/sla/reset", ResetHandler)
+	// mux.HandleFunc("/v1/sla/reset", ResetHandler)
+	mux.HandleFunc("/v1/status/history", HistoryHandler)
 
 	handler := recoveryMiddleware(mux)
 
