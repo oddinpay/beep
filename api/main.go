@@ -257,7 +257,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	}
 
 	if userAgent == "" {
-		userAgent = "beep_01kgwc0fggeze9075f1tk43bdf/1.0"
+		userAgent = "BeepMonitor/1.0"
 	}
 
 	r.Header.Set("User-Agent", userAgent)
