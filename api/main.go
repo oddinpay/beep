@@ -78,6 +78,8 @@ var (
 		}
 		return c
 	}()
+
+	hr = HealthResponse{Down: "down", Up: "up"}
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -159,8 +161,6 @@ type SlidingSLA struct {
 	lastUpdate    time.Time
 	mu            sync.Mutex
 }
-
-var hr = HealthResponse{Down: "down", Up: "up"}
 
 // -------------------- RECOVERY --------------------
 
@@ -710,103 +710,177 @@ func publishToNATS(name string, payload StatusPayload) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	streamName := "STATUS"
-	subject := fmt.Sprintf("STATUS.%s", name)
-
-	s, err := js.CreateStream(ctx, jetstream.StreamConfig{
-		Name:     streamName,
-		Subjects: []string{"STATUS.*"},
-		Storage:  jetstream.FileStorage,
+	kv, err := js.CreateKeyValue(ctx, jetstream.KeyValueConfig{
+		Bucket:   "BEEP_STATUS",
 		MaxBytes: 1024 * 1024 * 50,
 	})
-
 	if err != nil {
-		slog.Error("Failed to create/get stream", "error", err)
+		slog.Error("Failed to ensure KV bucket", "error", err)
 		return
 	}
 
-	data, err := json.Marshal(payload)
-
-	fmt.Println("Original size:", len(data))
-
-	jsonData, err := json.Marshal(payload)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Original JSON size:", len(jsonData))
-
-	var compressed bytes.Buffer
-	gz := gzip.NewWriter(&compressed)
-
-	_, err = gz.Write(jsonData)
-	if err != nil {
-		panic(err)
-	}
-
-	err = gz.Close()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Compressed size:", compressed.Len())
-
-	ack, err := js.Publish(ctx, subject, compressed.Bytes())
-
-	if err != nil {
-		slog.Error("Failed to publish message", "error", err)
-		return
-	}
-
-	fmt.Printf("Appended to %s | Seq: %d\n", ack.Stream, ack.Sequence)
-
-	c, _ := s.CreateOrUpdateConsumer(ctx, jetstream.ConsumerConfig{
-		Durable:   "CONS",
-		AckPolicy: jetstream.AckExplicitPolicy,
-	})
-
-	info, err := s.Info(ctx)
-	if err != nil {
-		slog.Error("Failed to get stream info", "error", err)
-		return
-	}
-
-	msgs, err := c.Fetch(2)
-	if err != nil {
-		slog.Error("Fetch failed", "error", err)
-		return
-	}
-
-	for msg := range msgs.Messages() {
-		msgd := msg.Data()
-
-		var decompressed []byte
-
-		rdata, err := gzip.NewReader(bytes.NewReader(msgd))
+	toSeconds := func(v any) any {
+		s, ok := v.(string)
+		if !ok {
+			return v
+		}
+		d, err := time.ParseDuration(s)
 		if err != nil {
-			slog.Warn("Failed to create gzip reader, using raw data", "error", err)
-			decompressed = msgd
-		} else {
-			decompressed, err = io.ReadAll(rdata)
-			rdata.Close()
-			if err != nil {
-				slog.Error("Failed to read decompressed data", "error", err)
-				decompressed = nil
-			}
+			return v
 		}
-
-		if decompressed != nil {
-			fmt.Printf("Received a JetStream message: %s\n", decompressed)
-		}
-
-		msg.Ack()
+		return int(d.Seconds())
 	}
 
-	fmt.Println("Total messages:", info.State.Msgs)
-	fmt.Println("Total bytes:", info.State.Bytes)
+	todayUTC := "12/02/2026"
 
+	for attempt := range 3 {
+		currentMetrics := map[string]any{
+			"uptime90":           payload.SLA["uptime90"],
+			"total_time_seconds": toSeconds(payload.SLA["total_time_seconds"]),
+			"up_time_seconds":    toSeconds(payload.SLA["up_time_seconds"]),
+			"down_time_seconds":  toSeconds(payload.SLA["down_time_seconds"]),
+			"sla_breached":       payload.SLA["sla_breached"],
+		}
+
+		entry, getErr := kv.Get(ctx, name)
+		var revision uint64 = 0
+
+		if getErr == nil {
+			revision = entry.Revision()
+			var oldPayload StatusPayload
+
+			gr, err := gzip.NewReader(bytes.NewReader(entry.Value()))
+			if err == nil {
+				decomp, _ := io.ReadAll(gr)
+				json.Unmarshal(decomp, &oldPayload)
+				gr.Close()
+			}
+
+			if len(oldPayload.Probe.Date) > 0 && oldPayload.Probe.Date[0] == todayUTC {
+				if len(payload.Probe.State) > 0 {
+					payload.Probe.State = append([]string{payload.Probe.State[0]}, oldPayload.Probe.State[1:]...)
+				}
+				payload.Probe.Date = oldPayload.Probe.Date
+
+				if oldHist, ok := oldPayload.SLA["history"].([]any); ok && len(oldHist) > 0 {
+					oldHist[0] = currentMetrics
+					payload.SLA["history"] = oldHist
+				}
+			} else {
+				payload.Probe.State = append(payload.Probe.State, oldPayload.Probe.State...)
+				payload.Probe.Date = append([]string{todayUTC}, oldPayload.Probe.Date...)
+
+				if oldHist, ok := oldPayload.SLA["history"].([]any); ok {
+					payload.SLA["history"] = append([]any{currentMetrics}, oldHist...)
+				} else {
+					payload.SLA["history"] = []any{currentMetrics}
+				}
+			}
+		} else {
+			payload.Probe.Date = []string{todayUTC}
+			payload.SLA["history"] = []any{currentMetrics}
+		}
+
+		payload.Probe.State = capSlice(payload.Probe.State, 90)
+		payload.Probe.Date = capSlice(payload.Probe.Date, 90)
+		if h, ok := payload.SLA["history"].([]any); ok {
+			payload.SLA["history"] = capSlice(h, 90)
+		}
+
+		jsonData, err := json.Marshal(payload)
+		if err != nil {
+			slog.Error("Marshal error", "error", err)
+			return
+		}
+
+		var buf bytes.Buffer
+		gz := gzip.NewWriter(&buf)
+		gz.Write(jsonData)
+		gz.Close()
+
+		var updateErr error
+
+		if revision > 0 {
+			_, updateErr = kv.Update(ctx, name, buf.Bytes(), revision)
+		} else {
+			_, updateErr = kv.Create(ctx, name, buf.Bytes())
+		}
+
+		if updateErr == nil {
+			fmt.Printf("State persisted for %s\n", name)
+			readFromNATS(name)
+			return
+		}
+
+		slog.Warn("KV Update conflict, retrying...", "name", name, "attempt", attempt+1)
+		time.Sleep(50 * time.Millisecond)
+	}
+}
+
+func capSlice[T any](s []T, max int) []T {
+	if len(s) > max {
+		return s[:max]
+	}
+	return s
+}
+
+func readFromNATS(name string) {
+	if nc.Status() != nats.CONNECTED {
+		slog.Error("NATS not connected")
+		return
+	}
+
+	js, err := jetstream.New(nc)
+	if err != nil {
+		slog.Error("JetStream context error", "error", err)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	kv, err := js.KeyValue(ctx, "STATUS")
+	if err != nil {
+		slog.Error("Failed to access KV bucket", "error", err)
+		return
+	}
+
+	entry, err := kv.Get(ctx, name)
+	if err != nil {
+		slog.Error("Failed to get entry", "key", name, "error", err)
+		return
+	}
+
+	// Decompress
+	reader, err := gzip.NewReader(bytes.NewReader(entry.Value()))
+	if err != nil {
+		slog.Error("Gzip reader error", "error", err)
+		return
+	}
+	defer reader.Close()
+
+	decompressed, err := io.ReadAll(reader)
+	if err != nil {
+		slog.Error("Decompression failed", "error", err)
+		return
+	}
+
+	var payload StatusPayload
+	if err := json.Unmarshal(decompressed, &payload); err != nil {
+		slog.Error("Unmarshal failed", "error", err)
+		return
+	}
+
+	prettyJSON, err := json.MarshalIndent(payload, "", "    ")
+	if err != nil {
+		slog.Error("Failed to generate pretty JSON", "error", err)
+		return
+	}
+
+	fmt.Printf("\n--- NATS Data for: %s ---\n%s\n--------------------------\n", name, string(prettyJSON))
 }
 
 // -------------------- MAIN --------------------
