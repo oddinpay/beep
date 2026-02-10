@@ -894,7 +894,7 @@ func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set(HeaderContentType, ContentTypeJSON)
 
-	name := r.URL.Query().Get("name")
+	name := r.URL.Query().Get("protocol")
 	history := readFromNATS(name)
 
 	if history == nil {
