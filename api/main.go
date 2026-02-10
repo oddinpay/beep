@@ -554,7 +554,7 @@ func startProbeManager() {
 	})
 }
 
-func StatusHandler(w http.ResponseWriter, r *http.Request) {
+func Sse(w http.ResponseWriter, r *http.Request) {
 	if r.Method != MethodPost && r.Method != MethodGet {
 		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
 		return
@@ -617,7 +617,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 // -------------------- STATE REQUEST HANDLER --------------------
 
-func RestRequestHandler(w http.ResponseWriter, r *http.Request) {
+func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != MethodGet {
 		http.Error(w, "Method not allowed", StatusMethodNotAllowed)
 		return
@@ -898,6 +898,20 @@ func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set(HeaderContentType, ContentTypeJSON)
+
+	name := r.URL.Query().Get("name")
+	history := readFromNATS(name)
+
+	respJSON, err := json.MarshalIndent(history, "", "  ")
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(respJSON)
+
 }
 
 // -------------------- MAIN --------------------
@@ -907,10 +921,10 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/v1/sse", StatusHandler)
-	mux.HandleFunc("/v1/status", RestRequestHandler)
-	// mux.HandleFunc("/v1/sla/reset", ResetHandler)
+	mux.HandleFunc("/v1/sse", Sse)
+	mux.HandleFunc("/v1/status", StatusHandler)
 	mux.HandleFunc("/v1/status/history", HistoryHandler)
+	// mux.HandleFunc("/v1/sla/reset", ResetHandler)
 
 	handler := recoveryMiddleware(mux)
 
