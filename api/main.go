@@ -842,7 +842,7 @@ func readFromNATS(name string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	kv, err := js.KeyValue(ctx, "STATUS")
+	kv, err := js.KeyValue(ctx, "BEEP_STATUS")
 	if err != nil {
 		slog.Error("Failed to access KV bucket", "error", err)
 		return
