@@ -537,7 +537,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 						}
 						slaTrackers.Unlock()
 
-						isDown := len(res.State) == 0 || strings.ToLower(res.State[0]) != "up"
+						isDown := len(res.State) > 0 && strings.ToLower(res.State[0]) == hr.Down
 						tracker.Tick(isDown, interval)
 
 						payload := StatusPayload{
