@@ -802,7 +802,6 @@ func publishToNATS(name string, payload StatusPayload, s *SlidingSLA) {
 		}
 
 		if updateErr == nil {
-			slog.Info("Published status to NATS KV", "name", name)
 			return
 		}
 
