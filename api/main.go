@@ -915,11 +915,11 @@ func main() {
 			slog.Error("NATS connection permanently closed")
 		}),
 	)
+
 	if err != nil {
 		slog.Error("Failed to connect to NATS", "error", err)
 		os.Exit(1)
 	}
-
 
 	startProbeManager()
 
