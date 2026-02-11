@@ -89,6 +89,7 @@ var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
 		{Name: "DNS2", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS", Protocol: "https", Host: "app.localhost", Interval: 10 * time.Second},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))
