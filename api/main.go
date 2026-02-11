@@ -480,7 +480,7 @@ func (s *SlidingSLA) Reset() {
 
 func startProbeManager() {
 	probeManagerOnce.Do(func() {
-		log.Println("Starting global probe manager...")
+		slog.Info("Starting probe manager...")
 
 		for _, target := range defaultReqs {
 			t := target
@@ -499,7 +499,7 @@ func startProbeManager() {
 			case "dns":
 				probeFn = probeDNS
 			default:
-				log.Printf("⚠️ Unsupported protocol: %s", t.Protocol)
+				slog.Warn("Unsupported protocol", "protocol", t.Protocol)
 				continue
 			}
 
