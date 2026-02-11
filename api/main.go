@@ -12,8 +12,10 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/nats-io/nats.go"
@@ -478,7 +480,7 @@ func (s *SlidingSLA) Reset() {
 	s.lastUpdate = time.Now()
 }
 
-func startProbeManager() {
+func startProbeManager(ctx context.Context) {
 	probeManagerOnce.Do(func() {
 		slog.Info("Starting probe manager...")
 
@@ -508,35 +510,43 @@ func startProbeManager() {
 				ticker := time.NewTicker(iv)
 				defer ticker.Stop()
 
-				for range ticker.C {
+				for {
+					select {
+					case <-ctx.Done():
+						slog.Info("Stopping probe worker", "name", req.Name)
+						return
 
-					_, cancel := context.WithTimeout(context.Background(), defaultTimeout)
-					defer cancel()
+					case <-ticker.C:
+						_, cancel := context.WithTimeout(ctx, defaultTimeout)
 
-					res := fn(req)
+						res := fn(req)
 
-					slaTrackers.Lock()
-					tracker := slaTrackers.m[req.Name]
-					if tracker == nil {
-						tracker = NewSlidingSLA(1.0)
-						slaTrackers.m[req.Name] = tracker
+						slaTrackers.Lock()
+						tracker := slaTrackers.m[req.Name]
+						if tracker == nil {
+							tracker = NewSlidingSLA(1.0)
+							slaTrackers.m[req.Name] = tracker
+						}
+						slaTrackers.Unlock()
+
+						isDown := len(res.State) == 0 || strings.ToLower(res.State[0]) != "up"
+						tracker.Tick(isDown, interval)
+
+						payload := StatusPayload{
+							Probe: res,
+							SLA:   tracker.Snapshot(),
+						}
+
+						publishToNATS(req.Name, payload, tracker)
+
+						// Broadcast update
+						globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
+
+						cancel()
+
 					}
-					slaTrackers.Unlock()
-
-					isDown := len(res.State) == 0 || strings.ToLower(res.State[0]) != "up"
-					tracker.Tick(isDown, interval)
-
-					payload := StatusPayload{
-						Probe: res,
-						SLA:   tracker.Snapshot(),
-					}
-
-					publishToNATS(req.Name, payload, tracker)
-
-					// Broadcast update
-					globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
-
 				}
+
 			}(t, probeFn, interval)
 		}
 	})
@@ -547,16 +557,15 @@ func startProbeManager() {
 
 func Sse(w http.ResponseWriter, r *http.Request) {
 
+	ctx := r.Context()
+
 	// SSE headers
 	w.Header().Set(HeaderAllowOrigin, "*")
 	w.Header().Set(HeaderCacheControl, "no-cache")
 	w.Header().Set(HeaderConnection, "keep-alive")
 	w.Header().Set(HeaderContentType, ContentTypeEventStream)
 
-	// Start probe manager if not already running
-	startProbeManager()
-
-	conn, err := sse.Upgrade(r.Context(), w)
+	conn, err := sse.Upgrade(ctx, w)
 	if err != nil {
 		http.Error(w, err.Error(), StatusInternalServerError)
 		return
@@ -574,8 +583,6 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 		delete(globalHub.clients, clientChan)
 		globalHub.Unlock()
 	}()
-
-	ctx := r.Context()
 
 	for {
 		select {
@@ -893,6 +900,8 @@ func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 
 // -------------------- MAIN --------------------
 func main() {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
 	nc, err = nats.Connect(
 		serverURL,
@@ -902,7 +911,6 @@ func main() {
 		nats.Timeout(10*time.Second),
 		nats.PingInterval(20*time.Second),
 		nats.MaxPingsOutstanding(5),
-
 		nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
 			slog.Warn("Disconnected from NATS", "error", err)
 		}),
@@ -919,10 +927,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	startProbeManager()
+	slog.Info("Connected to NATS", "url", serverURL)
+
+	startProbeManager(ctx)
 
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("GET /v1/sse", Sse)
 	mux.HandleFunc("GET /v1/status", StatusHandler)
 	mux.HandleFunc("GET /v1/status/history", HistoryHandler)
@@ -930,14 +939,41 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("pong"))
 	})
-	// mux.HandleFunc("/v1/sla/reset", ResetHandler)
 
-	handler := recoveryMiddleware(mux)
-
-	fmt.Printf("Beep API server running at http://%s:%s\n", Host, Port)
-
-	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Host, Port), handler); err != nil {
-		slog.Error("Server failed to start", "error", err)
+	server := &http.Server{
+		Addr:    fmt.Sprintf("%s:%s", Host, Port),
+		Handler: recoveryMiddleware(mux),
 	}
 
+	go func() {
+		slog.Info("Beep API server running", "url", fmt.Sprintf("http://%s:%s", Host, Port))
+		if err := server.ListenAndServe(); err != http.ErrServerClosed {
+			slog.Error("Server failed to start", "error", err)
+			stop()
+		}
+	}()
+
+	slog.Info("Beep is now active and monitoring services.")
+
+	<-ctx.Done()
+
+	slog.Info("Shutdown signal received. Cleaning up...")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		slog.Error("Server shutdown error", "error", err)
+	}
+
+	if nc != nil {
+		slog.Info("Flushing NATS buffers...")
+		if err := nc.Flush(); err != nil {
+			slog.Error("NATS flush error", "error", err)
+		}
+		nc.Close()
+		slog.Info("NATS connection closed")
+	}
+
+	slog.Info("Exit complete")
+	os.Exit(0)
 }
