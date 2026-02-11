@@ -70,15 +70,8 @@ var (
 	userAgent        = os.Getenv("USER_AGENT")
 	probeManagerOnce sync.Once
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
-	nc               = func() *nats.Conn {
-		c, err := nats.Connect(serverURL, nats.UserJWTAndSeed(jwt, seed))
-		if err != nil {
-			slog.Error("Failed to connect to NATS server", "error", err)
-			os.Exit(1)
-		}
-		return c
-	}()
-	hr = HealthResponse{Down: "down", Up: "up"}
+	hr               = HealthResponse{Down: "down", Up: "up"}
+	nc               *nats.Conn
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -688,6 +681,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func publishToNATS(name string, payload StatusPayload, s *SlidingSLA) {
+
 	if nc.Status() != nats.CONNECTED {
 		slog.Error("NATS not connected")
 		return
@@ -702,13 +696,16 @@ func publishToNATS(name string, payload StatusPayload, s *SlidingSLA) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	kv, err := js.CreateKeyValue(ctx, jetstream.KeyValueConfig{
-		Bucket:   "BEEP_STATUS",
-		MaxBytes: 1024 * 1024 * 50,
-	})
+	kv, err := js.KeyValue(ctx, "BEEP_STATUS")
 	if err != nil {
-		slog.Error("Failed to ensure KV bucket", "error", err)
-		return
+		kv, err = js.CreateKeyValue(ctx, jetstream.KeyValueConfig{
+			Bucket:   "BEEP_STATUS",
+			MaxBytes: 1024 * 1024 * 50,
+		})
+		if err != nil {
+			slog.Error("Failed to ensure KV bucket", "error", err)
+			return
+		}
 	}
 
 	todayUTC := time.Now().UTC().Format("02/01/2006")
@@ -821,6 +818,7 @@ func capSlice[T any](s []T, max int) []T {
 }
 
 func readFromNATS(name string) []byte {
+
 	if nc.Status() != nats.CONNECTED {
 		slog.Error("NATS not connected")
 		return nil
@@ -895,6 +893,35 @@ func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 
 // -------------------- MAIN --------------------
 func main() {
+
+	var err error
+
+	nc, err = nats.Connect(
+		serverURL,
+		nats.UserJWTAndSeed(jwt, seed),
+		nats.MaxReconnects(-1),
+		nats.ReconnectWait(5*time.Second),
+		nats.Timeout(10*time.Second),
+		nats.PingInterval(20*time.Second),
+		nats.MaxPingsOutstanding(5),
+
+		nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
+			slog.Warn("Disconnected from NATS", "error", err)
+		}),
+		nats.ReconnectHandler(func(nc *nats.Conn) {
+			slog.Info("Reconnected to NATS", "url", nc.ConnectedUrl())
+		}),
+		nats.ClosedHandler(func(nc *nats.Conn) {
+			slog.Error("NATS connection permanently closed")
+		}),
+	)
+	if err != nil {
+		slog.Error("Failed to connect to NATS", "error", err)
+		os.Exit(1)
+	}
+
+
+	startProbeManager()
 
 	mux := http.NewServeMux()
 
