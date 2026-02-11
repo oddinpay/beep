@@ -478,8 +478,6 @@ func (s *SlidingSLA) Reset() {
 	s.lastUpdate = time.Now()
 }
 
-// -------------------- SSE HANDLER --------------------
-
 func startProbeManager() {
 	probeManagerOnce.Do(func() {
 		log.Println("Starting global probe manager...")
@@ -544,6 +542,8 @@ func startProbeManager() {
 	})
 
 }
+
+// -------------------- SSE HANDLER --------------------
 
 func Sse(w http.ResponseWriter, r *http.Request) {
 
