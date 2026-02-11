@@ -926,6 +926,10 @@ func main() {
 	mux.HandleFunc("GET /v1/sse", Sse)
 	mux.HandleFunc("GET /v1/status", StatusHandler)
 	mux.HandleFunc("GET /v1/status/history", HistoryHandler)
+	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("pong"))
+	})
 	// mux.HandleFunc("/v1/sla/reset", ResetHandler)
 
 	handler := recoveryMiddleware(mux)
