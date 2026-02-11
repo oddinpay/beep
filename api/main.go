@@ -75,6 +75,7 @@ var (
 	hr               = HealthResponse{Down: "down", Up: "up"}
 	nc               *nats.Conn
 	err              error
+	wg               sync.WaitGroup
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -480,7 +481,7 @@ func (s *SlidingSLA) Reset() {
 	s.lastUpdate = time.Now()
 }
 
-func startProbeManager(ctx context.Context) {
+func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 	probeManagerOnce.Do(func() {
 		slog.Info("Starting probe manager...")
 
@@ -510,6 +511,9 @@ func startProbeManager(ctx context.Context) {
 				ticker := time.NewTicker(iv)
 				defer ticker.Stop()
 
+				wg.Add(1)
+				defer wg.Done()
+
 				for {
 					select {
 					case <-ctx.Done():
@@ -517,7 +521,7 @@ func startProbeManager(ctx context.Context) {
 						return
 
 					case <-ticker.C:
-						_, cancel := context.WithTimeout(ctx, defaultTimeout)
+						ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
 
 						res := fn(req)
 
@@ -537,7 +541,7 @@ func startProbeManager(ctx context.Context) {
 							SLA:   tracker.Snapshot(),
 						}
 
-						publishToNATS(req.Name, payload, tracker)
+						publishToNATS(ctx, req.Name, payload, tracker)
 
 						// Broadcast update
 						globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
@@ -688,7 +692,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func publishToNATS(name string, payload StatusPayload, s *SlidingSLA) {
+func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *SlidingSLA) {
 
 	if nc.Status() != nats.CONNECTED {
 		slog.Error("NATS not connected")
@@ -701,7 +705,7 @@ func publishToNATS(name string, payload StatusPayload, s *SlidingSLA) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
 	kv, err := js.KeyValue(ctx, "BEEP_STATUS")
@@ -929,7 +933,7 @@ func main() {
 
 	slog.Info("Connected to NATS", "url", serverURL)
 
-	startProbeManager(ctx)
+	startProbeManager(ctx, &wg)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /v1/sse", Sse)
@@ -961,9 +965,12 @@ func main() {
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
+
 	if err := server.Shutdown(shutdownCtx); err != nil {
 		slog.Error("Server shutdown error", "error", err)
 	}
+
+	wg.Wait()
 
 	if nc != nil {
 		slog.Info("Flushing NATS buffers...")
