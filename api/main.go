@@ -72,6 +72,7 @@ var (
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
 	hr               = HealthResponse{Down: "down", Up: "up"}
 	nc               *nats.Conn
+	err              error
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -893,8 +894,6 @@ func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 
 // -------------------- MAIN --------------------
 func main() {
-
-	var err error
 
 	nc, err = nats.Connect(
 		serverURL,
