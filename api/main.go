@@ -511,9 +511,9 @@ func startProbeManager() {
 				defer ticker.Stop()
 
 				for range ticker.C {
-					// ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 
 					_, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+					defer cancel()
 
 					res := fn(req)
 
@@ -538,11 +538,11 @@ func startProbeManager() {
 					// Broadcast update
 					globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
 
-					cancel()
 				}
 			}(t, probeFn, interval)
 		}
 	})
+
 }
 
 func Sse(w http.ResponseWriter, r *http.Request) {
