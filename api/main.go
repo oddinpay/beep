@@ -72,7 +72,7 @@ var (
 	userAgent        = os.Getenv("USER_AGENT")
 	probeManagerOnce sync.Once
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
-	hr               = HealthResponse{Down: "down", Up: "up"}
+	hr               = HealthResponse{Down: "down", Up: "up", Warning: "warning"}
 	nc               *nats.Conn
 	err              error
 	wg               sync.WaitGroup
@@ -118,8 +118,9 @@ type HttpRequest struct {
 }
 
 type HealthResponse struct {
-	Down string `json:"down"`
-	Up   string `json:"up"`
+	Down    string `json:"down"`
+	Up      string `json:"up"`
+	Warning string `json:"warning"`
 }
 
 type ProbeResult struct {
@@ -349,7 +350,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
-			State:       []string{hr.Down},
+			State:       []string{hr.Warning},
 			Description: "Input is already an IP, DNS lookup skipped",
 			Timestamp:   time.Now().Format("15:04:05.000"),
 		}
