@@ -369,10 +369,10 @@ func probeDNS(req HttpRequest) ProbeResult {
 	return ProbeResult{
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
+		State:       []string{hr.Up},
 		Description: fmt.Sprintf("resolved %v", addrs),
 		Timestamp:   time.Now().Format("15:04:05.000"),
 		Date:        getRecentDates(),
-		State:       []string{hr.Up},
 	}
 }
 
@@ -486,6 +486,8 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 		slog.Info("Starting probe manager...")
 
 		for _, target := range defaultReqs {
+
+			wg.Add(1)
 			t := target
 
 			interval := t.Interval
@@ -507,12 +509,9 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 			}
 
 			go func(req HttpRequest, fn func(HttpRequest) ProbeResult, iv time.Duration) {
-
+				defer wg.Done()
 				ticker := time.NewTicker(iv)
 				defer ticker.Stop()
-
-				wg.Add(1)
-				defer wg.Done()
 
 				for {
 					select {
