@@ -487,13 +487,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 
 		for _, target := range defaultReqs {
 
-			wg.Add(1)
 			t := target
-
-			interval := t.Interval
-			if interval <= 0 {
-				interval = 1 * time.Second
-			}
 
 			var probeFn func(HttpRequest) ProbeResult
 			switch strings.ToLower(strings.TrimSpace(t.Protocol)) {
@@ -503,13 +497,23 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 				probeFn = probeHTTP
 			case "dns":
 				probeFn = probeDNS
-			default:
+			}
+
+			if probeFn == nil {
 				slog.Warn("Unsupported protocol", "protocol", t.Protocol)
 				continue
 			}
 
+			wg.Add(1)
+
+			interval := t.Interval
+			if interval <= 0 {
+				interval = 1 * time.Second
+			}
+
 			go func(req HttpRequest, fn func(HttpRequest) ProbeResult, iv time.Duration) {
 				defer wg.Done()
+
 				ticker := time.NewTicker(iv)
 				defer ticker.Stop()
 
@@ -722,6 +726,9 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 	todayUTC := time.Now().UTC().Format("02/01/2006")
 
 	for attempt := range 3 {
+
+		attemptCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+
 		currentMetrics := map[string]any{
 			"sla_breached":       payload.SLA["sla_breached"],
 			"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
@@ -731,7 +738,9 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 			"uptime90":           payload.SLA["uptime90"],
 		}
 
-		entry, getErr := kv.Get(ctx, name)
+		entry, getErr := kv.Get(attemptCtx, name)
+		cancel()
+
 		var revision uint64 = 0
 
 		if getErr == nil {
