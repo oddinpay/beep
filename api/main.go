@@ -896,8 +896,6 @@ func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 // -------------------- MAIN --------------------
 func main() {
 
-	startProbeManager()
-
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /v1/sse", Sse)
