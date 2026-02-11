@@ -963,7 +963,7 @@ func main() {
 
 	slog.Info("Shutdown signal received. Cleaning up...")
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 	defer cancel()
 
 	if err := server.Shutdown(shutdownCtx); err != nil {
