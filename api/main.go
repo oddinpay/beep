@@ -692,7 +692,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		hasMonitors = true
 	}
 
-	if len(defaultReqs) > 2 {
+	if len(defaultReqs) > 3 {
 		miniMonitors = true
 	} else {
 		miniMonitors = false
