@@ -92,6 +92,7 @@ var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
 		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com"},
 		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com"},
+		{Name: "HTTPS", Protocol: "https", Host: "www.odddinpay.com"},
 	}
 
 	// for i := 1; i <= 2; i++ {
