@@ -697,7 +697,6 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *SlidingSLA) {
-
 	if nc.Status() != nats.CONNECTED {
 		slog.Error("NATS not connected")
 		return
@@ -709,75 +708,88 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
-	defer cancel()
-
 	kv, err := js.KeyValue(ctx, "BEEP_STATUS")
 	if err != nil {
-		kv, err = js.CreateKeyValue(ctx, jetstream.KeyValueConfig{
+		kv, _ = js.CreateKeyValue(ctx, jetstream.KeyValueConfig{
 			Bucket:   "BEEP_STATUS",
 			MaxBytes: 1024 * 1024 * 50,
 		})
-		if err != nil {
-			slog.Error("Failed to ensure KV bucket", "error", err)
-			return
-		}
 	}
 
-	todayUTC := time.Now().UTC().Format("02/01/2006")
+	// todayUTC := time.Now().UTC().Format("02/01/2006")
 
-	for attempt := range 3 {
+	now := time.Now().UTC()
+	intervalBlock := (now.Minute() / 3) * 3
+	todayUTC := fmt.Sprintf("%s %02d:%02d", now.Format("02/01/2006"), now.Hour(), intervalBlock)
 
-		attemptCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	currentSlaSnapshot := map[string]any{
+		"sla_breached":       payload.SLA["sla_breached"],
+		"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
+		"total_time_seconds": payload.SLA["total_time_seconds"],
+		"up_time_seconds":    payload.SLA["up_time_seconds"],
+		"down_time_seconds":  payload.SLA["down_time_seconds"],
+		"uptime90":           payload.SLA["uptime90"],
+	}
 
-		currentMetrics := map[string]any{
-			"sla_breached":       payload.SLA["sla_breached"],
-			"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
-			"total_time_seconds": payload.SLA["total_time_seconds"],
-			"up_time_seconds":    payload.SLA["up_time_seconds"],
-			"down_time_seconds":  payload.SLA["down_time_seconds"],
-			"uptime90":           payload.SLA["uptime90"],
-		}
-
-		entry, getErr := kv.Get(attemptCtx, name)
-		cancel()
-
+	for range 3 {
+		entry, getErr := kv.Get(ctx, name)
 		var revision uint64 = 0
+		var oldPayload StatusPayload
 
 		if getErr == nil {
 			revision = entry.Revision()
-			var oldPayload StatusPayload
-
 			gr, err := gzip.NewReader(bytes.NewReader(entry.Value()))
 			if err == nil {
 				decomp, _ := io.ReadAll(gr)
-				json.Unmarshal(decomp, &oldPayload)
+				var wrapped map[string]any
+				json.Unmarshal(decomp, &wrapped)
+
+				if p, ok := wrapped["payload"].(map[string]any); ok {
+					pBytes, _ := json.Marshal(p)
+					json.Unmarshal(pBytes, &oldPayload)
+				}
 				gr.Close()
 			}
+		}
 
-			if len(oldPayload.Probe.Date) > 0 && oldPayload.Probe.Date[0] == todayUTC {
+		if getErr == nil && len(oldPayload.Probe.Date) > 0 {
+			if oldPayload.Probe.Date[0] == todayUTC {
 				if len(payload.Probe.State) > 0 {
-					payload.Probe.State = append([]string{payload.Probe.State[0]}, oldPayload.Probe.State[1:]...)
+					oldPayload.Probe.State[0] = payload.Probe.State[0]
 				}
-				payload.Probe.Date = oldPayload.Probe.Date
 
-				if oldHist, ok := oldPayload.SLA["history"].([]any); ok && len(oldHist) > 0 {
-					oldHist[0] = currentMetrics
-					payload.SLA["history"] = oldHist
+				var history []any
+				if h, ok := oldPayload.SLA["history"].([]any); ok {
+					history = h
 				}
+
+				if len(history) > 0 {
+					history[0] = currentSlaSnapshot
+				} else {
+					history = []any{currentSlaSnapshot}
+				}
+
+				payload.Probe.Date = oldPayload.Probe.Date
+				payload.Probe.State = oldPayload.Probe.State
+				payload.SLA["history"] = history
 			} else {
-				payload.Probe.State = append(payload.Probe.State, oldPayload.Probe.State...)
 				payload.Probe.Date = append([]string{todayUTC}, oldPayload.Probe.Date...)
 
+				currentState := "up"
+				if len(payload.Probe.State) > 0 {
+					currentState = payload.Probe.State[0]
+				}
+				payload.Probe.State = append([]string{currentState}, oldPayload.Probe.State...)
+
 				if oldHist, ok := oldPayload.SLA["history"].([]any); ok {
-					payload.SLA["history"] = append([]any{currentMetrics}, oldHist...)
+					payload.SLA["history"] = append([]any{currentSlaSnapshot}, oldHist...)
 				} else {
-					payload.SLA["history"] = []any{currentMetrics}
+					payload.SLA["history"] = []any{currentSlaSnapshot}
 				}
 			}
 		} else {
 			payload.Probe.Date = []string{todayUTC}
-			payload.SLA["history"] = []any{currentMetrics}
+			payload.SLA["history"] = []any{currentSlaSnapshot}
 		}
 
 		payload.Probe.State = capSlice(payload.Probe.State, 90)
@@ -802,19 +814,13 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 			},
 		}
 
-		jsonData, err := json.Marshal(wrappedPayload)
-		if err != nil {
-			slog.Error("Marshal error", "error", err)
-			return
-		}
-
+		jsonData, _ := json.Marshal(wrappedPayload)
 		var buf bytes.Buffer
 		gz := gzip.NewWriter(&buf)
 		gz.Write(jsonData)
 		gz.Close()
 
 		var updateErr error
-
 		if revision > 0 {
 			_, updateErr = kv.Update(ctx, name, buf.Bytes(), revision)
 		} else {
@@ -824,8 +830,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 		if updateErr == nil {
 			return
 		}
-
-		slog.Warn("KV Update conflict, retrying...", "name", name, "attempt", attempt+1)
 		time.Sleep(50 * time.Millisecond)
 	}
 }
