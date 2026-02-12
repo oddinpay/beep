@@ -1005,7 +1005,7 @@ func main() {
 	startProbeManager(ctx, &wg)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /v1/sse", Sse)
+	mux.HandleFunc("POST /v1/sse", Sse)
 	mux.HandleFunc("GET /v1/status", StatusHandler)
 	mux.HandleFunc("GET /v1/status/history", HistoryHandler)
 	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
