@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"log/slog"
+	"maps"
 	"net"
 	"net/http"
 	"os"
@@ -243,15 +244,20 @@ func getRecentDates() []string {
 type Hub struct {
 	sync.RWMutex
 	clients map[chan map[string]StatusPayload]struct{}
+	cache   map[string]StatusPayload
 }
 
 var globalHub = &Hub{
 	clients: make(map[chan map[string]StatusPayload]struct{}),
+	cache:   make(map[string]StatusPayload),
 }
 
 func (h *Hub) Broadcast(update map[string]StatusPayload) {
-	h.RLock()
-	defer h.RUnlock()
+	h.Lock()
+	defer h.Unlock()
+
+	maps.Copy(h.cache, update)
+
 	for clientChan := range h.clients {
 		select {
 		case clientChan <- update:
@@ -631,7 +637,15 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 
 	globalHub.Lock()
 	globalHub.clients[clientChan] = struct{}{}
+
+	initialData := make(map[string]StatusPayload)
+	maps.Copy(initialData, globalHub.cache)
+
 	globalHub.Unlock()
+
+	if len(initialData) > 0 {
+		sendUpdateToConn(ctx, conn, initialData)
+	}
 
 	defer func() {
 		globalHub.Lock()
@@ -674,6 +688,30 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+}
+
+func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) error {
+	for name, payload := range update {
+		idx := -1
+		for i, r := range defaultReqs {
+			if r.Name == name {
+				idx = i
+				break
+			}
+		}
+
+		out := map[string]any{
+			"index": idx,
+			"payload": map[string]any{
+				"probe": payload.Probe,
+				"sla":   payload.SLA,
+			},
+		}
+		if err := conn.SendData(ctx, out); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // -------------------- STATE REQUEST HANDLER --------------------
