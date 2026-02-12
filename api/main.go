@@ -742,7 +742,10 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 	}
 
 	now := time.Now().UTC()
-	todayUTC := now.Format("02/01/2006")
+	twoMinBlock := (now.Minute() / 2) * 2
+	todayUTC := fmt.Sprintf("%s %02d:%02d", now.Format("02/01/2006"), now.Hour(), twoMinBlock)
+
+	// todayUTC := now.Format("02/01/2006")
 
 	for range 3 {
 		entry, getErr := kv.Get(ctx, name)
