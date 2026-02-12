@@ -236,7 +236,11 @@ func formatDurationFull(seconds int64) string {
 }
 
 func getRecentDates() []string {
-	return []string{time.Now().UTC().Format("02/01/2006")}
+	now := time.Now().UTC()
+	today := now.Format("02/01/2006")
+	yesterday := now.AddDate(0, 0, -1).Format("02/01/2006")
+
+	return []string{today, yesterday}
 }
 
 // -------------------- BROADCAST HUB --------------------
@@ -419,7 +423,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 		Description: fmt.Sprintf("resolved %v", addrs),
 		Timestamp:   time.Now().Format("15:04:05.000"),
 		Date:        getRecentDates(),
-		State:       []string{hr.Up},
+		State:       []string{hr.Up, "up"},
 	}
 }
 
