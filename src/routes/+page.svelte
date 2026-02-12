@@ -430,6 +430,12 @@
           description:
             "We are investigating reports of increased errors on iDeal payments.",
         },
+        {
+          time: "Sep 22, 2025 19:15 UTC",
+          status: Indicators.Resolved,
+          description:
+            "From 13:05–19:15 UTC, we saw elevated errors on iDeal payments. This is now resolved.",
+        },
       ],
     },
     {
