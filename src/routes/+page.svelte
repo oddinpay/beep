@@ -28,9 +28,12 @@
   const clock = timer();
   const TOTAL_DAYS = 90;
   const today = new Date();
-  const end = new Date(today);
+  const end = new Date(
+    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
+  );
+
   const start = new Date(end);
-  start.setDate(end.getDate() - 89);
+  start.setUTCDate(end.getUTCDate() - 89);
 
   type StatusType = "up" | "down" | "warn" | "default";
 
@@ -225,7 +228,7 @@
         { length: TOTAL_DAYS },
         (_, i) => {
           const tempDate = new Date(start);
-          tempDate.setDate(start.getDate() + i);
+          tempDate.setUTCDate(start.getUTCDate() + i);
           const key = tempDate.toLocaleDateString();
           const resolved = datesMap.get(key) ?? "default";
           return {
