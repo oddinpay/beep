@@ -18,9 +18,9 @@
 
   const slug = "status";
   const logo = "Beep Status";
-  const title = "Beep - Status";
+  const title = "Oddinpay - Status";
   const description =
-    "Real-time and historical data on Beep system performance.";
+    "Real-time and historical data on Oddinpay system performance.";
   const badge = "Last updated";
 
   let ready = $state(false);
