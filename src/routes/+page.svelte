@@ -1021,21 +1021,29 @@
                         <span
                           class="inline-flex pointer-events-none items-center px-4 py-0.5 rounded-full text-sm font-semibold no-underline"
                           style=" 
-                        border: 1px solid {overallStatus === 'up'
+  border: 1px solid {overallStatus === 'up'
                             ? '#a6eb84'
                             : overallStatus === 'warn'
                               ? '#ffddb3'
-                              : '#f05d5e'};
-                        text-decoration: none; background-color: {overallStatus ===
-                          'up'
+                              : overallStatus === 'down'
+                                ? '#f05d5e'
+                                : '#d1d5db'}; 
+  text-decoration: none; 
+  background-color: {overallStatus === 'up'
                             ? '#d7f7c2'
                             : overallStatus === 'warn'
                               ? '#fff4e5'
-                              : '#fddede'}; color: {overallStatus === 'up'
+                              : overallStatus === 'down'
+                                ? '#fddede'
+                                : '#f3f4f6'}; 
+  color: {overallStatus === 'up'
                             ? '#006908'
                             : overallStatus === 'warn'
                               ? '#b45309'
-                              : '#db2828'};"
+                              : overallStatus === 'down'
+                                ? '#db2828'
+                                : '#4b5563'}; 
+                        "
                         >
                           {badge}
                         </span>
