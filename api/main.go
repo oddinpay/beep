@@ -404,17 +404,17 @@ func NewSlidingSLA(target float64) *SlidingSLA {
 	return &SlidingSLA{
 		Target:        target,
 		buckets:       make([]bucket, minutes90d),
-		currentMinute: now.Truncate(time.Minute),
+		currentMinute: now.Truncate(24 * time.Hour),
 		lastUpdate:    now,
 	}
 }
 
 func (s *SlidingSLA) rotateTo(now time.Time) {
-	minNow := now.Truncate(time.Minute)
+	minNow := now.Truncate(24 * time.Hour)
 	if !minNow.After(s.currentMinute) {
 		return
 	}
-	steps := int(minNow.Sub(s.currentMinute) / time.Minute)
+	steps := int(minNow.Sub(s.currentMinute) / 24 * time.Hour)
 	if steps > minutes90d {
 		for i := range s.buckets {
 			s.buckets[i] = bucket{}
