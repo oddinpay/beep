@@ -9,8 +9,10 @@
   <div class="footer-content">
     <div class="footer-left">
       <div class="logo">
-        <a href="https://oddinpay.com" target="_blank" rel="noopener noreferrer"
-          >{brand}</a
+        <a
+          href="https://github.com/oddinpay/beep"
+          target="_blank"
+          rel="noopener noreferrer">{brand}</a
         >
       </div>
       <div class="copyright">© {year} {company}, {entity}.</div>
