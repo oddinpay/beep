@@ -60,7 +60,7 @@ const (
 	HeaderAllowHeaders = "Access-Control-Allow-Headers"
 
 	defaultTimeout = 20 * time.Second
-	minutes90d     = 24 * 60
+	minutes90d     = 90
 )
 
 // ----------- DB / CACHE CONNECTIONS -----------
