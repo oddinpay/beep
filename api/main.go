@@ -785,11 +785,29 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				var wrapped map[string]any
 				json.Unmarshal(decomp, &wrapped)
 				if p, ok := wrapped["payload"].(map[string]any); ok {
+
+					existingProbeID, _ := p["probe"].(map[string]any)["id"].(string)
+					existingSlaID, _ := p["sla"].(map[string]any)["id"].(string)
+
+					if existingProbeID != "" {
+						payload.Probe.Id = existingProbeID
+					}
+					if existingSlaID != "" {
+						payload.SLA["id"] = existingSlaID
+					}
+
 					pBytes, _ := json.Marshal(p)
 					json.Unmarshal(pBytes, &oldPayload)
 				}
 				gr.Close()
 			}
+		}
+
+		if payload.Probe.Id == "" {
+			payload.Probe.Id = monitorId()
+		}
+		if payload.SLA["id"] == nil {
+			payload.SLA["id"] = slaId()
 		}
 
 		if getErr == nil && len(oldPayload.Probe.Date) > 0 {
