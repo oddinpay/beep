@@ -88,7 +88,9 @@ var slaTrackers = struct {
 }{m: make(map[string]*SlidingSLA)}
 
 var defaultReqs = func() []HttpRequest {
-	raw := []HttpRequest{}
+	raw := []HttpRequest{
+		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+	}
 	for i := 1; i <= 100; i++ {
 		raw = append(raw, HttpRequest{Name: fmt.Sprintf("DNS %d", i), Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second})
 		raw = append(raw, HttpRequest{Name: fmt.Sprintf("HTTPS %d", i), Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second})
