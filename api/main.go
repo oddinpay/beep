@@ -1049,6 +1049,6 @@ func main() {
 		slog.Info("NATS connection closed")
 	}
 
-	slog.Info("Exit complete")
+	slog.Info("Shutdown complete. Exiting.")
 	os.Exit(0)
 }
