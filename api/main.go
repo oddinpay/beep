@@ -499,7 +499,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	availability := 1.0 - (float64(down) / float64(total))
 	percent := availability * 100
 
-	if down > 0 && percent >= 100 {
+	if down > 0 && percent > 99.999 {
 		percent = 99.999
 	}
 
