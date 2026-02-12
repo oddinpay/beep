@@ -283,6 +283,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	resp, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return ProbeResult{
+			Id:          re.Name,
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %s", re.Host, err.Error()),
@@ -295,6 +296,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 
 	if resp.StatusCode < StatusOK || resp.StatusCode >= StatusBadRequest {
 		return ProbeResult{
+			Id:          re.Name,
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -304,6 +306,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 		}
 	}
 	return ProbeResult{
+		Id:          re.Name,
 		Name:        re.Name,
 		Protocol:    strings.ToUpper(re.Protocol),
 		Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -371,6 +374,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 
 	if net.ParseIP(req.Host) != nil {
 		return ProbeResult{
+			Id:          req.Name,
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "Input is already an IP, DNS lookup skipped",
@@ -383,6 +387,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 	addrs, err := net.DefaultResolver.LookupHost(ctx, req.Host)
 	if err != nil {
 		return ProbeResult{
+			Id:          req.Name,
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: fmt.Sprintf("DNS error: %s", err.Error()),
@@ -393,6 +398,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
+		Id:          req.Name,
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("resolved %v", addrs),
