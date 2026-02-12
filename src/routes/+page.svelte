@@ -18,9 +18,9 @@
 
   const slug = "status";
   const logo = "Oddin Status";
-  const title = "OddinPay - Status";
+  const title = "OddinPay System - Status";
   const description =
-    "Real-time and historical data on Oddinpay system performance.";
+    "Real-time and historical data on OddinPay system performance.";
   const badge = "Last updated";
 
   let ready = $state(false);
