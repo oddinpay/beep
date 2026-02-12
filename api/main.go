@@ -488,7 +488,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 		return map[string]any{
 			"id":                 "",
 			"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
-			"uptime90":           "99.999%",
+			"uptime90":           "100.000%",
 			"up_time_seconds":    formatDurationFull(0),
 			"down_time_seconds":  formatDurationFull(0),
 			"total_time_seconds": formatDurationFull(0),
@@ -499,11 +499,10 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	availability := 1.0 - (float64(down) / float64(total))
 	percent := availability * 100
 
-	if down > 0 && percent > 99.999 {
-		percent = 99.999
-	}
-
 	uptimeStr := fmt.Sprintf("%.3f%%", percent)
+	if down > 0 && uptimeStr == "100.000%" {
+		uptimeStr = "99.999%"
+	}
 
 	breached := (s.Target >= 1.0 && down > 0) || (availability < s.Target)
 	up := total - down
