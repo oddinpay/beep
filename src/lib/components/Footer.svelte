@@ -28,7 +28,7 @@
 <style>
   footer {
     position: relative;
-    background: #f5f8fb;
+    background: #f9fafb;
     color: #1a1f36;
     padding: 60px 40px 30px;
     overflow: hidden;
