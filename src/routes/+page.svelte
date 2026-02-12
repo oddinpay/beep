@@ -484,32 +484,31 @@
   });
 
   let maintenances: Maintenance[] = [
-    {
-      status: Indicators.Completed,
-      service: "PayPal",
-      time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    },
-    {
-      status: Indicators.Completed,
-      service: "API",
-      time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    },
-    {
-      status: Indicators.Scheduled,
-      service: "API",
-      time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    },
-    {
-      status: Indicators.Inprogress,
-      service: "API",
-      time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    },
-
-    {
-      status: Indicators.Inprogress,
-      service: "PayPal",
-      time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    },
+    // {
+    //   status: Indicators.Completed,
+    //   service: "PayPal",
+    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
+    // },
+    // {
+    //   status: Indicators.Completed,
+    //   service: "API",
+    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
+    // },
+    // {
+    //   status: Indicators.Scheduled,
+    //   service: "API",
+    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
+    // },
+    // {
+    //   status: Indicators.Inprogress,
+    //   service: "API",
+    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
+    // },
+    // {
+    //   status: Indicators.Inprogress,
+    //   service: "PayPal",
+    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
+    // },
   ];
 
   maintenances.sort((a, b) => {
