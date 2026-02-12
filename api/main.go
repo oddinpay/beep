@@ -782,6 +782,7 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				payload.SLA["history"] = history
 			} else {
 
+				s.Reset()
 				freshSLA := s.Snapshot()
 
 				snapshot = map[string]any{
