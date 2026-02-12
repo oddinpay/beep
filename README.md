@@ -10,7 +10,7 @@
 - Incident management – from **detection to resolution**, all in one place.
 - Alerting options – supports **Email** and **RSS/Atom** feeds.
 - Real-time API **(SSE).**
-- Lightweight.
+- Lightweight **(~140 KB memory per monitor)**.
 
 ## More about Beep
 
