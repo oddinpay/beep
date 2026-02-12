@@ -77,6 +77,7 @@ var (
 	err              error
 	wg               sync.WaitGroup
 	js               jetstream.JetStream
+	kv               jetstream.KeyValue
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -760,14 +761,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 		return
 	}
 
-	kv, err := js.KeyValue(ctx, "BEEP_STATUS")
-	if err != nil {
-		kv, _ = js.CreateKeyValue(ctx, jetstream.KeyValueConfig{
-			Bucket:   "BEEP_STATUS",
-			MaxBytes: 1024 * 1024 * 50,
-		})
-	}
-
 	now := time.Now().UTC()
 
 	// 2-minute block
@@ -1021,6 +1014,14 @@ func main() {
 
 	if err != nil {
 		slog.Error("JetStream context error", "error", err)
+	}
+
+	kv, err = js.KeyValue(context.Background(), "BEEP_STATUS")
+	if err != nil {
+		kv, _ = js.CreateKeyValue(context.Background(), jetstream.KeyValueConfig{
+			Bucket:   "BEEP_STATUS",
+			MaxBytes: 1024 * 1024 * 50,
+		})
 	}
 
 	startProbeManager(ctx, &wg)
