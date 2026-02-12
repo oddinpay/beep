@@ -806,7 +806,7 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 		if payload.Probe.Id == "" {
 			payload.Probe.Id = monitorId()
 		}
-		if payload.SLA["id"] == nil {
+		if payload.SLA["id"] == nil || payload.SLA["id"] == "" {
 			payload.SLA["id"] = slaId()
 		}
 
