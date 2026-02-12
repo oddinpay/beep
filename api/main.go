@@ -76,6 +76,7 @@ var (
 	nc               *nats.Conn
 	err              error
 	wg               sync.WaitGroup
+	js               jetstream.JetStream
 )
 
 // -------------------- GLOBAL SLA MAP --------------------
@@ -759,12 +760,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 		return
 	}
 
-	js, err := jetstream.New(nc)
-	if err != nil {
-		slog.Error("JetStream context error", "error", err)
-		return
-	}
-
 	kv, err := js.KeyValue(ctx, "BEEP_STATUS")
 	if err != nil {
 		kv, _ = js.CreateKeyValue(ctx, jetstream.KeyValueConfig{
@@ -930,12 +925,6 @@ func readFromNATS(name string) []byte {
 		return nil
 	}
 
-	js, err := jetstream.New(nc)
-	if err != nil {
-		slog.Error("JetStream context error", "error", err)
-		return nil
-	}
-
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -1027,6 +1016,12 @@ func main() {
 	}
 
 	slog.Info("Connected to NATS", "url", serverURL)
+
+	js, err = jetstream.New(nc)
+
+	if err != nil {
+		slog.Error("JetStream context error", "error", err)
+	}
 
 	startProbeManager(ctx, &wg)
 
