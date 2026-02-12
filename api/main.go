@@ -895,6 +895,22 @@ func readFromNATS(name string) []byte {
 
 }
 
+func HistoryHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set(HeaderContentType, ContentTypeJSON)
+
+	name := r.URL.Query().Get("name")
+	history := readFromNATS(name)
+
+	if history == nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(history))
+
+}
+
 // -------------------- MAIN --------------------
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -931,6 +947,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /v1/sse", Sse)
 	mux.HandleFunc("GET /v1/status", StatusHandler)
+	mux.HandleFunc("GET /v1/status/history", HistoryHandler)
 	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("pong"))
