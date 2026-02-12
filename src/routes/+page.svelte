@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { Button } from "$lib/components/ui/button/index.js";
   import Buttong from "$lib/components/Buttong.svelte";
   import Loader from "$lib/components/Loader.svelte";
@@ -1361,7 +1360,7 @@
         <div id="themeBtn" class="ml-auto"></div>
         <Button
           id="change"
-          onclick={() => goto("/signin")}
+          onclick={() => window.open("https://oddinpay.com/signin", "_blank")}
           class="text-black hidden stm:block cursor-pointer hover:text-green-700"
           variant="ghost"
         >
