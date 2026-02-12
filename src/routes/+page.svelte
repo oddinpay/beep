@@ -51,7 +51,7 @@
     uptime90: string;
   }
 
-  const json = source("https://beep-api.oddinpay.workers.dev/v1/sse")
+  const json = source("http://beep.oddinpay.com/v1/sse")
     .select("")
     .json<ApiData>();
 
@@ -95,7 +95,7 @@
     const sortedEntries = Object.entries(nextMap).sort(
       ([, a], [, b]) =>
         ((a as any).__order ?? Number.POSITIVE_INFINITY) -
-        ((b as any).__order ?? Number.POSITIVE_INFINITY)
+        ((b as any).__order ?? Number.POSITIVE_INFINITY),
     );
 
     probeMap = Object.fromEntries(sortedEntries) as ProbeMap;
@@ -233,7 +233,7 @@
             date: tempDate,
             status: resolved,
           };
-        }
+        },
       );
 
       const api: ApiData = {
@@ -335,7 +335,7 @@
   });
 
   const dayIndex = Math.floor(
-    (today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    (today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
   );
 
   function getStartLabelForDays(days: number): string {
@@ -1340,7 +1340,7 @@
 
                           <div class="right">
                             <h3>Recent incidents</h3>
-                            {#if incidents.every( (incident) => incident.entries.some((entry) => entry.status === Indicators.Resolved) )}
+                            {#if incidents.every( (incident) => incident.entries.some((entry) => entry.status === Indicators.Resolved), )}
                               No incidents to display
                             {:else}
                               {#each incidents as incident}
