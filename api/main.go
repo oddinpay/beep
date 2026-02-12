@@ -236,11 +236,7 @@ func formatDurationFull(seconds int64) string {
 }
 
 func getRecentDates() []string {
-	now := time.Now().UTC()
-	today := now.Format("02/01/2006")
-	yesterday := now.AddDate(0, 0, -1).Format("02/01/2006")
-
-	return []string{today, yesterday}
+	return []string{time.Now().UTC().Format("02/01/2006")}
 }
 
 // -------------------- BROADCAST HUB --------------------
@@ -817,19 +813,8 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 		if getErr == nil && len(oldPayload.Probe.Date) > 0 {
 			if oldPayload.Probe.Date[0] == todayUTC {
 				payload.SLA["history"] = oldPayload.SLA["history"]
-
-				if len(payload.Probe.Date) > len(oldPayload.Probe.Date) {
-					if h, ok := payload.SLA["history"].([]any); ok && len(h) > 0 {
-						if len(h) < len(payload.Probe.Date) {
-							payload.SLA["history"] = append(h, h[0])
-						}
-					}
-				} else {
-					if len(oldPayload.Probe.Date) > 0 {
-						payload.Probe.Date = oldPayload.Probe.Date
-						payload.Probe.State = oldPayload.Probe.State
-					}
-				}
+				payload.Probe.Date = oldPayload.Probe.Date
+				payload.Probe.State = oldPayload.Probe.State
 
 				if h, ok := payload.SLA["history"].([]any); ok && len(h) > 0 {
 					h[0] = map[string]any{
