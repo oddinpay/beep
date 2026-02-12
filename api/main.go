@@ -313,9 +313,10 @@ func probeTCP(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
-			State:       []string{hr.Down},
 			Description: "write failed: " + err.Error(),
 			Timestamp:   time.Now().Format("15:04:05.000"),
+			Date:        getRecentDates(),
+			State:       []string{hr.Down},
 		}
 	}
 
@@ -326,18 +327,20 @@ func probeTCP(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
-			State:       []string{hr.Up},
 			Description: "no response after connect",
 			Timestamp:   time.Now().Format("15:04:05.000"),
+			Date:        getRecentDates(),
+			State:       []string{hr.Up},
 		}
 	}
 
 	return ProbeResult{
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
-		State:       []string{hr.Up},
 		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
 		Timestamp:   time.Now().Format("15:04:05.000"),
+		Date:        getRecentDates(),
+		State:       []string{hr.Up},
 	}
 }
 
@@ -350,9 +353,10 @@ func probeDNS(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
-			State:       []string{hr.Warning},
 			Description: "Input is already an IP, DNS lookup skipped",
 			Timestamp:   time.Now().Format("15:04:05.000"),
+			Date:        getRecentDates(),
+			State:       []string{hr.Warning},
 		}
 	}
 
@@ -361,19 +365,20 @@ func probeDNS(req HttpRequest) ProbeResult {
 		return ProbeResult{
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
-			State:       []string{hr.Down},
 			Description: fmt.Sprintf("DNS error: %s", err.Error()),
 			Timestamp:   time.Now().Format("15:04:05.000"),
+			Date:        getRecentDates(),
+			State:       []string{hr.Down},
 		}
 	}
 
 	return ProbeResult{
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
-		State:       []string{hr.Up},
 		Description: fmt.Sprintf("resolved %v", addrs),
 		Timestamp:   time.Now().Format("15:04:05.000"),
 		Date:        getRecentDates(),
+		State:       []string{hr.Up},
 	}
 }
 
