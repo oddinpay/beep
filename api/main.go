@@ -753,7 +753,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 
 		if getErr == nil && len(oldPayload.Probe.Date) > 0 {
 			if oldPayload.Probe.Date[0] == todayUTC {
-				// --- SAME 3-MINUTE BLOCK ---
 				snapshot = map[string]any{
 					"sla_breached":       payload.SLA["sla_breached"],
 					"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
