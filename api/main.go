@@ -605,7 +605,7 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	clientChan := make(chan map[string]StatusPayload, 1)
+	clientChan := make(chan map[string]StatusPayload, 10)
 
 	globalHub.Lock()
 	globalHub.clients[clientChan] = struct{}{}
