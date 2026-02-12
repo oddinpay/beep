@@ -499,10 +499,11 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	availability := 1.0 - (float64(down) / float64(total))
 	percent := availability * 100
 
-	uptimeStr := fmt.Sprintf("%.3f%%", percent)
-	if down > 0 && uptimeStr == "100.000%" {
-		uptimeStr = "99.999%"
+	if down > 0 && percent >= 100 {
+		percent = 99.999
 	}
+
+	uptimeStr := fmt.Sprintf("%.3f%%", percent)
 
 	breached := (s.Target >= 1.0 && down > 0) || (availability < s.Target)
 	up := total - down
