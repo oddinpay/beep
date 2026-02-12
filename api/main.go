@@ -747,8 +747,14 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 	}
 
 	now := time.Now().UTC()
+
+	// 3-minute block
+
 	intervalBlock := (now.Minute() / 3) * 3
 	todayUTC := fmt.Sprintf("%s %02d:%02d", now.Format("02/01/2006"), now.Hour(), intervalBlock)
+
+	// Daily block
+	// todayUTC := now.Format("02/01/2006")
 
 	for range 3 {
 		entry, getErr := kv.Get(ctx, name)
@@ -787,6 +793,7 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 					}
 				}
 			} else {
+				s.Reset()
 				freshSLA := s.Snapshot()
 				newSnapshot := map[string]any{
 					"sla_breached":       freshSLA["sla_breached"],
