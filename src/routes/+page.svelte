@@ -15,6 +15,7 @@
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
   import timer from "$lib/timer";
+  import { env } from "../env/server";
 
   const slug = "status";
   const logo = "Beep Status";
@@ -51,7 +52,7 @@
     uptime90: string;
   }
 
-  const json = source("https://beep.oddinpay.com/v1/sse")
+  const json = source(`https://${env.BEEP_HOST}/v1/status/v1/sse`)
     .select("")
     .json<ApiData>();
 
