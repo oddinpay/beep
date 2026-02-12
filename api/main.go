@@ -20,6 +20,7 @@ import (
 
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
+	"github.com/oklog/ulid/v2"
 
 	"go.jetify.com/sse"
 )
@@ -472,6 +473,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 
 	if total <= 0 {
 		return map[string]any{
+			"id":                 ulid.Make().String(),
 			"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
 			"uptime90":           "100.000%",
 			"up_time_seconds":    formatDurationFull(0),
@@ -493,6 +495,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	up := total - down
 
 	return map[string]any{
+		"id":                 ulid.Make().String(),
 		"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
 		"uptime90":           uptimeStr,
 		"up_time_seconds":    formatDurationFull(up),

@@ -4,6 +4,7 @@ go 1.25.1
 
 require (
 	github.com/nats-io/nats.go v1.48.0
+	github.com/oklog/ulid/v2 v2.1.1
 	go.jetify.com/sse v0.1.0
 )
 
