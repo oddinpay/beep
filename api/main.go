@@ -753,6 +753,7 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 
 		if getErr == nil && len(oldPayload.Probe.Date) > 0 {
 			if oldPayload.Probe.Date[0] == todayUTC {
+				// --- SAME 3-MINUTE BLOCK ---
 				snapshot = map[string]any{
 					"sla_breached":       payload.SLA["sla_breached"],
 					"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
@@ -781,6 +782,27 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				payload.Probe.State = oldPayload.Probe.State
 				payload.SLA["history"] = history
 			} else {
+
+				s.Tick(false, 10*time.Second)
+				finalOldSLA := s.Snapshot()
+
+				completedOldSnapshot := map[string]any{
+					"sla_breached":       finalOldSLA["sla_breached"],
+					"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
+					"total_time_seconds": finalOldSLA["total_time_seconds"],
+					"up_time_seconds":    finalOldSLA["up_time_seconds"],
+					"down_time_seconds":  finalOldSLA["down_time_seconds"],
+					"uptime90":           finalOldSLA["uptime90"],
+				}
+
+				var history []any
+				if h, ok := oldPayload.SLA["history"].([]any); ok {
+					history = h
+				}
+				if len(history) > 0 {
+					history[0] = completedOldSnapshot
+				}
+
 				s.Reset()
 				freshSLA := s.Snapshot()
 
@@ -801,11 +823,7 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				}
 				payload.Probe.State = append([]string{currentState}, oldPayload.Probe.State...)
 
-				if oldHist, ok := oldPayload.SLA["history"].([]any); ok {
-					payload.SLA["history"] = append([]any{snapshot}, oldHist...)
-				} else {
-					payload.SLA["history"] = []any{snapshot}
-				}
+				payload.SLA["history"] = append([]any{snapshot}, history...)
 			}
 		} else {
 			snapshot = map[string]any{
