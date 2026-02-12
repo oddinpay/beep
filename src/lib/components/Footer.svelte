@@ -5,10 +5,28 @@
   const entity = "LLC";
 </script>
 
+<footer>
+  <div class="footer-content">
+    <div class="footer-left">
+      <div class="logo">
+        <a href="https://oddinpay.com" target="_blank" rel="noopener noreferrer"
+          >{brand}</a
+        >
+      </div>
+      <div class="copyright">© {year} {company}, {entity}.</div>
+    </div>
+
+    <div class="footer-right">
+      <a href="https://oddinpay.com">Visit our full website</a>
+      <a href="https://oddinpay.com/privacy">Privacy &amp; terms</a>
+    </div>
+  </div>
+</footer>
+
 <style>
   footer {
     position: relative;
-    background: #f5f8fb; 
+    background: #f5f8fb;
     color: #1a1f36;
     padding: 60px 40px 30px;
     overflow: hidden;
@@ -22,7 +40,7 @@
     left: 0;
     width: 100%;
     height: 120px;
-    background: #0c2c4b; 
+    background: #0c2c4b;
     z-index: -1;
   }
 
@@ -60,18 +78,16 @@
     gap: 8px;
   }
 
-
   .footer-right a {
     color: #1a1f36;
-    text-decoration: none;   
+    text-decoration: none;
     font-size: 14px;
-    transition: opacity 0.3s ease; 
+    transition: opacity 0.3s ease;
   }
 
   .footer-right a:hover {
-    opacity: 0.7; 
+    opacity: 0.7;
   }
-
 
   /* --- Responsive Styles --- */
   @media (max-width: 768px) {
@@ -81,7 +97,7 @@
       text-align: flex-end;
     }
 
-    .footer-left, 
+    .footer-left,
     .footer-right {
       align-items: right;
     }
@@ -91,17 +107,3 @@
     }
   }
 </style>
-
-<footer>
-  <div class="footer-content">
-    <div class="footer-left">
-      <div class="logo"><a href="https://oddinpay.com" target="_blank" rel="noopener noreferrer">{brand}</a></div>
-      <div class="copyright">© {year} {company}, {entity}.</div>
-    </div>
-
-    <div class="footer-right">
-      <a href="#">Visit our full website</a>
-      <a href="#">Privacy &amp; terms</a>
-    </div>
-  </div>
-</footer>
