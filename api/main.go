@@ -593,7 +593,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 							SLA:   tracker.Snapshot(),
 						}
 
-						publishToNATS(ctx, req.Name, payload, tracker)
+						publishToNATS(ctx, req.Name, &payload, tracker)
 
 						// Broadcast update
 						globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
@@ -756,7 +756,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *SlidingSLA) {
+func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *SlidingSLA) {
 	if nc.Status() != nats.CONNECTED {
 		slog.Error("NATS not connected")
 		return
