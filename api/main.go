@@ -294,7 +294,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	resp, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return ProbeResult{
-			Id:          monitorId(),
+			Id:          "",
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %s", re.Host, err.Error()),
@@ -307,7 +307,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 
 	if resp.StatusCode < StatusOK || resp.StatusCode >= StatusBadRequest {
 		return ProbeResult{
-			Id:          monitorId(),
+			Id:          "",
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -317,7 +317,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 		}
 	}
 	return ProbeResult{
-		Id:          monitorId(),
+		Id:          "",
 		Name:        re.Name,
 		Protocol:    strings.ToUpper(re.Protocol),
 		Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -332,7 +332,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 	if err != nil {
 		return ProbeResult{
-			Id:          monitorId(),
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: err.Error(),
@@ -346,7 +346,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	_, err = conn.Write([]byte("ping\n"))
 	if err != nil {
 		return ProbeResult{
-			Id:          monitorId(),
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "write failed: " + err.Error(),
@@ -361,7 +361,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	n, err := conn.Read(buf)
 	if err != nil || n == 0 {
 		return ProbeResult{
-			Id:          monitorId(),
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "no response after connect",
@@ -372,7 +372,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
-		Id:          monitorId(),
+		Id:          "",
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
@@ -389,7 +389,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 
 	if net.ParseIP(req.Host) != nil {
 		return ProbeResult{
-			Id:          monitorId(),
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "Input is already an IP, DNS lookup skipped",
@@ -402,7 +402,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 	addrs, err := net.DefaultResolver.LookupHost(ctx, req.Host)
 	if err != nil {
 		return ProbeResult{
-			Id:          monitorId(),
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: fmt.Sprintf("DNS error: %s", err.Error()),
@@ -413,7 +413,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
-		Id:          monitorId(),
+		Id:          "",
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("resolved %v", addrs),
@@ -487,7 +487,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 
 	if total <= 0 {
 		return map[string]any{
-			"id":                 slaId(),
+			"id":                 "",
 			"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
 			"uptime90":           "100.000%",
 			"up_time_seconds":    formatDurationFull(0),
@@ -509,7 +509,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	up := total - down
 
 	return map[string]any{
-		"id":                 slaId(),
+		"id":                 "",
 		"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
 		"uptime90":           uptimeStr,
 		"up_time_seconds":    formatDurationFull(up),
