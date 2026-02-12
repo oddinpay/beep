@@ -60,7 +60,7 @@ const (
 	HeaderAllowMethods = "Access-Control-Allow-Methods"
 	HeaderAllowHeaders = "Access-Control-Allow-Headers"
 
-	defaultTimeout = 30 * time.Second
+	defaultTimeout = 20 * time.Second
 	minutes90d     = 90
 )
 
@@ -90,7 +90,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com"},
+		{Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 	}
 
 	// for i := 1; i <= 2; i++ {
