@@ -87,16 +87,35 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
-		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "DNS 1", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 1", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 2", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 2", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 3", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 3", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 4", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 4", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 5", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 5", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 6", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 6", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 7", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 7", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 8", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 8", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 9", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 9", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+
+		{Name: "DNS 10", Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "HTTPS 10", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 	}
 
 	out := make([]HttpRequest, 0, len(raw))
