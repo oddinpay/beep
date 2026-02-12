@@ -762,7 +762,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				decomp, _ := io.ReadAll(gr)
 				var wrapped map[string]any
 				json.Unmarshal(decomp, &wrapped)
-
 				if p, ok := wrapped["payload"].(map[string]any); ok {
 					pBytes, _ := json.Marshal(p)
 					json.Unmarshal(pBytes, &oldPayload)
@@ -771,27 +770,65 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 			}
 		}
 
-		var rootTotal, rootDown int64
-		if h, ok := payload.SLA["history"].([]any); ok {
-			for _, entry := range h {
-				if m, ok := entry.(map[string]any); ok {
-					rootTotal += parseDurationToSecs(m["total_time_seconds"].(string))
-					rootDown += parseDurationToSecs(m["down_time_seconds"].(string))
+		if getErr == nil && len(oldPayload.Probe.Date) > 0 {
+			if oldPayload.Probe.Date[0] == todayUTC {
+				snapshot := map[string]any{
+					"sla_breached":       payload.SLA["sla_breached"],
+					"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
+					"total_time_seconds": payload.SLA["total_time_seconds"],
+					"up_time_seconds":    payload.SLA["up_time_seconds"],
+					"down_time_seconds":  payload.SLA["down_time_seconds"],
+					"uptime90":           payload.SLA["uptime90"],
 				}
+				payload.SLA["history"] = oldPayload.SLA["history"]
+				if h, ok := payload.SLA["history"].([]any); ok && len(h) > 0 {
+					h[0] = snapshot
+				}
+				payload.Probe.Date = oldPayload.Probe.Date
+				payload.Probe.State = oldPayload.Probe.State
+			} else {
+				freshSLA := s.Snapshot()
+				snapshot := map[string]any{
+					"sla_breached":       freshSLA["sla_breached"],
+					"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
+					"total_time_seconds": freshSLA["total_time_seconds"],
+					"up_time_seconds":    freshSLA["up_time_seconds"],
+					"down_time_seconds":  freshSLA["down_time_seconds"],
+					"uptime90":           freshSLA["uptime90"],
+				}
+				if oldHist, ok := oldPayload.SLA["history"].([]any); ok {
+					payload.SLA["history"] = append([]any{snapshot}, oldHist...)
+				}
+				payload.Probe.Date = append([]string{todayUTC}, oldPayload.Probe.Date...)
+			}
+		} else {
+			payload.SLA["history"] = []any{map[string]any{
+				"sla_breached":       payload.SLA["sla_breached"],
+				"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
+				"total_time_seconds": payload.SLA["total_time_seconds"],
+				"down_time_seconds":  payload.SLA["down_time_seconds"],
+				"uptime90":           payload.SLA["uptime90"],
+			}}
+			payload.Probe.Date = []string{todayUTC}
+		}
+
+		payload.SLA["history"] = capSlice(payload.SLA["history"].([]any), 90)
+
+		var rootTotal, rootDown int64
+		for _, hEntry := range payload.SLA["history"].([]any) {
+			if m, ok := hEntry.(map[string]any); ok {
+				rootTotal += parseDurationToSecs(m["total_time_seconds"].(string))
+				rootDown += parseDurationToSecs(m["down_time_seconds"].(string))
 			}
 		}
 
-		rootUp := rootTotal - rootDown
 		rootAvail := 1.0
 		if rootTotal > 0 {
 			rootAvail = 1.0 - (float64(rootDown) / float64(rootTotal))
 		}
-
 		payload.SLA["total_time_seconds"] = formatDurationFull(rootTotal)
 		payload.SLA["down_time_seconds"] = formatDurationFull(rootDown)
-		payload.SLA["up_time_seconds"] = formatDurationFull(rootUp)
 		payload.SLA["uptime90"] = fmt.Sprintf("%.3f%%", rootAvail*100)
-		payload.SLA["sla_breached"] = (s.Target >= 1.0 && rootDown > 0) || (rootAvail < s.Target)
 
 		var snapshot map[string]any
 
