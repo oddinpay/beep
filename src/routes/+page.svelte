@@ -51,7 +51,7 @@
     uptime90: string;
   }
 
-  const json = source("http://beep.oddinpay.com/v1/sse")
+  const json = source("https://beep.oddinpay.com/v1/sse")
     .select("")
     .json<ApiData>();
 
