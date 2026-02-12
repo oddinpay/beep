@@ -180,6 +180,28 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func parseDurationToSecs(s string) int64 {
+	var total int64
+	parts := strings.Fields(s)
+	for _, part := range parts {
+		var val int64
+		if strings.HasSuffix(part, "d") {
+			fmt.Sscanf(part, "%dd", &val)
+			total += val * 86400
+		} else if strings.HasSuffix(part, "h") {
+			fmt.Sscanf(part, "%dh", &val)
+			total += val * 3600
+		} else if strings.HasSuffix(part, "m") {
+			fmt.Sscanf(part, "%dm", &val)
+			total += val * 60
+		} else if strings.HasSuffix(part, "s") {
+			fmt.Sscanf(part, "%ds", &val)
+			total += val
+		}
+	}
+	return total
+}
+
 func formatDurationFull(seconds int64) string {
 	days := seconds / 86400
 	seconds %= 86400
@@ -782,7 +804,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				payload.SLA["history"] = history
 			} else {
 
-				s.Reset()
 				freshSLA := s.Snapshot()
 
 				snapshot = map[string]any{
@@ -834,6 +855,31 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				break
 			}
 		}
+
+		var globalTotal, globalDown int64
+		if h, ok := payload.SLA["history"].([]any); ok {
+			for _, entry := range h {
+				if m, ok := entry.(map[string]any); ok {
+					// Parse the formatted strings back to raw seconds
+					globalTotal += parseDurationToSecs(m["total_time_seconds"].(string))
+					globalDown += parseDurationToSecs(m["down_time_seconds"].(string))
+				}
+			}
+		}
+
+		// Recalculate global availability for the root
+		globalUp := globalTotal - globalDown
+		globalAvailability := 1.0
+		if globalTotal > 0 {
+			globalAvailability = 1.0 - (float64(globalDown) / float64(globalTotal))
+		}
+
+		// Update the root SLA object with 90-day totals
+		payload.SLA["total_time_seconds"] = formatDurationFull(globalTotal)
+		payload.SLA["down_time_seconds"] = formatDurationFull(globalDown)
+		payload.SLA["up_time_seconds"] = formatDurationFull(globalUp)
+		payload.SLA["uptime90"] = fmt.Sprintf("%.3f%%", globalAvailability*100)
+		payload.SLA["sla_breached"] = (s.Target >= 1.0 && globalDown > 0) || (globalAvailability < s.Target)
 
 		wrappedPayload := map[string]any{
 			"index": idx,
