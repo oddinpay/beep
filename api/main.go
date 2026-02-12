@@ -60,7 +60,7 @@ const (
 	HeaderAllowHeaders = "Access-Control-Allow-Headers"
 
 	defaultTimeout = 20 * time.Second
-	minutes90d     = 90 * 24 * 60
+	minutes1d      = 24 * 60
 )
 
 // ----------- DB / CACHE CONNECTIONS -----------
@@ -398,12 +398,10 @@ func probeDNS(req HttpRequest) ProbeResult {
 // -------------------- 90-DAY SLA --------------------
 
 func NewSlidingSLA(target float64) *SlidingSLA {
-	now := time.Now()
 	return &SlidingSLA{
 		Target:        target,
-		buckets:       make([]bucket, minutes90d),
-		currentMinute: now.Truncate(time.Minute),
-		lastUpdate:    now,
+		buckets:       make([]bucket, minutes1d),
+		currentMinute: time.Now().UTC().Truncate(time.Minute),
 	}
 }
 
@@ -413,20 +411,17 @@ func (s *SlidingSLA) rotateTo(now time.Time) {
 		return
 	}
 	steps := int(minNow.Sub(s.currentMinute) / time.Minute)
-	if steps > minutes90d {
+
+	if steps >= minutes1d {
 		for i := range s.buckets {
 			s.buckets[i] = bucket{}
 		}
 		s.idx = 0
-		s.currentMinute = minNow
-		return
-	}
-	for range steps {
-		s.idx++
-		if s.idx >= len(s.buckets) {
-			s.idx = 0
+	} else {
+		for i := 0; i < steps; i++ {
+			s.idx = (s.idx + 1) % minutes1d
+			s.buckets[s.idx] = bucket{}
 		}
-		s.buckets[s.idx] = bucket{}
 	}
 	s.currentMinute = minNow
 }
@@ -747,13 +742,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 	}
 
 	now := time.Now().UTC()
-
-	// 3-minute block
-
-	// intervalBlock := (now.Minute() / 3) * 3
-	// todayUTC := fmt.Sprintf("%s %02d:%02d", now.Format("02/01/2006"), now.Hour(), intervalBlock)
-
-	// Daily block
 	todayUTC := now.Format("02/01/2006")
 
 	for range 3 {
@@ -781,30 +769,21 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				payload.SLA["history"] = oldPayload.SLA["history"]
 				payload.Probe.Date = oldPayload.Probe.Date
 				payload.Probe.State = oldPayload.Probe.State
-
-				if h, ok := payload.SLA["history"].([]any); ok && len(h) > 0 {
-					h[0] = map[string]any{
-						"sla_breached":       payload.SLA["sla_breached"],
-						"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
-						"total_time_seconds": payload.SLA["total_time_seconds"],
-						"up_time_seconds":    payload.SLA["up_time_seconds"],
-						"down_time_seconds":  payload.SLA["down_time_seconds"],
-						"uptime90":           payload.SLA["uptime90"],
-					}
-				}
 			} else {
-				s.Reset()
-				freshSLA := s.Snapshot()
-				newSnapshot := map[string]any{
-					"sla_breached":       freshSLA["sla_breached"],
+				snap := s.Snapshot()
+				newHistoryEntry := map[string]any{
+					"sla_breached":       snap["sla_breached"],
 					"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
-					"total_time_seconds": freshSLA["total_time_seconds"],
-					"up_time_seconds":    freshSLA["up_time_seconds"],
-					"down_time_seconds":  freshSLA["down_time_seconds"],
-					"uptime90":           freshSLA["uptime90"],
+					"total_time_seconds": snap["total_time_seconds"],
+					"up_time_seconds":    snap["up_time_seconds"],
+					"down_time_seconds":  snap["down_time_seconds"],
+					"uptime90":           snap["uptime90"],
 				}
+
+				s.Reset()
+
 				if oldHist, ok := oldPayload.SLA["history"].([]any); ok {
-					payload.SLA["history"] = append([]any{newSnapshot}, oldHist...)
+					payload.SLA["history"] = append([]any{newHistoryEntry}, oldHist...)
 				}
 				payload.Probe.Date = append([]string{todayUTC}, oldPayload.Probe.Date...)
 
@@ -815,15 +794,9 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				payload.Probe.State = append([]string{currentState}, oldPayload.Probe.State...)
 			}
 		} else {
-			payload.SLA["history"] = []any{map[string]any{
-				"sla_breached":       payload.SLA["sla_breached"],
-				"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
-				"total_time_seconds": payload.SLA["total_time_seconds"],
-				"up_time_seconds":    payload.SLA["up_time_seconds"],
-				"down_time_seconds":  payload.SLA["down_time_seconds"],
-				"uptime90":           payload.SLA["uptime90"],
-			}}
+			payload.SLA["history"] = []any{}
 			payload.Probe.Date = []string{todayUTC}
+			payload.Probe.State = []string{"up"}
 		}
 
 		payload.Probe.State = capSlice(payload.Probe.State, 90)
@@ -833,6 +806,11 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 		}
 
 		var rootTotal, rootDown int64
+
+		liveSnap := s.Snapshot()
+		rootTotal += parseDurationToSecs(liveSnap["total_time_seconds"].(string))
+		rootDown += parseDurationToSecs(liveSnap["down_time_seconds"].(string))
+
 		if h, ok := payload.SLA["history"].([]any); ok {
 			for _, hEntry := range h {
 				if m, ok := hEntry.(map[string]any); ok {
@@ -842,14 +820,14 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 			}
 		}
 
-		rootUp := rootTotal - rootDown
 		rootAvail := 1.0
 		if rootTotal > 0 {
 			rootAvail = 1.0 - (float64(rootDown) / float64(rootTotal))
 		}
+
 		payload.SLA["total_time_seconds"] = formatDurationFull(rootTotal)
 		payload.SLA["down_time_seconds"] = formatDurationFull(rootDown)
-		payload.SLA["up_time_seconds"] = formatDurationFull(rootUp)
+		payload.SLA["up_time_seconds"] = formatDurationFull(rootTotal - rootDown)
 		payload.SLA["uptime90"] = fmt.Sprintf("%.3f%%", rootAvail*100)
 		payload.SLA["sla_breached"] = (s.Target >= 1.0 && rootDown > 0) || (rootAvail < s.Target)
 
