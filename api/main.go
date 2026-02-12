@@ -755,6 +755,28 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 		var revision uint64 = 0
 		var oldPayload StatusPayload
 
+		var rootTotal, rootDown int64
+		if h, ok := payload.SLA["history"].([]any); ok {
+			for _, entry := range h {
+				if m, ok := entry.(map[string]any); ok {
+					rootTotal += parseDurationToSecs(m["total_time_seconds"].(string))
+					rootDown += parseDurationToSecs(m["down_time_seconds"].(string))
+				}
+			}
+		}
+
+		rootUp := rootTotal - rootDown
+		rootAvailability := 1.0
+		if rootTotal > 0 {
+			rootAvailability = 1.0 - (float64(rootDown) / float64(rootTotal))
+		}
+
+		payload.SLA["total_time_seconds"] = formatDurationFull(rootTotal)
+		payload.SLA["down_time_seconds"] = formatDurationFull(rootDown)
+		payload.SLA["up_time_seconds"] = formatDurationFull(rootUp)
+		payload.SLA["uptime90"] = fmt.Sprintf("%.3f%%", rootAvailability*100)
+		payload.SLA["sla_breached"] = (s.Target >= 1.0 && rootDown > 0) || (rootAvailability < s.Target)
+
 		if getErr == nil {
 			revision = entry.Revision()
 			gr, err := gzip.NewReader(bytes.NewReader(entry.Value()))
@@ -855,31 +877,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				break
 			}
 		}
-
-		var globalTotal, globalDown int64
-		if h, ok := payload.SLA["history"].([]any); ok {
-			for _, entry := range h {
-				if m, ok := entry.(map[string]any); ok {
-					// Parse the formatted strings back to raw seconds
-					globalTotal += parseDurationToSecs(m["total_time_seconds"].(string))
-					globalDown += parseDurationToSecs(m["down_time_seconds"].(string))
-				}
-			}
-		}
-
-		// Recalculate global availability for the root
-		globalUp := globalTotal - globalDown
-		globalAvailability := 1.0
-		if globalTotal > 0 {
-			globalAvailability = 1.0 - (float64(globalDown) / float64(globalTotal))
-		}
-
-		// Update the root SLA object with 90-day totals
-		payload.SLA["total_time_seconds"] = formatDurationFull(globalTotal)
-		payload.SLA["down_time_seconds"] = formatDurationFull(globalDown)
-		payload.SLA["up_time_seconds"] = formatDurationFull(globalUp)
-		payload.SLA["uptime90"] = fmt.Sprintf("%.3f%%", globalAvailability*100)
-		payload.SLA["sla_breached"] = (s.Target >= 1.0 && globalDown > 0) || (globalAvailability < s.Target)
 
 		wrappedPayload := map[string]any{
 			"index": idx,
