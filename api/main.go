@@ -90,8 +90,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "DNS", Protocol: "dns", Host: "www.oddinpay.com"},
-		{Name: "HTTPS", Protocol: "https", Host: "www.oddinpay.com"},
+		{Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com"},
 	}
 
 	// for i := 1; i <= 2; i++ {
