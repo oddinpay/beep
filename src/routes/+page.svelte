@@ -1361,7 +1361,7 @@
         <div id="themeBtn" class="ml-auto"></div>
         <Button
           id="change"
-          onclick={() => goto("https://oddinpay.com/signin")}
+          onclick={() => goto("/signin")}
           class="text-black hidden stm:block cursor-pointer hover:text-green-700"
           variant="ghost"
         >
