@@ -182,8 +182,8 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 
 func parseDurationToSecs(s string) int64 {
 	var total int64
-	parts := strings.Fields(s)
-	for _, part := range parts {
+	parts := strings.FieldsSeq(s)
+	for part := range parts {
 		var val int64
 		if strings.HasSuffix(part, "d") {
 			fmt.Sscanf(part, "%dd", &val)
@@ -755,28 +755,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 		var revision uint64 = 0
 		var oldPayload StatusPayload
 
-		var rootTotal, rootDown int64
-		if h, ok := payload.SLA["history"].([]any); ok {
-			for _, entry := range h {
-				if m, ok := entry.(map[string]any); ok {
-					rootTotal += parseDurationToSecs(m["total_time_seconds"].(string))
-					rootDown += parseDurationToSecs(m["down_time_seconds"].(string))
-				}
-			}
-		}
-
-		rootUp := rootTotal - rootDown
-		rootAvailability := 1.0
-		if rootTotal > 0 {
-			rootAvailability = 1.0 - (float64(rootDown) / float64(rootTotal))
-		}
-
-		payload.SLA["total_time_seconds"] = formatDurationFull(rootTotal)
-		payload.SLA["down_time_seconds"] = formatDurationFull(rootDown)
-		payload.SLA["up_time_seconds"] = formatDurationFull(rootUp)
-		payload.SLA["uptime90"] = fmt.Sprintf("%.3f%%", rootAvailability*100)
-		payload.SLA["sla_breached"] = (s.Target >= 1.0 && rootDown > 0) || (rootAvailability < s.Target)
-
 		if getErr == nil {
 			revision = entry.Revision()
 			gr, err := gzip.NewReader(bytes.NewReader(entry.Value()))
@@ -792,6 +770,28 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				gr.Close()
 			}
 		}
+
+		var rootTotal, rootDown int64
+		if h, ok := payload.SLA["history"].([]any); ok {
+			for _, entry := range h {
+				if m, ok := entry.(map[string]any); ok {
+					rootTotal += parseDurationToSecs(m["total_time_seconds"].(string))
+					rootDown += parseDurationToSecs(m["down_time_seconds"].(string))
+				}
+			}
+		}
+
+		rootUp := rootTotal - rootDown
+		rootAvail := 1.0
+		if rootTotal > 0 {
+			rootAvail = 1.0 - (float64(rootDown) / float64(rootTotal))
+		}
+
+		payload.SLA["total_time_seconds"] = formatDurationFull(rootTotal)
+		payload.SLA["down_time_seconds"] = formatDurationFull(rootDown)
+		payload.SLA["up_time_seconds"] = formatDurationFull(rootUp)
+		payload.SLA["uptime90"] = fmt.Sprintf("%.3f%%", rootAvail*100)
+		payload.SLA["sla_breached"] = (s.Target >= 1.0 && rootDown > 0) || (rootAvail < s.Target)
 
 		var snapshot map[string]any
 
