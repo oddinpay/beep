@@ -782,27 +782,6 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				payload.SLA["history"] = history
 			} else {
 
-				s.Tick(false, 10*time.Second)
-				finalOldSLA := s.Snapshot()
-
-				completedOldSnapshot := map[string]any{
-					"sla_breached":       finalOldSLA["sla_breached"],
-					"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
-					"total_time_seconds": finalOldSLA["total_time_seconds"],
-					"up_time_seconds":    finalOldSLA["up_time_seconds"],
-					"down_time_seconds":  finalOldSLA["down_time_seconds"],
-					"uptime90":           finalOldSLA["uptime90"],
-				}
-
-				var history []any
-				if h, ok := oldPayload.SLA["history"].([]any); ok {
-					history = h
-				}
-				if len(history) > 0 {
-					history[0] = completedOldSnapshot
-				}
-
-				s.Reset()
 				freshSLA := s.Snapshot()
 
 				snapshot = map[string]any{
@@ -822,7 +801,11 @@ func publishToNATS(ctx context.Context, name string, payload StatusPayload, s *S
 				}
 				payload.Probe.State = append([]string{currentState}, oldPayload.Probe.State...)
 
-				payload.SLA["history"] = append([]any{snapshot}, history...)
+				if oldHist, ok := oldPayload.SLA["history"].([]any); ok {
+					payload.SLA["history"] = append([]any{snapshot}, oldHist...)
+				} else {
+					payload.SLA["history"] = []any{snapshot}
+				}
 			}
 		} else {
 			snapshot = map[string]any{
