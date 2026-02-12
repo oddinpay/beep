@@ -206,16 +206,7 @@ func formatDurationFull(seconds int64) string {
 }
 
 func getRecentDates() []string {
-	todayUTC := time.Now().UTC().Truncate(24 * time.Hour)
-	daysSinceStart := int(todayUTC.Sub(monitorStartTime).Hours()/24) + 1
-
-	count := min(daysSinceStart, 90)
-
-	dates := make([]string, count)
-	for i := range count {
-		dates[i] = todayUTC.AddDate(0, 0, -i).Format("02/01/2006")
-	}
-	return dates
+	return []string{time.Now().UTC().Format("02/01/2006")}
 }
 
 // -------------------- BROADCAST HUB --------------------
