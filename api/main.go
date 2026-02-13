@@ -601,7 +601,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 						// Broadcast update
 						globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
 
-						go publishToNATS(ctx, req.Name, &payload, tracker)
+						publishToNATS(ctx, req.Name, &payload, tracker)
 
 						cancel()
 
