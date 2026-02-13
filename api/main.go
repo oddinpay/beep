@@ -82,14 +82,6 @@ var (
 	kv               jetstream.KeyValue
 )
 
-var nameToIndex = func() map[string]int {
-	m := make(map[string]int)
-	for i, r := range defaultReqs {
-		m[r.Name] = i
-	}
-	return m
-}()
-
 // -------------------- GLOBAL SLA MAP --------------------
 
 var slaTrackers = struct {
@@ -99,7 +91,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Id: monitorId(), Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 	}
 
 	// for i := 1; i <= 2; i++ {
@@ -125,7 +117,6 @@ var defaultReqs = func() []HttpRequest {
 // -------------------- MODELS --------------------
 
 type HttpRequest struct {
-	Id       string        `json:"id,omitempty"`
 	Host     string        `json:"host,omitempty"`
 	Protocol string        `json:"protocol,omitempty"`
 	Interval time.Duration `json:"interval,omitempty"`
@@ -308,7 +299,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	resp, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return ProbeResult{
-			Id:          re.Id,
+			Id:          "",
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %s", re.Host, err.Error()),
@@ -321,7 +312,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 
 	if resp.StatusCode < StatusOK || resp.StatusCode >= StatusBadRequest {
 		return ProbeResult{
-			Id:          re.Id,
+			Id:          "",
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -331,7 +322,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 		}
 	}
 	return ProbeResult{
-		Id:          re.Id,
+		Id:          "",
 		Name:        re.Name,
 		Protocol:    strings.ToUpper(re.Protocol),
 		Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -346,7 +337,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 	if err != nil {
 		return ProbeResult{
-			Id:          req.Id,
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: err.Error(),
@@ -360,7 +351,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	_, err = conn.Write([]byte("ping\n"))
 	if err != nil {
 		return ProbeResult{
-			Id:          req.Id,
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "write failed: " + err.Error(),
@@ -375,7 +366,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	n, err := conn.Read(buf)
 	if err != nil || n == 0 {
 		return ProbeResult{
-			Id:          req.Id,
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "no response after connect",
@@ -386,7 +377,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
-		Id:          req.Id,
+		Id:          "",
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
@@ -403,7 +394,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 
 	if net.ParseIP(req.Host) != nil {
 		return ProbeResult{
-			Id:          req.Id,
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "Input is already an IP, DNS lookup skipped",
@@ -416,7 +407,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 	addrs, err := net.DefaultResolver.LookupHost(ctx, req.Host)
 	if err != nil {
 		return ProbeResult{
-			Id:          req.Id,
+			Id:          "",
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: fmt.Sprintf("DNS error: %s", err.Error()),
@@ -427,7 +418,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
-		Id:          req.Id,
+		Id:          "",
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("resolved %v", addrs),
@@ -607,10 +598,10 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 							SLA:   tracker.Snapshot(),
 						}
 
+						publishToNATS(ctx, req.Name, &payload, tracker)
+
 						// Broadcast update
 						globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
-
-						go publishToNATS(ctx, req.Name, &payload, tracker)
 
 						cancel()
 
@@ -668,14 +659,20 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 			return
 		case update := <-clientChan:
 			for name, payload := range update {
-				idx, ok := nameToIndex[name]
-				if !ok {
-					continue
+				idx := -1
+				for i, r := range defaultReqs {
+					if r.Name == name {
+						idx = i
+						break
+					}
 				}
 
 				out := map[string]any{
-					"index":   idx,
-					"payload": payload,
+					"index": idx,
+					"payload": map[string]any{
+						"probe": payload.Probe,
+						"sla":   payload.SLA,
+					},
 				}
 
 				if err := conn.SendData(ctx, out); err != nil {
@@ -686,24 +683,28 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) {
+func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) error {
 	for name, payload := range update {
-
-		idx, ok := nameToIndex[name]
-		if !ok {
-			continue
+		idx := -1
+		for i, r := range defaultReqs {
+			if r.Name == name {
+				idx = i
+				break
+			}
 		}
 
 		out := map[string]any{
-			"index":   idx,
-			"payload": payload,
+			"index": idx,
+			"payload": map[string]any{
+				"probe": payload.Probe,
+				"sla":   payload.SLA,
+			},
 		}
-
 		if err := conn.SendData(ctx, out); err != nil {
-			return
+			return err
 		}
-
 	}
+	return nil
 }
 
 // -------------------- STATE REQUEST HANDLER --------------------
@@ -795,11 +796,11 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 
 	// 2-minute block
 
-	intervalBlock := (now.Minute() / 2) * 2
-	todayUTC := fmt.Sprintf("%s %02d:%02d", now.Format("02/01/2006"), now.Hour(), intervalBlock)
+	// intervalBlock := (now.Minute() / 2) * 2
+	// todayUTC := fmt.Sprintf("%s %02d:%02d", now.Format("02/01/2006"), now.Hour(), intervalBlock)
 
 	// Daily block
-	// todayUTC := now.Format("02/01/2006")
+	todayUTC := now.Format("02/01/2006")
 
 	currentStatus := hr.Warn
 	if len(payload.Probe.State) > 0 {
