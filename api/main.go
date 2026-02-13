@@ -606,10 +606,10 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 							SLA:   tracker.Snapshot(),
 						}
 
-						go publishToNATS(ctx, req.Name, &payload, tracker)
-
 						// Broadcast update
 						globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
+
+						go publishToNATS(ctx, req.Name, &payload, tracker)
 
 						cancel()
 
@@ -667,18 +667,14 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 			return
 		case update := <-clientChan:
 			for name, payload := range update {
-
 				idx, ok := nameToIndex[name]
 				if !ok {
 					continue
 				}
 
 				out := map[string]any{
-					"index": idx,
-					"payload": map[string]any{
-						"probe": payload.Probe,
-						"sla":   payload.SLA,
-					},
+					"index":   idx,
+					"payload": payload,
 				}
 
 				if err := conn.SendData(ctx, out); err != nil {
@@ -689,25 +685,24 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) error {
+func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) {
 	for name, payload := range update {
+
 		idx, ok := nameToIndex[name]
 		if !ok {
 			continue
 		}
 
 		out := map[string]any{
-			"index": idx,
-			"payload": map[string]any{
-				"probe": payload.Probe,
-				"sla":   payload.SLA,
-			},
+			"index":   idx,
+			"payload": payload,
 		}
+
 		if err := conn.SendData(ctx, out); err != nil {
-			return err
+			return
 		}
+
 	}
-	return nil
 }
 
 // -------------------- STATE REQUEST HANDLER --------------------
