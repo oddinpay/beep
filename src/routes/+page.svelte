@@ -17,7 +17,7 @@
   import { env } from "$env/dynamic/public";
 
   const slug = "status";
-  const logo = "Oddin Status";
+  const logo = "ODDIN";
   const title = "OddinPay System - Status";
   const description =
     "Real-time and historical data on OddinPay system performance.";
