@@ -1367,7 +1367,7 @@
           href={slug}
           target="_blank"
           rel="noopener noreferrer"
-          class="font-semibold tracking-tight hover:opacity-50"
+          class="font-bold hover:opacity-50"
         >
           {logo}
         </a>

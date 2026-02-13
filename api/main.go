@@ -74,7 +74,7 @@ var (
 	userAgent        = os.Getenv("USER_AGENT")
 	probeManagerOnce sync.Once
 	monitorStartTime = time.Now().UTC().Truncate(24 * time.Hour)
-	hr               = HealthResponse{Down: "down", Up: "up", Warning: "warning"}
+	hr               = HealthResponse{Down: "down", Up: "up", Warn: "warn"}
 	nc               *nats.Conn
 	err              error
 	wg               sync.WaitGroup
@@ -126,9 +126,9 @@ type HttpRequest struct {
 }
 
 type HealthResponse struct {
-	Down    string `json:"down"`
-	Up      string `json:"up"`
-	Warning string `json:"warning"`
+	Down string `json:"down"`
+	Up   string `json:"up"`
+	Warn string `json:"warn"`
 }
 
 type ProbeResult struct {
@@ -400,7 +400,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 			Description: "Input is already an IP, DNS lookup skipped",
 			Timestamp:   time.Now().Format("15:04:05.000"),
 			Date:        getRecentDates(),
-			State:       []string{hr.Warning},
+			State:       []string{hr.Warn},
 		}
 	}
 
@@ -802,6 +802,11 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 	// Daily block
 	todayUTC := now.Format("02/01/2006")
 
+	currentStatus := hr.Warn
+	if len(payload.Probe.State) > 0 {
+		currentStatus = payload.Probe.State[0]
+	}
+
 	for range 3 {
 		entry, getErr := kv.Get(ctx, name)
 		var revision uint64 = 0
@@ -844,7 +849,14 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 			if oldPayload.Probe.Date[0] == todayUTC {
 				payload.SLA["history"] = oldPayload.SLA["history"]
 				payload.Probe.Date = oldPayload.Probe.Date
+
 				payload.Probe.State = oldPayload.Probe.State
+
+				if len(payload.Probe.State) > 0 {
+					payload.Probe.State[0] = currentStatus
+				} else {
+					payload.Probe.State = []string{currentStatus}
+				}
 
 				if h, ok := payload.SLA["history"].([]any); ok && len(h) > 0 {
 					h[0] = map[string]any{
