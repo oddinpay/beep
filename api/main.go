@@ -440,6 +440,13 @@ func NewSlidingSLA(target float64) *SlidingSLA {
 	}
 }
 
+func (s *SlidingSLA) SetState(totalSec, downSec int64) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.buckets[s.idx].totalSec = totalSec
+	s.buckets[s.idx].downSec = downSec
+}
+
 func (s *SlidingSLA) rotateTo(now time.Time) {
 	minNow := now.Truncate(24 * time.Hour)
 	if !minNow.After(s.currentMinute) {
@@ -567,6 +574,31 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 
 			go func(req HttpRequest, fn func(HttpRequest) ProbeResult, iv time.Duration) {
 				defer wg.Done()
+
+				slaTrackers.Lock()
+				tracker := NewSlidingSLA(1.0)
+				slaTrackers.m[req.Name] = tracker
+
+				existingData := readFromNATS(req.Name)
+				if existingData != nil {
+					var wrapped map[string]any
+					if err := json.Unmarshal(existingData, &wrapped); err == nil {
+						if payload, ok := wrapped["payload"].(map[string]any); ok {
+							if sla, ok := payload["sla"].(map[string]any); ok {
+								if history, ok := sla["history"].([]any); ok && len(history) > 0 {
+									first := history[0].(map[string]any)
+
+									tSec := parseDurationToSecs(first["total_time_seconds"].(string))
+									dSec := parseDurationToSecs(first["down_time_seconds"].(string))
+
+									tracker.SetState(tSec, dSec)
+									slog.Info("Hydrated existing state", "name", req.Name, "uptime", first["uptime90"])
+								}
+							}
+						}
+					}
+				}
+				slaTrackers.Unlock()
 
 				ticker := time.NewTicker(iv)
 				defer ticker.Stop()
