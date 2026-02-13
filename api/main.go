@@ -633,19 +633,15 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	clientChan := make(chan map[string]StatusPayload, 50)
+	clientChan := make(chan map[string]StatusPayload, 100)
 
 	globalHub.Lock()
 	globalHub.clients[clientChan] = struct{}{}
 
-	initialData := make(map[string]StatusPayload)
-	maps.Copy(initialData, globalHub.cache)
+	initialSnap := make(map[string]StatusPayload)
+	maps.Copy(initialSnap, globalHub.cache)
 
 	globalHub.Unlock()
-
-	if len(initialData) > 0 {
-		sendUpdateToConn(ctx, conn, initialData)
-	}
 
 	defer func() {
 		globalHub.Lock()
@@ -653,32 +649,22 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 		globalHub.Unlock()
 	}()
 
+	if len(initialSnap) > 0 {
+		if err := sendUpdateToConn(ctx, conn, initialSnap); err != nil {
+			return
+		}
+	}
+
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case update := <-clientChan:
-			for name, payload := range update {
-				idx := -1
-				for i, r := range defaultReqs {
-					if r.Name == name {
-						idx = i
-						break
-					}
-				}
 
-				out := map[string]any{
-					"index": idx,
-					"payload": map[string]any{
-						"probe": payload.Probe,
-						"sla":   payload.SLA,
-					},
-				}
-
-				if err := conn.SendData(ctx, out); err != nil {
-					return
-				}
+			if err := sendUpdateToConn(ctx, conn, update); err != nil {
+				return
 			}
+
 		}
 	}
 }
@@ -801,7 +787,7 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 
 	// Daily block
 	todayUTC := now.Format("02/01/2006")
-	
+
 	currentStatus := hr.Warn
 	if len(payload.Probe.State) > 0 {
 		currentStatus = payload.Probe.State[0]
