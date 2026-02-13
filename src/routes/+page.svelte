@@ -241,10 +241,10 @@
       const api: ApiData = {
         name: String(probe?.name ?? ""),
         statuses,
-        uptime15: "000.000",
-        uptime30: "000.000",
-        uptime60: "000.000",
-        uptime90: String(probe?.uptime90 ?? "00.000"),
+        uptime15: String(probe?.uptime90 ?? "00.000%"),
+        uptime30: String(probe?.uptime90 ?? "00.000%"),
+        uptime60: String(probe?.uptime90 ?? "00.000%"),
+        uptime90: String(probe?.uptime90 ?? "00.000%"),
       };
 
       return api;
@@ -1362,12 +1362,16 @@
           <span class="block w-5 h-0.5 bg-current mb-1"></span>
           <span class="block w-5 h-0.5 bg-current"></span>
         </button>
+
         <a
           href={slug}
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:opacity-50 font-bold tracking-normal">{logo}</a
+          class="font-semibold tracking-tight hover:opacity-50 antialiased"
         >
+          {logo}
+        </a>
+
         <div id="themeBtn" class="ml-auto"></div>
         <Button
           id="change"
