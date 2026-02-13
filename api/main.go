@@ -700,7 +700,7 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 
 				idx, found := reqLookup[name]
 				if !found {
-					idx = -1
+					continue
 				}
 
 				out := map[string]any{
@@ -730,7 +730,7 @@ func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]Sta
 
 		idx, found := reqLookup[name]
 		if !found {
-			idx = -1
+			continue
 		}
 
 		out := map[string]any{
