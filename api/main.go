@@ -82,6 +82,14 @@ var (
 	kv               jetstream.KeyValue
 )
 
+var nameToIndex = func() map[string]int {
+	m := make(map[string]int)
+	for i, r := range defaultReqs {
+		m[r.Name] = i
+	}
+	return m
+}()
+
 // -------------------- GLOBAL SLA MAP --------------------
 
 var slaTrackers = struct {
@@ -598,10 +606,10 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 							SLA:   tracker.Snapshot(),
 						}
 
-						publishToNATS(ctx, req.Name, &payload, tracker)
-
 						// Broadcast update
 						globalHub.Broadcast(map[string]StatusPayload{req.Name: payload})
+
+						go publishToNATS(context.Background(), req.Name, &payload, tracker)
 
 						cancel()
 
@@ -633,15 +641,19 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	clientChan := make(chan map[string]StatusPayload, 100)
+	clientChan := make(chan map[string]StatusPayload, 50)
 
 	globalHub.Lock()
 	globalHub.clients[clientChan] = struct{}{}
 
-	initialSnap := make(map[string]StatusPayload)
-	maps.Copy(initialSnap, globalHub.cache)
+	initialData := make(map[string]StatusPayload)
+	maps.Copy(initialData, globalHub.cache)
 
 	globalHub.Unlock()
+
+	if len(initialData) > 0 {
+		sendUpdateToConn(ctx, conn, initialData)
+	}
 
 	defer func() {
 		globalHub.Lock()
@@ -649,48 +661,48 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 		globalHub.Unlock()
 	}()
 
-	if len(initialSnap) > 0 {
-		if err := sendUpdateToConn(ctx, conn, initialSnap); err != nil {
-			return
-		}
-	}
-
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case update := <-clientChan:
+			for name, payload := range update {
+				idx, ok := nameToIndex[name]
+				if !ok {
+					continue
+				}
 
-			if err := sendUpdateToConn(ctx, conn, update); err != nil {
-				return
+				out := map[string]any{
+					"index":   idx,
+					"payload": payload,
+				}
+
+				if err := conn.SendData(ctx, out); err != nil {
+					return
+				}
 			}
-
 		}
 	}
 }
 
-func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) error {
+func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) {
 	for name, payload := range update {
-		idx := -1
-		for i, r := range defaultReqs {
-			if r.Name == name {
-				idx = i
-				break
-			}
+
+		idx, ok := nameToIndex[name]
+		if !ok {
+			continue
 		}
 
 		out := map[string]any{
-			"index": idx,
-			"payload": map[string]any{
-				"probe": payload.Probe,
-				"sla":   payload.SLA,
-			},
+			"index":   idx,
+			"payload": payload,
 		}
+
 		if err := conn.SendData(ctx, out); err != nil {
-			return err
+			return
 		}
+
 	}
-	return nil
 }
 
 // -------------------- STATE REQUEST HANDLER --------------------
