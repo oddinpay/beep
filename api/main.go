@@ -690,13 +690,17 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 		case <-ctx.Done():
 			return
 		case update := <-clientChan:
+
+			reqLookup := make(map[string]int, len(defaultReqs))
+			for i, r := range defaultReqs {
+				reqLookup[r.Name] = i
+			}
+
 			for name, payload := range update {
-				idx := -1
-				for i, r := range defaultReqs {
-					if r.Name == name {
-						idx = i
-						break
-					}
+
+				idx, found := reqLookup[name]
+				if !found {
+					idx = -1
 				}
 
 				out := map[string]any{
@@ -716,13 +720,17 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) error {
+
+	reqLookup := make(map[string]int, len(defaultReqs))
+	for i, r := range defaultReqs {
+		reqLookup[r.Name] = i
+	}
+
 	for name, payload := range update {
-		idx := -1
-		for i, r := range defaultReqs {
-			if r.Name == name {
-				idx = i
-				break
-			}
+
+		idx, found := reqLookup[name]
+		if !found {
+			idx = -1
 		}
 
 		out := map[string]any{
