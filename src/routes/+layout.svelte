@@ -1,13 +1,15 @@
 <script lang="ts">
-	import '../app.css';
-	import favicon from '$lib/assets/favicon.svg';
-	import 'default-passive-events';
+  import "../app.css";
+  import favicon from "$lib/assets/favicon.svg";
+  import "@fontsource-variable/inter";
 
-	let { children } = $props();
+  import "default-passive-events";
+
+  let { children } = $props();
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+  <link rel="icon" href={favicon} />
 </svelte:head>
 
 {@render children?.()}

@@ -17,7 +17,7 @@
   import { env } from "$env/dynamic/public";
 
   const slug = "https://oddinpay.com";
-  const logo = "ODDIN STATUS";
+  const logo = "oddin status";
   const title = "OddinPay System - Status";
   const description =
     "Real-time and historical data on OddinPay system performance.";
@@ -1363,14 +1363,11 @@
           <span class="block w-5 h-0.5 bg-current"></span>
         </button>
 
-        <a
-          href={slug}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="font-bold hover:opacity-50"
-        >
-          {logo}
-        </a>
+        <div class="oddin-status hover:opacity-50">
+          <a href={slug} target="_blank" rel="noopener noreferrer">
+            {logo}
+          </a>
+        </div>
 
         <div id="themeBtn" class="ml-auto"></div>
         <Button

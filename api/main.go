@@ -801,7 +801,7 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 
 	// Daily block
 	todayUTC := now.Format("02/01/2006")
-
+	
 	currentStatus := hr.Warn
 	if len(payload.Probe.State) > 0 {
 		currentStatus = payload.Probe.State[0]
@@ -849,7 +849,6 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 			if oldPayload.Probe.Date[0] == todayUTC {
 				payload.SLA["history"] = oldPayload.SLA["history"]
 				payload.Probe.Date = oldPayload.Probe.Date
-
 				payload.Probe.State = oldPayload.Probe.State
 
 				if len(payload.Probe.State) > 0 {
@@ -883,12 +882,7 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 					payload.SLA["history"] = append([]any{newSnapshot}, oldHist...)
 				}
 				payload.Probe.Date = append([]string{todayUTC}, oldPayload.Probe.Date...)
-
-				currentState := "up"
-				if len(payload.Probe.State) > 0 {
-					currentState = payload.Probe.State[0]
-				}
-				payload.Probe.State = append([]string{currentState}, oldPayload.Probe.State...)
+				payload.Probe.State = append([]string{currentStatus}, oldPayload.Probe.State...)
 			}
 		} else {
 			payload.SLA["history"] = []any{map[string]any{

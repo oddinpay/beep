@@ -1167,3 +1167,12 @@ input[type="number"] {
   font-size: 1rem;
   color: #b48312;
 }
+
+.oddin-status {
+  font-family: "Inter Variable", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+}
