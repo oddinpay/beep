@@ -667,18 +667,11 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 					}
 				}
 
-				cleanSla := make(map[string]any)
-				for k, v := range payload.SLA {
-					if k != "history" {
-						cleanSla[k] = v
-					}
-				}
-
 				out := map[string]any{
 					"index": idx,
 					"payload": map[string]any{
 						"probe": payload.Probe,
-						"sla":   cleanSla,
+						"sla":   payload.SLA,
 					},
 				}
 
