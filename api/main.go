@@ -667,14 +667,18 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 			return
 		case update := <-clientChan:
 			for name, payload := range update {
+
 				idx, ok := nameToIndex[name]
 				if !ok {
 					continue
 				}
 
 				out := map[string]any{
-					"index":   idx,
-					"payload": payload,
+					"index": idx,
+					"payload": map[string]any{
+						"probe": payload.Probe,
+						"sla":   payload.SLA,
+					},
 				}
 
 				if err := conn.SendData(ctx, out); err != nil {
@@ -685,24 +689,25 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) {
+func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) error {
 	for name, payload := range update {
-
 		idx, ok := nameToIndex[name]
 		if !ok {
 			continue
 		}
 
 		out := map[string]any{
-			"index":   idx,
-			"payload": payload,
+			"index": idx,
+			"payload": map[string]any{
+				"probe": payload.Probe,
+				"sla":   payload.SLA,
+			},
 		}
-
 		if err := conn.SendData(ctx, out); err != nil {
-			return
+			return err
 		}
-
 	}
+	return nil
 }
 
 // -------------------- STATE REQUEST HANDLER --------------------
