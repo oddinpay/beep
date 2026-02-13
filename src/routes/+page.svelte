@@ -16,8 +16,8 @@
   import timer from "$lib/timer";
   import { env } from "$env/dynamic/public";
 
-  const slug = "status";
-  const logo = "ODDIN";
+  const slug = "https://oddinpay.com";
+  const logo = "ODDIN STATUS";
   const title = "OddinPay System - Status";
   const description =
     "Real-time and historical data on OddinPay system performance.";
@@ -1362,8 +1362,11 @@
           <span class="block w-5 h-0.5 bg-current mb-1"></span>
           <span class="block w-5 h-0.5 bg-current"></span>
         </button>
-        <a href="/{slug}" class="hover:opacity-50 font-semibold tracking-tight"
-          >{logo}</a
+        <a
+          href={slug}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:opacity-50 font-bold tracking-normal">{logo}</a
         >
         <div id="themeBtn" class="ml-auto"></div>
         <Button
