@@ -8,7 +8,7 @@
   onMount(() => {
     timer = setTimeout(() => {
       showLoading = false;
-    }, 400);
+    }, 800);
 
     return () => {
       if (timer) clearTimeout(timer);
