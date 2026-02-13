@@ -99,7 +99,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Id: monitorId(), Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
 	}
 
 	// for i := 1; i <= 2; i++ {
@@ -125,6 +125,7 @@ var defaultReqs = func() []HttpRequest {
 // -------------------- MODELS --------------------
 
 type HttpRequest struct {
+	Id       string        `json:"id,omitempty"`
 	Host     string        `json:"host,omitempty"`
 	Protocol string        `json:"protocol,omitempty"`
 	Interval time.Duration `json:"interval,omitempty"`
@@ -307,7 +308,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	resp, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return ProbeResult{
-			Id:          "",
+			Id:          re.Id,
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %s", re.Host, err.Error()),
@@ -320,7 +321,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 
 	if resp.StatusCode < StatusOK || resp.StatusCode >= StatusBadRequest {
 		return ProbeResult{
-			Id:          "",
+			Id:          re.Id,
 			Name:        re.Name,
 			Protocol:    strings.ToUpper(re.Protocol),
 			Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -330,7 +331,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 		}
 	}
 	return ProbeResult{
-		Id:          "",
+		Id:          re.Id,
 		Name:        re.Name,
 		Protocol:    strings.ToUpper(re.Protocol),
 		Description: fmt.Sprintf("%s - %d", re.Host, resp.StatusCode),
@@ -345,7 +346,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 
 	if err != nil {
 		return ProbeResult{
-			Id:          "",
+			Id:          req.Id,
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: err.Error(),
@@ -359,7 +360,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	_, err = conn.Write([]byte("ping\n"))
 	if err != nil {
 		return ProbeResult{
-			Id:          "",
+			Id:          req.Id,
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "write failed: " + err.Error(),
@@ -374,7 +375,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	n, err := conn.Read(buf)
 	if err != nil || n == 0 {
 		return ProbeResult{
-			Id:          "",
+			Id:          req.Id,
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "no response after connect",
@@ -385,7 +386,7 @@ func probeTCP(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
-		Id:          "",
+		Id:          req.Id,
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("response received %s", strings.TrimSpace(string(buf[:n]))),
@@ -402,7 +403,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 
 	if net.ParseIP(req.Host) != nil {
 		return ProbeResult{
-			Id:          "",
+			Id:          req.Id,
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: "Input is already an IP, DNS lookup skipped",
@@ -415,7 +416,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 	addrs, err := net.DefaultResolver.LookupHost(ctx, req.Host)
 	if err != nil {
 		return ProbeResult{
-			Id:          "",
+			Id:          req.Id,
 			Name:        req.Name,
 			Protocol:    strings.ToUpper(req.Protocol),
 			Description: fmt.Sprintf("DNS error: %s", err.Error()),
@@ -426,7 +427,7 @@ func probeDNS(req HttpRequest) ProbeResult {
 	}
 
 	return ProbeResult{
-		Id:          "",
+		Id:          req.Id,
 		Name:        req.Name,
 		Protocol:    strings.ToUpper(req.Protocol),
 		Description: fmt.Sprintf("resolved %v", addrs),
