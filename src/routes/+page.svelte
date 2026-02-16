@@ -402,7 +402,9 @@
     description: string;
     status: Exclude<
       Indicator,
-      typeof Indicators.Resolved | typeof Indicators.Investigating
+      | typeof Indicators.Resolved
+      | typeof Indicators.Investigating
+      | typeof Indicators.Identified
     >;
   }
 
@@ -460,13 +462,6 @@
           status: Indicators.Inprogress,
           description:
             "We are investigating reports of increased errors on iDeal payments.",
-        },
-
-        {
-          time: "Sep 22, 2025 13:05 UTC",
-          status: Indicators.Identified,
-          description:
-            "We are identifying reports of increased errors on iDeal payments.",
         },
 
         {
@@ -547,7 +542,8 @@
         {
           time: "Sep 22, 2025 13:05 UTC",
           status: Indicators.Identified,
-          description: "We are identifying reports of increased errors on Shop.",
+          description:
+            "We are identifying reports of increased errors on Shop.",
         },
       ],
     },
