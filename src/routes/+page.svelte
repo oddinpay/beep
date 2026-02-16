@@ -1,4 +1,5 @@
 <script lang="ts">
+  // import { localStore } from '$lib/storage';
   import { Button } from "$lib/components/ui/button/index.js";
   import Buttong from "$lib/components/Buttong.svelte";
   import Loader from "$lib/components/Loader.svelte";
@@ -10,19 +11,20 @@
     TabsTrigger,
   } from "$lib/components/ui/tabs";
   import { source } from "sveltekit-sse";
-  // import { localStore } from '$lib/storage';
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
   import timer from "$lib/timer";
   import { env } from "$env/dynamic/public";
 
-  const slug = "https://oddinpay.com";
-  const logo = "oddin status";
-  const title = "OddinPay System - Status";
-  const description =
+  let signin = "https://oddinpay.com/signin";
+  let signup = "https://oddinpay.com/signup";
+  let slug = "https://oddinpay.com";
+  let logo = "oddin status";
+  let title = "OddinPay System - Status";
+  let description =
     "Real-time and historical data on OddinPay system performance.";
-  const badge = "Last updated";
 
+  const badge = "Last updated";
   let ready = $state(false);
   onMount(() => (ready = true));
   const clock = timer();
@@ -1400,13 +1402,13 @@
         <div id="themeBtn" class="ml-auto"></div>
         <Button
           id="change"
-          onclick={() => window.open("https://oddinpay.com/signin", "_blank")}
+          onclick={() => window.open(signin, "_blank")}
           class="text-black hidden stm:block cursor-pointer hover:text-green-700"
           variant="ghost"
         >
           Sign in
         </Button>
-        <Buttong />
+        <Buttong url={signup} />
       </div>
     </header>
     <div id="navBackdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>

@@ -1,12 +1,12 @@
 <script lang="ts">
   import { ArrowRightIcon } from "lucide-svelte";
   import Button from "./Button.svelte";
-
   export let label = "Get started";
+  export let url = "";
 </script>
 
 <Button
-  onclick={() => window.open("https://oddinpay.com/signup", "_blank")}
+  onclick={() => window.open(url, "_blank")}
   class="group transition-transform  hover:bg-green-600 focus:bg-green-600  bg-green-600 text-white px-[14px] py-[20px] rounded-full flex items-center gap-2 active:scale-99 font-medium cursor-pointer hover:opacity-90 focus:opacity-90"
 >
   <span>{label}</span>
