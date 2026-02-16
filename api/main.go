@@ -1132,7 +1132,7 @@ func main() {
 
 	originPolicy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		host := strings.Split(r.Host, ":")[0]
-		if host != "status.oddinpay.com" {
+		if host != os.Getenv("ORIGIN") {
 			w.WriteHeader(http.StatusForbidden)
 			w.Write([]byte("403 prohibited"))
 			return
