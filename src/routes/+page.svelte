@@ -536,8 +536,20 @@
             "We are investigating reports of increased errors on Shop.",
         },
         {
-          time: "Sep 22, 2025 12:45 UTC",
+          time: "Sep 23, 2025 12:45 UTC",
           status: Indicators.Inprogress,
+          description:
+            "We are investigating reports of increased errors on Shop.",
+        },
+      ],
+    },
+
+    {
+      service: "Site errors",
+      entries: [
+        {
+          time: "Sep 22, 2025 13:05 UTC",
+          status: Indicators.Scheduled,
           description:
             "We are investigating reports of increased errors on Shop.",
         },
@@ -545,31 +557,28 @@
     },
   ];
 
-  maintenances.forEach((maintenance) => {
-    const hasInProgress = maintenance.entries.some(
+  maintenances.forEach((m) => {
+    const hasInProgress = m.entries.some(
       (e) => e.status === Indicators.Inprogress,
     );
-    const hasCompleted = maintenance.entries.some(
+    const hasCompleted = m.entries.some(
       (e) => e.status === Indicators.Completed,
     );
 
-    maintenance.entries = maintenance.entries
-      .filter((e) => {
-        if (
-          hasInProgress &&
-          !hasCompleted &&
-          e.status === Indicators.Scheduled
-        ) {
-          return false;
-        }
-        return true;
-      })
-      .sort((a, b) => {
-        return (
+    m.entries = m.entries
+      .filter(
+        (e) =>
+          !(
+            hasInProgress &&
+            !hasCompleted &&
+            e.status === Indicators.Scheduled
+          ),
+      )
+      .sort(
+        (a, b) =>
           (statusPriority.get(a.status) ?? Infinity) -
-          (statusPriority.get(b.status) ?? Infinity)
-        );
-      });
+          (statusPriority.get(b.status) ?? Infinity),
+      );
   });
 
   type AccordionItem = {
