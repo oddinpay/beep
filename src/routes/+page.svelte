@@ -546,18 +546,32 @@
   ];
 
   maintenances.forEach((maintenance) => {
-    const isInProgress = maintenance.entries.some(
+    const hasInProgress = maintenance.entries.some(
       (e) => e.status === Indicators.Inprogress,
+    );
+    const hasCompleted = maintenance.entries.some(
+      (e) => e.status === Indicators.Completed,
     );
 
     maintenance.entries = maintenance.entries
-      .filter((e) => !(isInProgress && e.status === Indicators.Scheduled))
-      .sort(
-        (a, b) =>
+      .filter((e) => {
+        if (
+          hasInProgress &&
+          !hasCompleted &&
+          e.status === Indicators.Scheduled
+        ) {
+          return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        return (
           (statusPriority.get(a.status) ?? Infinity) -
-          (statusPriority.get(b.status) ?? Infinity),
-      );
+          (statusPriority.get(b.status) ?? Infinity)
+        );
+      });
   });
+
   type AccordionItem = {
     value: string;
     date: string;
@@ -1865,39 +1879,40 @@
                             {/if}
                             <h3>Maintenance</h3>
                             <div class="maintenance-list">
-                              {#if maintenances.length === 0}
+                              {#if maintenances.every( (incident) => incident.entries.some((entry) => entry.status === Indicators.Completed), )}
                                 No maintenance windows available.
-                              {/if}
-                              {#each maintenances as maintenance}
-                                {#if !maintenance.entries.some((entry) => entry.status === Indicators.Completed)}
-                                  {#each maintenance.entries as entry}
-                                    <div
-                                      class="flex justify-between items-center p-3 gap-4"
-                                    >
-                                      <span
-                                        class="inline-flex items-center px-2.5 badge2 py-1 rounded-full text-xs font-medium {entry
-                                          .status.badge}"
-                                      >
-                                        {entry.status.statusLabel}
-                                      </span>
+                              {:else}
+                                {#each maintenances as maintenance}
+                                  {#if !maintenance.entries.some((entry) => entry.status === Indicators.Completed)}
+                                    {#each maintenance.entries as entry}
                                       <div
-                                        class="flex flex-col text-left leading-tight"
+                                        class="flex justify-between items-center p-3 gap-4"
                                       >
                                         <span
-                                          class="text-base font-semibold text-[var(--inactive-service)]"
+                                          class="inline-flex items-center px-2.5 badge2 py-1 rounded-full text-xs font-medium {entry
+                                            .status.badge}"
                                         >
-                                          {maintenance.service}
+                                          {entry.status.statusLabel}
                                         </span>
-                                        <time
-                                          class="text-base text-[var(--inactive)]"
+                                        <div
+                                          class="flex flex-col text-left leading-tight"
                                         >
-                                          {entry.time}
-                                        </time>
+                                          <span
+                                            class="text-base font-semibold text-[var(--inactive-service)]"
+                                          >
+                                            {maintenance.service}
+                                          </span>
+                                          <time
+                                            class="text-base text-[var(--inactive)]"
+                                          >
+                                            {entry.time}
+                                          </time>
+                                        </div>
                                       </div>
-                                    </div>
-                                  {/each}
-                                {/if}
-                              {/each}
+                                    {/each}
+                                  {/if}
+                                {/each}
+                              {/if}
                             </div>
                           </div>
                         </div>
