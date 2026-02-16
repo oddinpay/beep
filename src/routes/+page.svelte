@@ -546,14 +546,18 @@
   ];
 
   maintenances.forEach((maintenance) => {
-    maintenance.entries.sort((a, b) => {
-      return (
-        (statusPriority.get(a.status) ?? Infinity) -
-        (statusPriority.get(b.status) ?? Infinity)
-      );
-    });
-  });
+    const isInProgress = maintenance.entries.some(
+      (e) => e.status === Indicators.Inprogress,
+    );
 
+    maintenance.entries = maintenance.entries
+      .filter((e) => !(isInProgress && e.status === Indicators.Scheduled))
+      .sort(
+        (a, b) =>
+          (statusPriority.get(a.status) ?? Infinity) -
+          (statusPriority.get(b.status) ?? Infinity),
+      );
+  });
   type AccordionItem = {
     value: string;
     date: string;
