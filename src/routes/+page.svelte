@@ -397,15 +397,23 @@
     >;
   }
 
+  interface MaintenanceEntry {
+    time: string;
+    description: string;
+    status: Exclude<
+      Indicator,
+      typeof Indicators.Resolved | typeof Indicators.Investigating
+    >;
+  }
+
   interface Incident {
     title: string;
     entries: IncidentEntry[];
   }
 
   interface Maintenance {
-    status: Indicator;
     service: string;
-    time: string;
+    entries: MaintenanceEntry[];
   }
 
   let incidents: Incident[] = [
@@ -490,38 +498,45 @@
   });
 
   let maintenances: Maintenance[] = [
-    // {
-    //   status: Indicators.Completed,
-    //   service: "PayPal",
-    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    // },
-    // {
-    //   status: Indicators.Completed,
-    //   service: "API",
-    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    // },
-    // {
-    //   status: Indicators.Scheduled,
-    //   service: "API",
-    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    // },
-    // {
-    //   status: Indicators.Inprogress,
-    //   service: "API",
-    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    // },
-    // {
-    //   status: Indicators.Inprogress,
-    //   service: "PayPal",
-    //   time: "Sep 25, 2025 05:00 - Sep 25, 2025 07:00",
-    // },
+    {
+      service: "API errors",
+      entries: [
+        {
+          time: "Sep 22, 2025 13:05 UTC",
+          status: Indicators.Scheduled,
+          description:
+            "We are investigating reports of increased errors on API.",
+        },
+        {
+          time: "Sep 22, 2025 12:45 UTC",
+          status: Indicators.Inprogress,
+          description:
+            "We are investigating reports of increased errors on API.",
+        },
+
+        {
+          time: "Sep 22, 2025 13:05 UTC",
+          status: Indicators.Identified,
+          description: "We are identifying reports of increased errors on API.",
+        },
+
+        {
+          time: "Sep 22, 2025 20:14 UTC",
+          status: Indicators.Completed,
+          description:
+            "From 13:05–19:15 UTC, we saw elevated errors on API. This is now resolved.",
+        },
+      ],
+    },
   ];
 
-  maintenances.sort((a, b) => {
-    return (
-      (statusPriority.get(a.status) ?? Infinity) -
-      (statusPriority.get(b.status) ?? Infinity)
-    );
+  maintenances.forEach((maintenance) => {
+    maintenance.entries.sort((a, b) => {
+      return (
+        (statusPriority.get(a.status) ?? Infinity) -
+        (statusPriority.get(b.status) ?? Infinity)
+      );
+    });
   });
 
   type AccordionItem = {
@@ -1834,31 +1849,35 @@
                               {#if maintenances.length === 0}
                                 No maintenance windows available.
                               {/if}
-                              {#each maintenances.filter((m) => m.status !== Indicators.Completed) as maintenance}
-                                <div
-                                  class="flex justify-between items-center p-3 gap-4"
-                                >
-                                  <span
-                                    class="inline-flex items-center px-2.5 badge2 py-1 rounded-full text-xs font-medium {maintenance
-                                      .status.badge}"
-                                  >
-                                    {maintenance.status.statusLabel}
-                                  </span>
-                                  <div
-                                    class="flex flex-col text-left leading-tight"
-                                  >
-                                    <span
-                                      class="text-base font-semibold text-[var(--inactive-service)]"
+                              {#each maintenances as maintenance}
+                                {#if !maintenance.entries.some((entry) => entry.status === Indicators.Completed)}
+                                  {#each maintenance.entries as entry}
+                                    <div
+                                      class="flex justify-between items-center p-3 gap-4"
                                     >
-                                      {maintenance.service}
-                                    </span>
-                                    <time
-                                      class="text-base text-[var(--inactive)]"
-                                    >
-                                      {maintenance.time}
-                                    </time>
-                                  </div>
-                                </div>
+                                      <span
+                                        class="inline-flex items-center px-2.5 badge2 py-1 rounded-full text-xs font-medium {entry
+                                          .status.badge}"
+                                      >
+                                        {entry.status.statusLabel}
+                                      </span>
+                                      <div
+                                        class="flex flex-col text-left leading-tight"
+                                      >
+                                        <span
+                                          class="text-base font-semibold text-[var(--inactive-service)]"
+                                        >
+                                          {maintenance.service}
+                                        </span>
+                                        <time
+                                          class="text-base text-[var(--inactive)]"
+                                        >
+                                          {entry.time}
+                                        </time>
+                                      </div>
+                                    </div>
+                                  {/each}
+                                {/if}
                               {/each}
                             </div>
                           </div>
@@ -1897,22 +1916,20 @@
                             <h3>
                               Scheduled maintenance for {maintenance.service}
                             </h3>
-                            <div class="status-entry">
-                              <span class="time font-bold"
-                                >{maintenance.time}</span
-                              >
-                              <span
-                                class="badge mt-1 {maintenance.status.badge}"
-                              >
-                                {maintenance.status.statusLabel}
-                              </span>
-                              <p
-                                class="mt-2 text-gray-600"
-                                style="font-size: 16px"
-                              >
-                                System affected: {maintenance.service}
-                              </p>
-                            </div>
+                            {#each maintenance.entries as entry}
+                              <div class="status-entry">
+                                <span class="time font-bold">{entry.time}</span>
+                                <span class="badge mt-1 {entry.status.badge}">
+                                  {entry.status.statusLabel}
+                                </span>
+                                <p
+                                  class="mt-2 text-gray-600"
+                                  style="font-size: 16px"
+                                >
+                                  System affected: {maintenance.service}
+                                </p>
+                              </div>
+                            {/each}
                           </div>
                         {/each}
                       {/if}
