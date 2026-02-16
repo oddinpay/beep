@@ -550,35 +550,35 @@
         },
       ],
     },
-    {
-      service: "Shop errors",
-      entries: [
-        {
-          time: "Sep 22, 2025 13:05 UTC",
-          status: Indicators.Scheduled,
-          description:
-            "We are investigating reports of increased errors on Shop.",
-        },
-        {
-          time: "Sep 23, 2025 12:45 UTC",
-          status: Indicators.Inprogress,
-          description:
-            "We are investigating reports of increased errors on Shop.",
-        },
-      ],
-    },
+    // {
+    //   service: "Shop errors",
+    //   entries: [
+    //     {
+    //       time: "Sep 22, 2025 13:05 UTC",
+    //       status: Indicators.Scheduled,
+    //       description:
+    //         "We are investigating reports of increased errors on Shop.",
+    //     },
+    //     {
+    //       time: "Sep 23, 2025 12:45 UTC",
+    //       status: Indicators.Inprogress,
+    //       description:
+    //         "We are investigating reports of increased errors on Shop.",
+    //     },
+    //   ],
+    // },
 
-    {
-      service: "Site errors",
-      entries: [
-        {
-          time: "Sep 22, 2025 13:05 UTC",
-          status: Indicators.Scheduled,
-          description:
-            "We are investigating reports of increased errors on Shop.",
-        },
-      ],
-    },
+    // {
+    //   service: "Site errors",
+    //   entries: [
+    //     {
+    //       time: "Sep 22, 2025 13:05 UTC",
+    //       status: Indicators.Scheduled,
+    //       description:
+    //         "We are investigating reports of increased errors on Shop.",
+    //     },
+    //   ],
+    // },
   ];
 
   maintenances.forEach((m) => {
