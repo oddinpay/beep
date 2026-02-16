@@ -1130,9 +1130,19 @@ func main() {
 		w.Write([]byte("pong"))
 	})
 
+	originPolicy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		host := strings.Split(r.Host, ":")[0]
+		if host != "status.oddinpay.com" {
+			w.WriteHeader(http.StatusForbidden)
+			w.Write([]byte("403 prohibited"))
+			return
+		}
+		recoveryMiddleware(mux).ServeHTTP(w, r)
+	})
+
 	server := &http.Server{
 		Addr:    fmt.Sprintf("%s:%s", Host, Port),
-		Handler: recoveryMiddleware(mux),
+		Handler: originPolicy,
 	}
 
 	go func() {
