@@ -465,6 +465,13 @@
         },
 
         {
+          time: "Sep 22, 2025 13:05 UTC",
+          status: Indicators.Identified,
+          description:
+            "We are identifying reports of increased errors on iDeal payments.",
+        },
+
+        {
           time: "Sep 22, 2025 20:14 UTC",
           status: Indicators.Resolved,
           description:
@@ -510,12 +517,6 @@
         },
 
         {
-          time: "Sep 22, 2025 13:05 UTC",
-          status: Indicators.Identified,
-          description: "We are identifying reports of increased errors on API.",
-        },
-
-        {
           time: "Sep 22, 2025 20:14 UTC",
           status: Indicators.Completed,
           description:
@@ -537,13 +538,6 @@
           status: Indicators.Inprogress,
           description:
             "We are investigating reports of increased errors on Shop.",
-        },
-
-        {
-          time: "Sep 22, 2025 13:05 UTC",
-          status: Indicators.Identified,
-          description:
-            "We are identifying reports of increased errors on Shop.",
         },
       ],
     },
