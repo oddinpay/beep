@@ -1124,11 +1124,11 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/sse", Sse)
 	mux.HandleFunc("GET /v1/status", StatusHandler)
-	mux.HandleFunc("GET /v1/status/history", HistoryHandler)
-	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("pong"))
-	})
+	// mux.HandleFunc("GET /v1/status/history", HistoryHandler)
+	// mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
+	// 	w.WriteHeader(http.StatusOK)
+	// 	w.Write([]byte("pong"))
+	// })
 
 	originPolicy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		host := strings.Split(r.Host, ":")[0]
