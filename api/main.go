@@ -82,6 +82,20 @@ var (
 	kv               jetstream.KeyValue
 )
 
+var httpClient = &http.Client{
+	Timeout: 15 * time.Second,
+	Transport: &http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		TLSHandshakeTimeout:   5 * time.Second,
+		ResponseHeaderTimeout: 10 * time.Second,
+		IdleConnTimeout:       90 * time.Second,
+		MaxIdleConns:          100,
+	},
+}
+
 // -------------------- GLOBAL SLA MAP --------------------
 
 var slaTrackers = struct {
@@ -296,7 +310,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 
 	r.Header.Set("User-Agent", userAgent)
 
-	resp, err := http.DefaultClient.Do(r)
+	resp, err := httpClient.Do(r)
 	if err != nil {
 		return ProbeResult{
 			Id:          "",
