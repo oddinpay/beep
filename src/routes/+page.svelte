@@ -882,7 +882,7 @@
 </script>
 
 {#if ready}
-  <div use:setOverflow class="min-h-screen bg-white text-zinc-900">
+  <div use:setOverflow class="min-h-screen bg-white text-black">
     <!-- Navbar -->
     <header
       class="fixed w-full top-0 z-40 h-14 border-b border-black/5 backdrop-blur bg-white/50"
@@ -1058,7 +1058,7 @@
                     </svg>
                     Operational
                   </span>
-                  <span class="text-amber-600">
+                  <span class="text-amber-700">
                     <svg
                       class="w-5 h-5 inline-block"
                       xmlns="http://www.w3.org/2000/svg"
