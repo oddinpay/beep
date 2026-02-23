@@ -671,7 +671,6 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(HeaderCacheControl, "no-cache")
 	w.Header().Set(HeaderConnection, "keep-alive")
 	w.Header().Set(HeaderContentType, ContentTypeEventStream)
-	w.Header().Set("X-Accel-Buffering", "no")
 
 	conn, err := sse.Upgrade(ctx, w)
 	if err != nil {
