@@ -1253,7 +1253,7 @@
 
                         <div class="status-page">
                           <div class="left">
-                            <h3>System status</h3>
+                            <h2>System status</h2>
                             {#if !miniMonitors && monitors.length === 0}
                               No monitors available.
                             {:else if submitMonitors && monitors.length === 0}
@@ -1337,7 +1337,7 @@
                           </div>
 
                           <div class="right">
-                            <h3>Recent incidents</h3>
+                            <h2>Recent incidents</h2>
                             {#if incidents.every( (incident) => incident.entries.some((entry) => entry.status === Indicators.Resolved), )}
                               No incidents to display
                             {:else}
@@ -1438,9 +1438,9 @@
                         {#each maintenances as maintenance}
                           {#if maintenance.entries.some((entry) => entry.status === Indicators.Completed)}
                             <div class="incident-card mt-10">
-                              <h3>
+                              <h2>
                                 Scheduled maintenance for {maintenance.service}
-                              </h3>
+                              </h2>
                               {#each maintenance.entries as entry}
                                 <div class="status-entry">
                                   <span class="time font-bold"
