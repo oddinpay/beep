@@ -668,7 +668,7 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 
 	// SSE headers
 	w.Header().Set(HeaderAllowOrigin, "*")
-	w.Header().Set(HeaderCacheControl, "no-cache")
+	w.Header().Set(HeaderCacheControl, "public, max-age=10, no-transform")
 	w.Header().Set(HeaderConnection, "keep-alive")
 	w.Header().Set(HeaderContentType, ContentTypeEventStream)
 
@@ -849,7 +849,6 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 	now := time.Now().UTC()
 
 	// 2-minute block
-
 	// intervalBlock := (now.Minute() / 1) * 1
 	// todayUTC := fmt.Sprintf("%s %02d:%02d", now.Format("02/01/2006"), now.Hour(), intervalBlock)
 
