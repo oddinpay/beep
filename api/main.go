@@ -668,7 +668,7 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 
 	// SSE headers
 	w.Header().Set(HeaderAllowOrigin, "*")
-	w.Header().Set(HeaderCacheControl, "public, max-age=10, no-transform")
+	w.Header().Set(HeaderCacheControl, "no-cache")
 	w.Header().Set(HeaderConnection, "keep-alive")
 	w.Header().Set(HeaderContentType, ContentTypeEventStream)
 
