@@ -1123,7 +1123,7 @@
                           <span
                             class={activeTab === t
                               ? "text-black font-semibold"
-                              : "text-gray-400 font-semibold"}>History</span
+                              : "text-zinc-500 font-semibold"}>History</span
                           >
                         {/if}
                       </TabsTrigger>
@@ -1252,7 +1252,7 @@
                                 <span class="label90 text-zinc-500"
                                   >90 days ago</span
                                 >
-                                <span>Today</span>
+                                <span class="text-zinc-500">Today</span>
                               </div>
                             </section>
                           {/each}
