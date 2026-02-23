@@ -2,7 +2,6 @@
   // import { localStore } from '$lib/storage';
   import { Button } from "$lib/components/ui/button/index.js";
   import Buttong from "$lib/components/Buttong.svelte";
-  import Loader from "$lib/components/Loader.svelte";
   import Footer from "$lib/components/Footer.svelte";
   import {
     Tabs,
@@ -882,7 +881,6 @@
   };
 </script>
 
-<Loader />
 
 {#if ready}
   <div use:setOverflow class="min-h-screen bg-white text-zinc-900">
