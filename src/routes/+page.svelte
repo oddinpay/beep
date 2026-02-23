@@ -881,7 +881,6 @@
   };
 </script>
 
-
 {#if ready}
   <div use:setOverflow class="min-h-screen bg-white text-zinc-900">
     <!-- Navbar -->
@@ -1241,10 +1240,18 @@
                                 {/each}
                               </div>
                               <div class="timeline">
-                                <span class="label15">15 days ago</span>
-                                <span class="label30">30 days ago</span>
-                                <span class="label60">60 days ago</span>
-                                <span class="label90">90 days ago</span>
+                                <span class="label15 text-zinc-500"
+                                  >15 days ago</span
+                                >
+                                <span class="label30 text-zinc-500"
+                                  >30 days ago</span
+                                >
+                                <span class="label60 text-zinc-500"
+                                  >60 days ago</span
+                                >
+                                <span class="label90 text-zinc-500"
+                                  >90 days ago</span
+                                >
                                 <span>Today</span>
                               </div>
                             </section>
