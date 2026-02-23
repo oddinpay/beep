@@ -14,6 +14,7 @@
   import { browser } from "$app/environment";
   import timer from "$lib/timer";
   import { env } from "$env/dynamic/public";
+  import Loader from "$lib/components/Loader.svelte";
 
   let signin = "https://oddinpay.com/signin";
   let signup = "https://oddinpay.com/signup";
@@ -991,13 +992,15 @@
                         class="headline8"
                         style="font-size: clamp(2.5rem, 3vh, 5rem);"
                       >
-                        {overallStatus === "up"
-                          ? "All Systems Operational"
-                          : overallStatus === "warn"
-                            ? "System Outage Detected"
-                            : overallStatus === "down"
-                              ? "Critical Issues Detected"
-                              : "No Status Available"}
+                        {#if overallStatus === "up"}
+                          All Systems Operational
+                        {:else if overallStatus === "warn"}
+                          System Outage Detected
+                        {:else if overallStatus === "down"}
+                          Critical Issues Detected
+                        {:else}
+                          <Loader />
+                        {/if}
                       </h1>
                       <p
                         class="text-base text-gray-500 font-bold text-center sm:text-left"
