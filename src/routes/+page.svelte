@@ -1043,8 +1043,8 @@
                 </div>
 
                 <div class="legend mt-2">
-                  <strong class="text-sm text-gray-400">Legend:</strong>
-                  <span class="text-green-600">
+                  <strong class="text-sm text-zinc-500">Legend:</strong>
+                  <span class="text-green-800">
                     <svg
                       class="w-5 h-5 inline-block"
                       xmlns="http://www.w3.org/2000/svg"
@@ -1253,7 +1253,7 @@
 
                         <div class="status-page">
                           <div class="left">
-                            <h3>System status</h3>
+                            <h2>System status</h2>
                             {#if !miniMonitors && monitors.length === 0}
                               No monitors available.
                             {:else if submitMonitors && monitors.length === 0}
@@ -1337,7 +1337,7 @@
                           </div>
 
                           <div class="right">
-                            <h3>Recent incidents</h3>
+                            <h2>Recent incidents</h2>
                             {#if incidents.every( (incident) => incident.entries.some((entry) => entry.status === Indicators.Resolved), )}
                               No incidents to display
                             {:else}
@@ -1367,7 +1367,7 @@
                                 {/if}
                               {/each}
                             {/if}
-                            <h3>Maintenance</h3>
+                            <h2>Maintenance</h2>
                             <div class="maintenance-list">
                               {#if maintenances.every( (incident) => incident.entries.some((entry) => entry.status === Indicators.Completed), )}
                                 No maintenance windows available.
@@ -1438,9 +1438,9 @@
                         {#each maintenances as maintenance}
                           {#if maintenance.entries.some((entry) => entry.status === Indicators.Completed)}
                             <div class="incident-card mt-10">
-                              <h3>
+                              <h2>
                                 Scheduled maintenance for {maintenance.service}
-                              </h3>
+                              </h2>
                               {#each maintenance.entries as entry}
                                 <div class="status-entry">
                                   <span class="time font-bold"
@@ -1508,13 +1508,13 @@
       font-weight: 600;
     }
 
-    #content h2 {
+    /* #content h2 {
       font-size: 1.6em;
       line-height: 1.5;
       font-weight: 600;
-    }
+    } */
 
-    #content h3 {
+    #content h2 {
       font-size: 1.2em;
       line-height: 1.5;
       font-weight: 600;
@@ -1536,12 +1536,12 @@
       margin-bottom: 24px;
     }
 
-    #content h2 {
+    /* #content h2 {
       margin-bottom: 24px;
       margin-top: 24px;
-    }
+    } */
 
-    #content h3 {
+    #content h2 {
       margin-bottom: 16px;
       margin-top: 32px;
     }
@@ -1553,13 +1553,13 @@
         font-weight: bold;
       }
 
-      #content h2 {
+      /* #content h2 {
         font-size: 2em;
         line-height: 1.5;
         font-weight: 600;
-      }
+      } */
 
-      #content h3 {
+      #content h2 {
         font-size: 1.4em;
         line-height: 1.5;
         font-weight: 600;
