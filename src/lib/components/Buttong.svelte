@@ -7,7 +7,7 @@
 
 <Button
   onclick={() => window.open(url, "_blank")}
-  class="group transition-transform  hover:bg-green-700 focus:bg-green-700  bg-green-800 text-white px-[14px] py-[20px] rounded-full flex items-center gap-2 active:scale-99 font-medium cursor-pointer"
+  class="group transition-transform  hover:bg-emerald-700 focus:bg-emerald-700 bg-emerald-800 text-white px-[14px] py-[20px] rounded-full flex items-center gap-2 active:scale-99 font-medium cursor-pointer"
 >
   <span>{label}</span>
   <ArrowRightIcon
