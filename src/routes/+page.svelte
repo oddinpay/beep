@@ -17,7 +17,7 @@
   let signup = "https://oddinpay.com/signup";
   let slug = "https://oddinpay.com";
   let logo = "oddin status";
-  let title = "OddinPay System - Status";
+  let title = "Status • Oddin Pay";
   let description =
     "Real-time and historical data on OddinPay system performance.";
 
