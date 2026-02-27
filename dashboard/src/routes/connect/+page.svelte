@@ -17,21 +17,25 @@
 			value={currentTab}
 			class="flex max-h-[calc(100dvh-3rem)]  w-full flex-col gap-8 md:flex-row"
 		>
-			<TabsList class="sticky top-6 flex w-80 flex-col gap-2 self-start bg-transparent p-4">
-				<TabsTrigger
-					value="tab-5"
-					onclick={() => window.history.pushState({}, '', '/connect')}
-					class="flex w-full cursor-pointer  items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
-				>
-					<Unplug class="h-8 w-8" /> Connect
-				</TabsTrigger>
-
+			<TabsList
+				class="sticky top-6 flex w-80 flex-col  gap-2 self-start bg-transparent p-4 max-[770px]:top-0 max-[770px]:z-50 max-[770px]:w-full max-[770px]:flex-row max-[770px]:justify-around max-[770px]:bg-black/80 max-[770px]:backdrop-blur-md"
+			>
 				<TabsTrigger
 					value="tab-0"
 					onclick={() => goto('/')}
-					class="flex w-full cursor-pointer  items-center justify-start gap-3 rounded-md px-6 py-4 text-3xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white"
+					class="flex w-full cursor-pointer items-center justify-start gap-2 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white max-[770px]:justify-center max-[770px]:p-2 xl:px-6 xl:text-3xl"
 				>
-					<House class="h-8 w-8" /> Home
+					<House class="h-8 w-8" />
+					<span class="max-[770px]:hidden">Home</span>
+				</TabsTrigger>
+
+				<TabsTrigger
+					value="tab-5"
+					onclick={() => goto('/connect')}
+					class="flex w-full cursor-pointer items-center justify-start gap-2 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white max-[770px]:justify-center max-[770px]:p-2 xl:px-6 xl:text-3xl"
+				>
+					<Unplug class="h-8 w-8" />
+					<span class="max-[770px]:hidden">Connect</span>
 				</TabsTrigger>
 			</TabsList>
 

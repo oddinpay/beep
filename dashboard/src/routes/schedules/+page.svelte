@@ -19,7 +19,7 @@
 			class="flex max-h-[calc(100dvh-3rem)]  w-full flex-col gap-8 md:flex-row"
 		>
 			<TabsList
-				class="sticky top-6 flex w-80 flex-col gap-1.5 self-start bg-transparent p-4 max-[770px]:top-0 max-[770px]:z-50 max-[770px]:w-full max-[770px]:flex-row max-[770px]:justify-around max-[770px]:bg-black/80 max-[770px]:backdrop-blur-md"
+				class="sticky top-6 flex w-80 flex-col gap-2 self-start bg-transparent p-4 max-[770px]:top-0 max-[770px]:z-50 max-[770px]:w-full max-[770px]:flex-row max-[770px]:justify-around max-[770px]:bg-black/80 max-[770px]:backdrop-blur-md"
 			>
 				<TabsTrigger
 					value="tab-0"
