@@ -13,6 +13,7 @@
   import { browser } from "$app/environment";
   import timer from "$lib/timer";
   import { env } from "$env/dynamic/public";
+
   let signin = "https://oddinpay.com/signin";
   let signup = "https://oddinpay.com/signup";
   let slug = "https://oddinpay.com";
@@ -23,6 +24,7 @@
 
   const badge = "Last updated";
   let ready = $state(false);
+
   onMount(() => (ready = true));
   const clock = timer();
   const TOTAL_DAYS = 90;
@@ -118,7 +120,6 @@
   let probeMap = $state<ProbeMap>({});
 
   // const statusStore = localStore<StatusType[]>('status', []);
-
 
   function coerceStatus(s?: StatusType): StatusType {
     return s === "up" || s === "down" || s === "warn" ? s : "warn";
