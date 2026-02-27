@@ -31,7 +31,7 @@
 		validators: zod4(formSchema),
 		SPA: true,
 		onUpdate: async ({ form: f }) => {
-			const logoValue = f.data.logo?.trim() ?? '';
+			const logoValue = f.data.navbar?.trim() ?? '';
 
 			if (!logoValue) {
 				return;
@@ -94,7 +94,7 @@
 						<Dialog.Header>
 							<Dialog.Title class="mt-10 text-gray-300 sm:text-center">Favicon</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
-								Set up and publish your status page.
+								Set up and update your status page.
 							</Dialog.Description>
 						</Dialog.Header>
 					</div>
@@ -102,31 +102,13 @@
 					<form method="POST" class="space-y-5" use:enhance>
 						<div class="space-y-4">
 							<div class="space-y-2">
-								<Form.Field {form} name="logo">
-									<Form.Control>
-										{#snippet children({ props })}
-											<Form.Label class="font-bold text-gray-300">Logo</Form.Label>
-											<Input
-												class="border-zinc-700 text-white"
-												placeholder="Oddin Status"
-												type="text"
-												{...props}
-												bind:value={$formData.logo}
-											/>
-										{/snippet}
-									</Form.Control>
-									<!-- <Form.Description>This is your public display name.</Form.Description> -->
-									<Form.FieldErrors />
-								</Form.Field>
-							</div>
-							<div class="space-y-2">
 								<Form.Field {form} name="title">
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label class="font-bold text-gray-300">Title</Form.Label>
 											<Input
 												class="border-zinc-700 text-white"
-												placeholder="Oddin Status"
+												placeholder="Status • Oddin Pay"
 												type="text"
 												{...props}
 												bind:value={$formData.title}
@@ -145,10 +127,67 @@
 											<Form.Label class="font-bold text-gray-300">Description</Form.Label>
 											<Input
 												class="border-zinc-700 text-white"
-												placeholder="Monitor the status of Oddin services"
+												placeholder="OddinPay system performance."
 												type="text"
 												{...props}
 												bind:value={$formData.description}
+											/>
+										{/snippet}
+									</Form.Control>
+									<!-- <Form.Description>This is your public display name.</Form.Description> -->
+									<Form.FieldErrors />
+								</Form.Field>
+							</div>
+
+							<div class="space-y-2">
+								<Form.Field {form} name="navbar">
+									<Form.Control>
+										{#snippet children({ props })}
+											<Form.Label class="font-bold text-gray-300">Text Logo</Form.Label>
+											<Input
+												class="border-zinc-700 text-white"
+												placeholder="Oddin Status"
+												type="text"
+												{...props}
+												bind:value={$formData.navbar}
+											/>
+										{/snippet}
+									</Form.Control>
+									<!-- <Form.Description>This is your public display name.</Form.Description> -->
+									<Form.FieldErrors />
+								</Form.Field>
+							</div>
+
+							<div class="space-y-2">
+								<Form.Field {form} name="title">
+									<Form.Control>
+										{#snippet children({ props })}
+											<Form.Label class="font-bold text-gray-300">Signup URL</Form.Label>
+											<Input
+												class="border-zinc-700 text-white"
+												placeholder="https://odinpay.com/signup"
+												type="text"
+												{...props}
+												bind:value={$formData.signup}
+											/>
+										{/snippet}
+									</Form.Control>
+									<!-- <Form.Description>This is your public display name.</Form.Description> -->
+									<Form.FieldErrors />
+								</Form.Field>
+							</div>
+
+							<div class="space-y-2">
+								<Form.Field {form} name="signin">
+									<Form.Control>
+										{#snippet children({ props })}
+											<Form.Label class="font-bold text-gray-300">Signin URL</Form.Label>
+											<Input
+												class="border-zinc-700 text-white"
+												placeholder="https://odinpay.com/signin"
+												type="text"
+												{...props}
+												bind:value={$formData.signin}
 											/>
 										{/snippet}
 									</Form.Control>
@@ -165,7 +204,7 @@
 							>{#if $submitting}
 								<Loader2 class="size-4 animate-spin" />
 							{:else}
-								Publish Page
+								Save	
 							{/if}
 						</Form.Button>
 					</form>

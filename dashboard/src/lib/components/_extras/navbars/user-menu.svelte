@@ -40,13 +40,6 @@
 		</DropdownMenuLabel>
 		<DropdownMenuSeparator class="bg-zinc-600" />
 		<DropdownMenuGroup>
-			<DropdownMenuItem
-				onclick={() => goto('/connect')}
-				class="cursor-pointer text-zinc-100 focus:bg-zinc-600 focus:text-white"
-			>
-				<Unplug size={16} class="opacity-80" aria-hidden="true" />
-				<span>Connect</span>
-			</DropdownMenuItem>
 			<DropdownMenuSeparator class="bg-zinc-600" />
 			<DropdownMenuItem class="cursor-pointer text-zinc-100 focus:bg-zinc-600 focus:text-white">
 				<BookOpenText size={16} class="opacity-80" aria-hidden="true" />

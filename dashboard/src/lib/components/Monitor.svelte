@@ -66,7 +66,7 @@
 						</div>
 
 						<Dialog.Header>
-							<Dialog.Title class=" text-gray-300 sm:text-center">Add New Monitor</Dialog.Title>
+							<Dialog.Title class=" text-gray-300 sm:text-center">Add Monitor</Dialog.Title>
 							<Dialog.Description class="text-gray-400 sm:text-center">
 								Set up and publish your uptime monitor.
 							</Dialog.Description>
