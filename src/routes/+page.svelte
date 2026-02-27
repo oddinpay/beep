@@ -53,7 +53,7 @@
     uptime90: string;
   }
 
-  const beepHost = env.PUBLIC_BEEP_HOST;
+  const beepHost = env.PUBLIC_ODDIN_HOST;
   const json = source(`https://${beepHost}/v1/sse`).select("").json<ApiData>();
 
   type Buffered = { probe: ApiData; sla?: any; index?: number };
