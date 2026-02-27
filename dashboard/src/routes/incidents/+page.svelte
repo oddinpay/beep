@@ -7,7 +7,7 @@
 	import NotIncidents from '$lib/components/NotIncidents.svelte';
 	import { Gauge } from '$lib/components/ui/gauge';
 
-	let currentTab = 'tab-2';
+	let currentTab = 'tab-3';
 </script>
 
 <div class="flex min-h-screen items-start justify-center overflow-hidden bg-black">
@@ -73,8 +73,8 @@
 				<div
 					class="relative col-span-1 rounded-lg border border-border bg-zinc-900 p-8 md:col-span-2 md:min-h-[480px] md:overflow-y-hidden"
 				>
-					<TabsContent value="tab-2" class="h-auto min-h-[300px]">
-						<Tabs value="tab-2" class=" items-center">
+					<TabsContent value="tab-3" class="h-auto min-h-[300px]">
+						<Tabs value="tab-3" class=" items-center">
 							<TabsList
 								class="h-auto gap-2 rounded-full border-b border-border bg-zinc-800 px-10 py-2 text-zinc-400"
 							>
@@ -97,9 +97,9 @@
 									Resolved
 								</TabsTrigger>
 							</TabsList>
-							<TabsContent value="tab-2">
+							<!-- <TabsContent value="tab-2">
 								<Incidents />
-							</TabsContent>
+							</TabsContent> -->
 							<TabsContent value="tab-3">
 								<NotIncidents />
 							</TabsContent>
@@ -115,7 +115,7 @@
 				<div
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
-					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
+					<TabsContent value="tab-3" class="h-auto min-h-[150px]">
 						<p class="text-base font-semibold text-zinc-200">Active Incidents</p>
 					</TabsContent>
 				</div>
@@ -123,7 +123,7 @@
 				<div
 					class="min-h-[250px] rounded-lg border border-border bg-zinc-900 p-8 md:overflow-y-hidden"
 				>
-					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
+					<TabsContent value="tab-3" class="h-auto min-h-[150px]">
 						<p class="text-base font-semibold text-zinc-200">Total Incidents</p>
 						<Gauge
 							colors={{ primary: 'stroke-yellow-700', secondary: 'stroke-yellow-200' }}
