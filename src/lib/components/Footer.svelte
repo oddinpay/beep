@@ -1,6 +1,6 @@
 <script>
   const year = new Date().getFullYear();
-  const brand = "BEEP";
+  const brand = "ODDIN STATUS";
   const company = "ODDINPAY";
   const entity = "LLC";
 </script>
@@ -10,7 +10,7 @@
     <div class="footer-left">
       <div class="logo">
         <a
-          href="https://github.com/oddinpay/beep"
+          href="https://github.com/oddinpay/oddin-status"
           target="_blank"
           rel="noopener noreferrer">{brand}</a
         >

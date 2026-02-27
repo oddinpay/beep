@@ -305,7 +305,7 @@ func probeHTTP(re HttpRequest) ProbeResult {
 	}
 
 	if userAgent == "" {
-		userAgent = "BeepMonitor/1.0"
+		userAgent = "OddinStatus/1.0"
 	}
 
 	r.Header.Set("User-Agent", userAgent)

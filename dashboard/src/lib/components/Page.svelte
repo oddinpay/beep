@@ -108,7 +108,7 @@
 											<Form.Label class="font-bold text-gray-300">Logo</Form.Label>
 											<Input
 												class="border-zinc-700 text-white"
-												placeholder="Beep"
+												placeholder="Oddin Status"
 												type="text"
 												{...props}
 												bind:value={$formData.logo}
@@ -126,7 +126,7 @@
 											<Form.Label class="font-bold text-gray-300">Title</Form.Label>
 											<Input
 												class="border-zinc-700 text-white"
-												placeholder="Beep Status"
+												placeholder="Oddin Status"
 												type="text"
 												{...props}
 												bind:value={$formData.title}
@@ -145,7 +145,7 @@
 											<Form.Label class="font-bold text-gray-300">Description</Form.Label>
 											<Input
 												class="border-zinc-700 text-white"
-												placeholder="Monitor the status of Beep services"
+												placeholder="Monitor the status of Oddin services"
 												type="text"
 												{...props}
 												bind:value={$formData.description}

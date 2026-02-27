@@ -7,4 +7,4 @@
   </g>
 </svg>
 
-<span class="sr-only">Beep</span>
+<span class="sr-only">Oddin Status</span>

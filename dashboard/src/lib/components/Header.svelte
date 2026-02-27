@@ -12,7 +12,7 @@
 	// 	{ href: '#', label: 'About' }
 	// ];
 
-	const title = 'Beep - Dashboard';
+	const title = 'Oddin Status - Dashboard';
 </script>
 
 <svelte:head>
