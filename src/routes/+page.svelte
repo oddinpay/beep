@@ -119,7 +119,6 @@
 
   // const statusStore = localStore<StatusType[]>('status', []);
 
-  // --- utils ---
 
   function coerceStatus(s?: StatusType): StatusType {
     return s === "up" || s === "down" || s === "warn" ? s : "warn";
