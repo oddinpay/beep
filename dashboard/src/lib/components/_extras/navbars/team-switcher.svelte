@@ -17,7 +17,11 @@
 		teams: string[];
 	} = $props();
 
-	let selectedTeam = $state(defaultTeam);
+	let selectedTeam = $state('');
+
+	$effect(() => {
+		selectedTeam = defaultTeam;
+	});
 </script>
 
 <DropdownMenu>
@@ -25,7 +29,7 @@
 		{#snippet child({ props })}
 			<Button variant="ghost" class="p-0 hover:bg-transparent" {...props}>
 				<span
-					class="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-full"
+					class="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground"
 				>
 					{selectedTeam.charAt(0).toUpperCase()}
 				</span>
