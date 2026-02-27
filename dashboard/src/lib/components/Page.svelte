@@ -159,7 +159,7 @@
 							</div>
 
 							<div class="space-y-2">
-								<Form.Field {form} name="title">
+								<Form.Field {form} name="signup">
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label class="font-bold text-gray-300">Signup URL</Form.Label>
