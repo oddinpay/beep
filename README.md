@@ -1,4 +1,4 @@
-# oddin-status
+# Oddin Status
 
 🚨 Beautiful status page & uptime monitor. **Ready for production** out of the box. **Easily deploy to Cloudflare in just one click.**
 
@@ -12,7 +12,7 @@
 - Real-time API **(SSE).**
 - Lightweight **(~140 KB memory per monitor)**.
 
-## More about Beep
+## More about Oddin Status
 
 Built for serverless environments like Cloudflare Workers, Beep ensures high availability and real-time monitoring for production workloads and critical services.
 
