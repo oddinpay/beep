@@ -27,8 +27,8 @@
 		lg: { size: 128, stroke_width: 10 }
 	};
 
-	const arc_size = sizes_map[size].size;
-	const stroke_width = sizes_map[size].stroke_width;
+	const arc_size = $derived(sizes_map[size].size);
+	const stroke_width = $derived(sizes_map[size].stroke_width);
 	// Store to track the length of the arc
 	function get_radius() {
 		switch (size) {
