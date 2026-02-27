@@ -26,7 +26,7 @@
 					class="flex w-full cursor-pointer items-center justify-start gap-2 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white max-[770px]:justify-center max-[770px]:p-2 xl:px-6 xl:text-3xl"
 				>
 					<House class="h-8 w-8" />
-					<span class="max-[770px]:hidden">Home</span>
+					<span class="max-[400px]:hidden">Home</span>
 				</TabsTrigger>
 
 				<TabsTrigger
@@ -35,7 +35,7 @@
 					class="flex w-full cursor-pointer items-center justify-start gap-2 rounded-md py-4 text-2xl font-bold text-white transition data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:bg-zinc-800 data-[state=inactive]:hover:text-white max-[770px]:justify-center max-[770px]:p-2 xl:px-6 xl:text-3xl"
 				>
 					<Unplug class="h-8 w-8" />
-					<span class="max-[770px]:hidden">Connect</span>
+					<span class="max-[400px]:hidden">Connect</span>
 				</TabsTrigger>
 			</TabsList>
 
