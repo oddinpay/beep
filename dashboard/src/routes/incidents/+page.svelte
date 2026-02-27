@@ -117,6 +117,13 @@
 				>
 					<TabsContent value="tab-2" class="h-auto min-h-[150px]">
 						<p class="text-base font-semibold text-zinc-200">Active Incidents</p>
+						<Gauge
+							colors={{ primary: 'stroke-green-700', secondary: 'stroke-green-200' }}
+							class="text-white"
+							show_value
+							size="lg"
+							value={100}
+						/>
 					</TabsContent>
 				</div>
 
