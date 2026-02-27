@@ -12,7 +12,7 @@
 - Real-time API **(SSE).**
 - Lightweight **(~140 KB memory per monitor)**.
 
-## More about Oddin status
+## More about oddin status
 
 Built for serverless environments like Cloudflare Workers, ensures high availability and real-time monitoring for production workloads and critical services.
 
