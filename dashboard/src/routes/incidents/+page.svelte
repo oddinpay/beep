@@ -3,7 +3,7 @@
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 	import { SquareActivity, Siren, ShieldAlert, House, CalendarCheck } from 'lucide-svelte';
 	import Header from '$lib/components/Header.svelte';
-	import Incidents from '$lib/components/Incidents.svelte';
+	// import Incidents from '$lib/components/Incidents.svelte';
 	import NotIncidents from '$lib/components/NotIncidents.svelte';
 	import { Gauge } from '$lib/components/ui/gauge';
 
