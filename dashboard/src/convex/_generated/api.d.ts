@@ -8,13 +8,17 @@
  * @module
  */
 
+import type * as status from "../status.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  status: typeof status;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.
