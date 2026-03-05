@@ -1,9 +1,9 @@
-import { query } from "./_generated/server";
+import { query } from './_generated/server';
 
 export const get = query({
-  args: {},
-  handler: async (ctx) => {
-    const tasks = await ctx.db.query("status").collect();
-    return tasks.map((task) => ({ ...task, assigner: "oddin" }));
-  },
+	args: {},
+	handler: async (ctx) => {
+		const status = await ctx.db.query('status').collect();
+		return status.map((task) => ({ ...status, assigner: 'oddin' }));
+	}
 });
