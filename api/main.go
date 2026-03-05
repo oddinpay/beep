@@ -514,7 +514,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 	if total <= 0 {
 		return map[string]any{
 			"id":                 "",
-			"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
+			"sla_target":         "99.999%",
 			"uptime90":           "99.999%",
 			"up_time_seconds":    formatDurationFull(0),
 			"down_time_seconds":  formatDurationFull(0),
@@ -536,7 +536,7 @@ func (s *SlidingSLA) Snapshot() map[string]any {
 
 	return map[string]any{
 		"id":                 "",
-		"sla_target":         fmt.Sprintf("%.3f%%", s.Target*100),
+		"sla_target":         "99.999%",
 		"uptime90":           uptimeStr,
 		"up_time_seconds":    formatDurationFull(up),
 		"down_time_seconds":  formatDurationFull(down),
@@ -590,7 +590,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 				defer wg.Done()
 
 				slaTrackers.Lock()
-				tracker := NewSlidingSLA(0.999)
+				tracker := NewSlidingSLA(0.99999)
 				slaTrackers.m[req.Name] = tracker
 
 				existingData := readFromNATS(req.Name)
@@ -631,7 +631,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 						slaTrackers.Lock()
 						tracker := slaTrackers.m[req.Name]
 						if tracker == nil {
-							tracker = NewSlidingSLA(0.999)
+							tracker = NewSlidingSLA(0.99999)
 							slaTrackers.m[req.Name] = tracker
 						}
 						slaTrackers.Unlock()
