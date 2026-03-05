@@ -13,16 +13,16 @@
 	<ul>
 		{#each query.data as status}
 			<li>
-				<span>Host: {status.host}</span>
+				<span>Assigner: {status.assigner}</span>
 			</li>
 			<li>
-				<span>assigned by {status.assigner}</span>
-			</li>
-			<li>
-				<span>status: {status.protocol}</span>
+				<span>Protocol: {status.protocol}</span>
 			</li>
 			<li>
 				<span>Name: {status.name}</span>
+			</li>
+			<li>
+				<span>Host: {status.host}</span>
 			</li>
 			<li>
 				<span>Interval: {status.interval}</span>
