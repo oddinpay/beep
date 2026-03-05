@@ -83,13 +83,13 @@ var (
 )
 
 var httpClient = &http.Client{
-	Timeout: 15 * time.Second,
+	Timeout: 30 * time.Second,
 	Transport: &http.Transport{
 		DialContext: (&net.Dialer{
-			Timeout:   5 * time.Second,
+			Timeout:   10 * time.Second,
 			KeepAlive: 30 * time.Second,
 		}).DialContext,
-		TLSHandshakeTimeout:   5 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
 		ResponseHeaderTimeout: 10 * time.Second,
 		IdleConnTimeout:       90 * time.Second,
 		MaxIdleConns:          100,
@@ -105,7 +105,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 	raw := []HttpRequest{
-		{Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second},
+		{Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com", Interval: 20 * time.Second},
 	}
 
 	// for i := 1; i <= 2; i++ {
@@ -590,7 +590,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 				defer wg.Done()
 
 				slaTrackers.Lock()
-				tracker := NewSlidingSLA(1.0)
+				tracker := NewSlidingSLA(0.999)
 				slaTrackers.m[req.Name] = tracker
 
 				existingData := readFromNATS(req.Name)
@@ -631,7 +631,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 						slaTrackers.Lock()
 						tracker := slaTrackers.m[req.Name]
 						if tracker == nil {
-							tracker = NewSlidingSLA(1.0)
+							tracker = NewSlidingSLA(0.999)
 							slaTrackers.m[req.Name] = tracker
 						}
 						slaTrackers.Unlock()
