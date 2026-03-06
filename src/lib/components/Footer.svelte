@@ -64,7 +64,7 @@
 
   .footer-left .logo {
     font-family:
-      Inter Variable,
+      "Inter Variable",
       Inter,
       sans-serif,
       -apple-system,
