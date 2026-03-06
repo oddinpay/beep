@@ -9,7 +9,6 @@ export const get = query({
 		if (args.apiKey !== process.env.API_KEY) {
 			throw new Error('Unauthorized: Wrong API Key');
 		}
-
 		const status = await ctx.db.query('status').collect();
 		return status.map((status) => ({ ...status, assigner: 'oddin' }));
 	}
