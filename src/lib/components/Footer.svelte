@@ -27,7 +27,7 @@
 
 <style>
   .logo {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   footer {
