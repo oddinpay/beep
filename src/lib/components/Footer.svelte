@@ -70,8 +70,8 @@
       -apple-system,
       BlinkMacSystemFont;
     font-weight: 700;
-    font-size: 16px;
-    line-height: 16px;
+    font-size: 18px;
+    line-height: 18px;
     color: #2a741b;
   }
 
