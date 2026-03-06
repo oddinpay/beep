@@ -1,12 +1,15 @@
 import { query } from './_generated/server';
+import { v } from 'convex/values';
 
 export const get = query({
-	args: {},
+	args: {
+		apiKey: v.string()
+	},
 	handler: async (ctx, args) => {
-		const identity = await ctx.auth.getUserIdentity();
-		if (identity === null) {
-			throw new Error('Unauthenticated call to mutation');
+		if (args.apiKey !== process.env.API_KEY) {
+			throw new Error('Unauthorized: Wrong API Key');
 		}
+
 		const status = await ctx.db.query('status').collect();
 		return status.map((status) => ({ ...status, assigner: 'oddin' }));
 	}
