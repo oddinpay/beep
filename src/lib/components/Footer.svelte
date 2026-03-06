@@ -26,6 +26,10 @@
 </footer>
 
 <style>
+  .logo {
+    margin-bottom: 20px;
+  }
+
   footer {
     position: relative;
     background: #f9fafb;
