@@ -8,7 +8,7 @@
 <footer>
   <div class="footer-content">
     <div class="footer-left">
-      <div class="logo">
+      <div class="logo gap-2">
         <a
           href="https://github.com/oddinpay/oddin-status"
           target="_blank"
