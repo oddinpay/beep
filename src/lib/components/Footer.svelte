@@ -64,7 +64,7 @@
 
   .footer-left .logo {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 16px;
     color: #2a741b;
   }
 
