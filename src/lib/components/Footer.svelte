@@ -63,8 +63,15 @@
   }
 
   .footer-left .logo {
-    font-weight: bold;
+    font-family:
+      Inter Variable,
+      Inter,
+      sans-serif,
+      -apple-system,
+      BlinkMacSystemFont;
+    font-weight: 700;
     font-size: 16px;
+    line-height: 16px;
     color: #2a741b;
   }
 
