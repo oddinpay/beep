@@ -107,6 +107,7 @@ var slaTrackers = struct {
 
 var defaultReqs = func() []HttpRequest {
 
+	convexClient := convex.NewClient(os.Getenv("CONVEX_DB_URL"), nil)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -121,7 +122,6 @@ var defaultReqs = func() []HttpRequest {
 		"apiKey": os.Getenv("API_KEY"),
 	}
 
-	convexClient := convex.NewClient(os.Getenv("CONVEX_DB_URL"), nil)
 	statuses, err := convex.Query[[]Status](ctx, convexClient, "status:get", args)
 
 	if err != nil {
