@@ -82,7 +82,7 @@ var (
 	wg               sync.WaitGroup
 	js               jetstream.JetStream
 	kv               jetstream.KeyValue
-	convexClient     convex.Client
+	convexClient     = convex.NewClient(os.Getenv("CONVEX_DB_URL"), nil)
 )
 
 var httpClient = &http.Client{
@@ -124,7 +124,7 @@ var defaultReqs = func() []HttpRequest {
 		"apiKey": os.Getenv("API_KEY"),
 	}
 
-	statuses, err := convex.Query[[]Status](ctx, &convexClient, "status:get", args)
+	statuses, err := convex.Query[[]Status](ctx, convexClient, "status:get", args)
 
 	if err != nil {
 		if convexErr, ok := convex.IsConvexError(err); ok {
@@ -1122,7 +1122,6 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	convexClient = *convex.NewClient(os.Getenv("CONVEX_DB_URL"), nil)
 	nc, err = nats.Connect(
 		serverURL,
 		nats.UserJWTAndSeed(jwt, seed),
