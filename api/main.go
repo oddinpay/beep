@@ -82,6 +82,7 @@ var (
 	wg               sync.WaitGroup
 	js               jetstream.JetStream
 	kv               jetstream.KeyValue
+	convexClient     = convex.NewClient(os.Getenv("CONVEX_DB_URL"), nil)
 )
 
 var httpClient = &http.Client{
@@ -105,9 +106,8 @@ var slaTrackers = struct {
 	m map[string]*SlidingSLA
 }{m: make(map[string]*SlidingSLA)}
 
-var defaultReqs = func() []HttpRequest {
+func fetchTargets(ctx context.Context) []HttpRequest {
 
-	convexClient := convex.NewClient(os.Getenv("CONVEX_DB_URL"), nil)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -155,7 +155,7 @@ var defaultReqs = func() []HttpRequest {
 		out = append(out, r)
 	}
 	return out
-}()
+}
 
 // -------------------- MODELS --------------------
 
@@ -589,7 +589,7 @@ func startProbeManager(ctx context.Context, wg *sync.WaitGroup) {
 	probeManagerOnce.Do(func() {
 		slog.Info("Starting probe manager...")
 
-		for _, target := range defaultReqs {
+		for _, target := range fetchTargets(ctx) {
 
 			t := target
 
@@ -734,8 +734,8 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 			return
 		case update := <-clientChan:
 
-			reqLookup := make(map[string]int, len(defaultReqs))
-			for i, r := range defaultReqs {
+			reqLookup := make(map[string]int, len(fetchTargets(ctx)))
+			for i, r := range fetchTargets(ctx) {
 				reqLookup[r.Name] = i
 			}
 
@@ -764,8 +764,8 @@ func Sse(w http.ResponseWriter, r *http.Request) {
 
 func sendUpdateToConn(ctx context.Context, conn *sse.Conn, update map[string]StatusPayload) error {
 
-	reqLookup := make(map[string]int, len(defaultReqs))
-	for i, r := range defaultReqs {
+	reqLookup := make(map[string]int, len(fetchTargets(ctx)))
+	for i, r := range fetchTargets(ctx) {
 		reqLookup[r.Name] = i
 	}
 
@@ -798,13 +798,13 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	var hasMonitors bool
 	var miniMonitors bool
-	if len(defaultReqs) == 0 {
+	if len(fetchTargets(context.Background())) == 0 {
 		hasMonitors = false
 	} else {
 		hasMonitors = true
 	}
 
-	if len(defaultReqs) > 3 {
+	if len(fetchTargets(context.Background())) > 3 {
 		miniMonitors = true
 	} else {
 		miniMonitors = false
@@ -1006,7 +1006,7 @@ func publishToNATS(ctx context.Context, name string, payload *StatusPayload, s *
 		payload.SLA["sla_breached"] = (s.Target >= 1.0 && rootDown > 0) || (rootAvail < s.Target)
 
 		idx := -1
-		for i, r := range defaultReqs {
+		for i, r := range fetchTargets(ctx) {
 			if r.Name == name {
 				idx = i
 				break
