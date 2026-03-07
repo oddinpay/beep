@@ -10,6 +10,7 @@ require (
 
 require (
 	github.com/gofrs/uuid/v5 v5.3.2 // indirect
+	github.com/inselfcontroll/convex-go v0.0.0-20260224235520-ced3bd4b8129
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/nats-io/nkeys v0.4.11 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect

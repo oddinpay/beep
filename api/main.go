@@ -24,6 +24,8 @@ import (
 
 	"go.jetify.com/sse"
 	"go.jetify.com/typeid/v2"
+
+	convex "github.com/inselfcontroll/convex-go"
 )
 
 const (
@@ -80,6 +82,7 @@ var (
 	wg               sync.WaitGroup
 	js               jetstream.JetStream
 	kv               jetstream.KeyValue
+	convexClient     *convex.Client
 )
 
 var httpClient = &http.Client{
@@ -104,14 +107,41 @@ var slaTrackers = struct {
 }{m: make(map[string]*SlidingSLA)}
 
 var defaultReqs = func() []HttpRequest {
-	raw := []HttpRequest{
-		{Name: "www.oddinpay.com", Protocol: "https", Host: "www.oddinpay.com", Interval: 20 * time.Second},
+
+	raw := []HttpRequest{}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	type Status struct {
+		Name     string `json:"name"`
+		Protocol string `json:"protocol"`
+		Host     string `json:"host"`
+		Interval int64  `json:"interval"`
 	}
 
-	// for i := 1; i <= 2; i++ {
-	// 	raw = append(raw, HttpRequest{Name: fmt.Sprintf("DNS %d", i), Protocol: "dns", Host: "www.oddinpay.com", Interval: 10 * time.Second})
-	// 	raw = append(raw, HttpRequest{Name: fmt.Sprintf("HTTPS %d", i), Protocol: "https", Host: "www.oddinpay.com", Interval: 10 * time.Second})
-	// }
+	args := map[string]any{
+		"apiKey": os.Getenv("API_KEY"),
+	}
+
+	statuses, err := convex.Query[[]Status](ctx, convexClient, "status:get", args)
+
+	if err != nil {
+		if convexErr, ok := convex.IsConvexError(err); ok {
+			slog.Error("Convex error", "message", convexErr.Message)
+		} else {
+			slog.Error("Request failed", "error", err)
+		}
+	}
+
+	for _, u := range statuses {
+		raw = append(raw, HttpRequest{
+			Name:     u.Name,
+			Protocol: u.Protocol,
+			Host:     u.Host,
+			Interval: time.Duration(u.Interval) * time.Second,
+		})
+	}
 
 	out := make([]HttpRequest, 0, len(raw))
 	counts := make(map[string]int)
@@ -1092,6 +1122,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
+	convexClient = convex.NewClient(os.Getenv("CONVEX_DB_URL"), nil)
 	nc, err = nats.Connect(
 		serverURL,
 		nats.UserJWTAndSeed(jwt, seed),
