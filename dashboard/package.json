@@ -42,6 +42,7 @@
     "convex-svelte": "^0.0.12",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
     "eslint-config-prettier": "^10.1.8",
     "formsnap": "^2.0.1",
     "lucide-svelte": "^0.545.0",
