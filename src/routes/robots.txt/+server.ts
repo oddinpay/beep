@@ -1,4 +1,6 @@
-export const GET = async ({ url }) => {
+import type { RequestHandler } from "@sveltejs/kit";
+
+export const GET: RequestHandler = async ({ url }) => {
   const fullHostname = url.hostname;
   const domain = fullHostname.split(".").slice(-2).join(".");
   const sitemapUrl = `https://status.${domain}/sitemap.xml`;
