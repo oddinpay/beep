@@ -1,9 +1,8 @@
 import type { RequestHandler } from "@sveltejs/kit";
 
 export const GET: RequestHandler = async ({ url }) => {
-  const fullHostname = url.hostname;
-  const domain = fullHostname.split(".").slice(-2).join(".");
-  const sitemapUrl = `https://status.${domain}/sitemap.xml`;
+  const fullHostname = `${url.protocol}//${url.host}`;
+  const sitemapUrl = `${fullHostname}/sitemap.xml`;
 
   const body = ["User-agent: *", "", `Sitemap: ${sitemapUrl}`].join("\n");
 
