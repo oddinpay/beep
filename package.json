@@ -65,7 +65,7 @@
     "clsx": "^2.1.1",
     "convex": "^1.33.1",
     "convex-svelte": "^0.0.12",
-    "cookie": "^0.7.0",
+    "cookie": "^0.7.1",
     "date-fns": "^4.1.0",
     "default-passive-events": "^4.0.0",
     "drizzle-kit": "^0.31.10",
